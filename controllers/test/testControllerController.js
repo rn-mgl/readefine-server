@@ -3,7 +3,7 @@ const { BadRequestError, NotFoundError } = require("../../errors");
 const Test = require("../../models/test/Test");
 
 const createTest = async (req, res) => {
-  const { story_id } = req.params;
+  const { story_id } = req.body;
 
   const test = new Test(story_id);
 

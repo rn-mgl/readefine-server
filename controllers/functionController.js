@@ -1,4 +1,6 @@
 const User = require("../models/users/User");
+const Admin = require("../models/users/Admin");
+const lexile = require("../lexileMap");
 const { BadRequestError } = require("../errors");
 
 const bcrypt = require("bcryptjs");
@@ -15,7 +17,7 @@ const isMatchedPassword = async (password, candidatePassword) => {
   return isMatch;
 };
 
-const isUniqueEmail = async (candidateEmail) => {
+const isUniqueUserEmail = async (candidateEmail) => {
   async (req, res) => {
     const data = await User.findWithEmail(candidateEmail);
 
@@ -23,7 +25,19 @@ const isUniqueEmail = async (candidateEmail) => {
       throw new BadRequestError(`Error in getting user with the given email. Try again later.`);
     }
 
-    res.status().json(data);
+    return data;
+  };
+};
+
+const isUniqueAdminEmail = async (candidateEmail) => {
+  async (req, res) => {
+    const data = await Admin.findWithEmail(candidateEmail);
+
+    if (!data) {
+      throw new BadRequestError(`Error in getting user with the given email. Try again later.`);
+    }
+
+    return data;
   };
 };
 
@@ -35,4 +49,15 @@ const createToken = (id, username, email) => {
   return token;
 };
 
-module.exports = { hashPassword, isMatchedPassword, isUniqueEmail, createToken };
+const getLexile = (gradeLevel) => {
+  return lexile[gradeLevel];
+};
+
+module.exports = {
+  hashPassword,
+  isMatchedPassword,
+  isUniqueUserEmail,
+  isUniqueAdminEmail,
+  createToken,
+  getLexile,
+};

@@ -1,7 +1,7 @@
 const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../errors");
-const User = require("../models/users/User");
-const fns = require("./function");
+const User = require("../../models/users/User");
+const fns = require("../functionController");
 
 const logInUser = async (req, res) => {
   const { candidateEmail, candidatePassword } = req.body;
@@ -26,22 +26,24 @@ const logInUser = async (req, res) => {
 };
 
 const signUpUser = async (req, res) => {
-  const { name, surname, username, grade_level, lexile_level, email, password } = req.body;
+  const { name, surname, username, grade_level, email, password } = req.body;
 
-  const hashedPassword = await fns.hashPassword(password);
-
-  const uniqueEmail = await fns.isUniqueEmail(email);
+  const uniqueEmail = await fns.isUniqueUserEmail(email);
 
   if (!uniqueEmail) {
     throw new BadRequestError(`The email has already been taken.`);
   }
+
+  const hashedPassword = await fns.hashPassword(password);
+
+  const lexile_level = fns.getLexile(grade_level);
 
   const user = new User(name, surname, username, grade_level, lexile_level, email, hashedPassword);
 
   const data = await user.createUser();
 
   if (!data) {
-    throw new BadRequestError(`Error in signin up. Try again later.`);
+    throw new BadRequestError(`Error in signing up. Try again later.`);
   }
 
   const token = fns.createToken(data.insertId);

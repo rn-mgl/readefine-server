@@ -3,9 +3,8 @@ const { BadRequestError, NotFoundError } = require("../../errors");
 const TestAnswer = require("../../models/test/TestAnswer");
 
 const createAnswer = async (req, res) => {
-  const { question_id } = req.params;
   const { id } = req.user;
-  const { answer, choice_1, choice_2, choice_3, choice_4 } = req.body;
+  const { question_id, answer, choice_1, choice_2, choice_3, choice_4 } = req.body;
 
   const testAnswer = new TestAnswer(
     question_id,
@@ -61,7 +60,7 @@ const deleteAnswer = async (req, res) => {
 };
 
 const getAllAnswers = async (req, res) => {
-  const { test_id } = req.params;
+  const { test_id } = req.body;
 
   const testAnswer = await TestAnswer.getAllAnswers(test_id);
 

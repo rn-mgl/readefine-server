@@ -6,7 +6,7 @@ class UserAchievement {
     this.user_id = user_id;
   }
 
-  async createAchievement() {
+  async recieveAchievement() {
     try {
       const sql = "INSERT INTO user_achievement SET ?;";
       const achievementValues = {
@@ -21,7 +21,7 @@ class UserAchievement {
     }
   }
 
-  static async getAllAchievements(user_id) {
+  static async getAllUserAchievements(user_id) {
     try {
       const sql = `SELECT * user_achievement
                     WHERE user_id = '${user_id}';`;
@@ -32,10 +32,20 @@ class UserAchievement {
     }
   }
 
-  static async getAchievement(achievement_id) {
+  static async getAllAchievements() {
+    try {
+      const sql = `SELECT * user_achievement;`;
+      const [data, _] = await db.execute(sql);
+      return data;
+    } catch (error) {
+      console.log(error + "--- get all achievements ---");
+    }
+  }
+
+  static async getAchievement(user_achievement_id) {
     try {
       const sql = `SELECT * user_achievement
-                    WHERE achievement_id = '${achievement_id}';`;
+                    WHERE user_achievement_id = '${user_achievement_id}';`;
       const [data, _] = await db.execute(sql);
       return data;
     } catch (error) {

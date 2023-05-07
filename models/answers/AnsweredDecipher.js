@@ -24,7 +24,7 @@ class AnsweredDecipher {
     }
   }
 
-  static async getAllAnsweredQuestions(answered_by) {
+  static async getAllAnsweredDeciphers(answered_by) {
     try {
       const sql = `SELECT * FROM answered_decipher AS ad
                     INNER JOIN daily_decipher AS dd
@@ -37,7 +37,7 @@ class AnsweredDecipher {
     }
   }
 
-  static async getAnsweredQuestion(answer_id) {
+  static async getAnsweredDecipher(answer_id) {
     try {
       const sql = `SELECT * FROM answered_decipher AS ad
                     INNER JOIN daily_decipher AS dd

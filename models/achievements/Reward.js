@@ -54,7 +54,7 @@ class Reward {
     }
   }
 
-  static async selectAllRewards() {
+  static async getAllRewards() {
     try {
       const sql = `SELECT * FROM reward;`;
       const [data, _] = await db.execute(sql);
@@ -64,7 +64,7 @@ class Reward {
     }
   }
 
-  static async selectReward(reward_id) {
+  static async getReward(reward_id) {
     try {
       const sql = `SELECT * FROM reward
                     WHERE reward_id = '${reward_id}';`;

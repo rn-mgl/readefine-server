@@ -46,10 +46,10 @@ class User {
     try {
       const sql = `SELECT COUNT(1) FROM users
                     WHERE email = '${email}'`;
-      const [data, _] = await db.execute(sql, verifyValues);
+      const [data, _] = await db.execute(sql);
       return data[0];
     } catch (error) {
-      console.log(error + "--- find with email ---");
+      console.log(error + "--- find user with email ---");
     }
   }
 

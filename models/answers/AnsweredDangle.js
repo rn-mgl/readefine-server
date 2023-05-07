@@ -24,7 +24,7 @@ class AnsweredDangle {
     }
   }
 
-  static async getAllAnsweredQuestions(answered_by) {
+  static async getAllAnsweredDangles(answered_by) {
     try {
       const sql = `SELECT * FROM answered_dangle AS ad
                     INNER JOIN daily_dangle AS dd
@@ -37,7 +37,7 @@ class AnsweredDangle {
     }
   }
 
-  static async getAnsweredQuestion(answer_id) {
+  static async getAnsweredDangle(answer_id) {
     try {
       const sql = `SELECT * FROM answered_dangle AS ad
                     INNER JOIN daily_dangle AS dd

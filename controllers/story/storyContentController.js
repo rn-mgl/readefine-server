@@ -3,9 +3,8 @@ const { BadRequestError, NotFoundError } = require("../../errors");
 const StoryContent = require("../../models/story/StoryContent");
 
 const createContent = async (req, res) => {
-  const { story_id } = req.params;
   const { id } = req.user;
-  const { page, content, image } = req.body;
+  const { story_id, page, content, image } = req.body;
 
   const storyContent = new StoryContent(story_id, page, content, image, id);
 
@@ -43,7 +42,7 @@ const deleteContent = async (req, res) => {
 };
 
 const getAllContent = async (req, res) => {
-  const { story_id } = req.params;
+  const { story_id } = req.body;
 
   const storyContent = await StoryContent.getAllContent(story_id);
 

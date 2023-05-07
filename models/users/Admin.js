@@ -37,6 +37,38 @@ class Admin {
       console.log(error + "--- verify admin ---");
     }
   }
+
+  static async findWithEmail(email) {
+    try {
+      const sql = `SELECT COUNT(1) FROM admin
+                    WHERE email = '${email}'`;
+      const [data, _] = await db.execute(sql);
+      return data[0];
+    } catch (error) {
+      console.log(error + "--- find admin with email ---");
+    }
+  }
+
+  static async getAllAdmins() {
+    try {
+      const sql = "SELECT * FROM admin;";
+      const [data, _] = await db.execute(sql);
+      return data;
+    } catch (error) {
+      console.log(error + "--- get all admins ---");
+    }
+  }
+
+  static async getAdmin(admin_id) {
+    try {
+      const sql = `SELECT * FROM admin
+                  WHERE admin_id = '${admin_id}';`;
+      const [data, _] = await db.execute(sql);
+      return data;
+    } catch (error) {
+      console.log(error + "--- get admin ---");
+    }
+  }
 }
 
 module.exports = Admin;

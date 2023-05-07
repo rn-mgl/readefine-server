@@ -24,7 +24,7 @@ class AnsweredRiddles {
     }
   }
 
-  static async getAllAnsweredQuestions(answered_by) {
+  static async getAllAnsweredRiddles(answered_by) {
     try {
       const sql = `SELECT * FROM answered_riddles AS ar
                     INNER JOIN riddles AS r
@@ -37,7 +37,7 @@ class AnsweredRiddles {
     }
   }
 
-  static async getAnsweredQuestion(answer_id) {
+  static async getAnsweredRiddle(answer_id) {
     try {
       const sql = `SELECT * FROM answered_riddles AS ar
                     INNER JOIN riddles AS r
