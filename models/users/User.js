@@ -1,6 +1,6 @@
 const db = require("../../db/connection");
 
-class Users {
+class User {
   constructor(name, surname, username, grade_level, lexile_level, email, password) {
     this.name = name;
     this.surname = surname;
@@ -41,6 +41,38 @@ class Users {
       console.log(error + "--- verify user ---");
     }
   }
+
+  static async findWithEmail(email) {
+    try {
+      const sql = `SELECT COUNT(1) FROM users
+                    WHERE email = '${email}'`;
+      const [data, _] = await db.execute(sql, verifyValues);
+      return data[0];
+    } catch (error) {
+      console.log(error + "--- find with email ---");
+    }
+  }
+
+  static async getAllUsers() {
+    try {
+      const sql = "SELECT * FROM users;";
+      const [data, _] = await db.execute(sql);
+      return data;
+    } catch (error) {
+      console.log(error + "--- get all users ---");
+    }
+  }
+
+  static async getUser(user_id) {
+    try {
+      const sql = `SELECT * FROM users
+                  WHERE user_id = '${user_id}';`;
+      const [data, _] = await db.execute(sql);
+      return data;
+    } catch (error) {
+      console.log(error + "--- get user ---");
+    }
+  }
 }
 
-module.exports = Users;
+module.exports = User;

@@ -26,11 +26,11 @@ class Story {
     }
   }
 
-  static async updateStory(story_id, title, author, lexile, genre) {
+  static async updateStory(story_id, title, author, lexile, genre, added_by) {
     try {
       const sql = `UPDATE story SET ?
                     WHERE story_id = '${story_id}';`;
-      const storyValues = { title, author, lexile, genre };
+      const storyValues = { title, author, lexile, genre, added_by };
       const [data, _] = await db.query(sql, storyValues);
       return data;
     } catch (error) {

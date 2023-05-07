@@ -39,4 +39,4 @@ class Admin {
   }
 }
 
-module.exports = Users;
+module.exports = Admin;

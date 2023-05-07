@@ -9,7 +9,7 @@ class StoryContent {
     this.added_by = added_by;
   }
 
-  async addContent() {
+  async createContent() {
     try {
       const sql = "INSERT INTO story_content SET ?;";
       const contentValues = {

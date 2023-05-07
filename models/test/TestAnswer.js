@@ -74,10 +74,10 @@ class TestAnswer {
     }
   }
 
-  static async getAnswer(question_id) {
+  static async getAnswer(answer_id) {
     try {
       const sql = `SELECT * FROM test_answer
-                    WHERE question_id = '${question_id}';`;
+                    WHERE answer_id = '${answer_id}';`;
       const [data, _] = await db.execute(sql);
       return data;
     } catch (error) {
