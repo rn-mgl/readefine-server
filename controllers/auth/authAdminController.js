@@ -3,6 +3,18 @@ const { NotFoundError, BadRequestError } = require("../../errors");
 const Admin = require("../../models/users/Admin");
 const fns = require("../functionController");
 
+const verifyAdmin = async (req, res) => {
+  const { id } = req.user;
+
+  const admin = await Admin.verifyAdmin(id);
+
+  if (!admin) {
+    throw new BadRequestError(`Error in verifying your account. Try again later.`);
+  }
+
+  res.status(StatusCodes.OK).json(admin);
+};
+
 const logInAdmin = async (req, res) => {
   const { candidateEmail, candidatePassword } = req.body;
 
@@ -49,4 +61,4 @@ const signUpAdmin = async (req, res) => {
   res.status(StatusCodes.OK).json({ data, token });
 };
 
-module.exports = { logInAdmin, signUpAdmin };
+module.exports = { logInAdmin, signUpAdmin, verifyAdmin };

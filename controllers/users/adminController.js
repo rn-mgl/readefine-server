@@ -2,16 +2,16 @@ const { StatusCodes } = require("http-status-codes");
 const { BadRequestError, NotFoundError } = require("../../errors");
 const Admin = require("../../models/users/Admin");
 
-const verifyAdmin = async (req, res) => {
-  const { id } = req.user;
+const findWithEmail = async (req, res) => {
+  const { email } = req.user;
 
-  const admin = await Admin.verifyAdmin(id);
+  const user = await Admin.findWithEmail(email);
 
-  if (!admin) {
-    throw new BadRequestError(`Error in verifying your account. Try again later.`);
+  if (!user) {
+    throw new NotFoundError(`There is no admin with the given email.`);
   }
 
-  res.status(StatusCodes.OK).json(admin);
+  res.status(StatusCodes.OK).json(user);
 };
 
 const getAllAdmins = async (req, res) => {
@@ -36,4 +36,4 @@ const getAdmin = async (req, res) => {
   res.status(StatusCodes.OK).json(admin);
 };
 
-module.exports = { createAdmin, verifyAdmin, getAdmin, getAllAdmins };
+module.exports = { findWithEmail, getAdmin, getAllAdmins };

@@ -1,6 +1,6 @@
 const { StatusCodes } = require("http-status-codes");
 const { BadRequestError, NotFoundError } = require("../errors");
-const UserSession = require("../models/users/UserSession");
+const UserSession = require("../../models/users/UserSession");
 
 const createSession = async (req, res) => {
   const { id } = req.body;
