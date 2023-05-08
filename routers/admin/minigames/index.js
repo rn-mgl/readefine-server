@@ -1,6 +1,11 @@
-const dailyDangleRouter = require("./dailyDangleRouter");
-const dailyDecipherRouter = require("./dailyDecipherRouter");
-const riddlesRouter = require("./riddlesRouter");
-const wordsRouter = require("./wordsRouter");
+const adminDailyDangleRouter = require("./dailyDangleRouter");
+const adminDailyDecipherRouter = require("./dailyDecipherRouter");
+const adminRiddlesRouter = require("./riddlesRouter");
+const adminWordsRouter = require("./wordsRouter");
 
-module.exports = { dailyDangleRouter, dailyDecipherRouter, riddlesRouter, wordsRouter };
+module.exports = {
+  adminDailyDangleRouter,
+  adminDailyDecipherRouter,
+  adminRiddlesRouter,
+  adminWordsRouter,
+};

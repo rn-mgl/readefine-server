@@ -12,7 +12,7 @@ const helmet = require("helmet");
 const fileUpload = require("express-fileupload");
 const cloudinary = require("cloudinary").v2;
 
-// client routers
+///////////////////////////////////////// client routers /////////////////////////////////////////////////////
 const { userRouter, userSessionRouter } = require("./routers/client/users"); // user
 const { readStoryRouter, storyContentRouter, storyRouter } = require("./routers/client/story"); // story
 const { authAdminRouter, authClientRouter } = require("./routers/auth"); // auth
@@ -36,10 +36,15 @@ const {
   answeredRiddlesRouter,
 } = require("./routers/client/answers"); // answers
 
-// admin routers
-const { adminUserRouter, adminUserSessionRouter } = require("./routers/admin/users"); // user
-const { adminAuthAdminRouter, adminAuthClientRouter } = require("./routers/auth"); // auth
-const { adminRewardRouter, adminUserAchievementRouter } = require("./routers/admin/achievement"); // achievement
+//////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////// admin routers /////////////////////////////////////
+const { adminUserRouter, adminRouter, adminUserSessionRouter } = require("./routers/admin/users"); // user
+const {
+  adminAchievementRouter,
+  adminRewardRouter,
+  adminUserAchievementRouter,
+} = require("./routers/admin/achievement"); // achievement
 const {
   adminReadStoryRouter,
   adminStoryContentRouter,
@@ -64,6 +69,8 @@ const {
   adminAnsweredRiddlesRouter,
 } = require("./routers/admin/answers"); // answers
 
+//////////////////////////////////////////////////////////////////////////////
+
 // middlewares
 const clientAuthMiddleware = require("./middlewares/clientAuthMiddleware");
 const adminAuthMiddleware = require("./middlewares/adminAuthMiddleware");
@@ -81,6 +88,8 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_KEY,
   api_secret: process.env.CLOUDINARY_SECRET,
 });
+
+///////////////////////// client router application /////////////////////////
 
 // auth router application
 app.use("/auth_admin", authAdminRouter);
@@ -117,6 +126,46 @@ app.use("/answered_dangle", clientAuthMiddleware, answeredDangleRouter);
 app.use("/answered_decipher", clientAuthMiddleware, answeredDecipherRouter);
 app.use("/answered_questions", clientAuthMiddleware, answeredQuestionsRouter);
 app.use("/answered_riddles", clientAuthMiddleware, answeredRiddlesRouter);
+
+//////////////////////////////////////////////////////////////////////////////
+
+///////////////////////// admin router application /////////////////////////
+
+// users router application
+app.use("/admin_user", adminAuthMiddleware, adminUserRouter);
+app.use("/admin", adminAuthMiddleware, adminRouter);
+app.use("/admin_session", adminAuthMiddleware, adminUserSessionRouter);
+
+// story router application
+app.use("/admin_story", adminAuthMiddleware, adminStoryRouter);
+app.use("/admin_story_content", adminAuthMiddleware, adminStoryContentRouter);
+app.use("/admin_read_story", adminAuthMiddleware, adminReadStoryRouter);
+
+// achievement router application
+
+app.use("/admin_achievement", adminAuthMiddleware, adminAchievementRouter);
+app.use("/admin_user_achievement", adminAuthMiddleware, adminUserAchievementRouter);
+app.use("/admin_reward", adminAuthMiddleware, adminRewardRouter);
+
+// test router application
+app.use("/admin_test", adminAuthMiddleware, adminTestRouter);
+app.use("/admin_taken_test", adminAuthMiddleware, adminTakenTestRouter);
+app.use("/admin_test_question", adminAuthMiddleware, adminTestQuestionRouter);
+app.use("/admin_test_answer", adminAuthMiddleware, adminTestAnswerRouter);
+
+// minigames router application
+app.use("/admin_dangle", adminAuthMiddleware, adminDailyDangleRouter);
+app.use("/admin_decipher", adminAuthMiddleware, adminDailyDecipherRouter);
+app.use("/admin_riddles", adminAuthMiddleware, adminRiddlesRouter);
+app.use("/admin_words", adminAuthMiddleware, adminWordsRouter);
+
+// answers router application
+app.use("/admin_answered_dangle", adminAuthMiddleware, adminAnsweredDangleRouter);
+app.use("/admin_answered_decipher", adminAuthMiddleware, adminAnsweredDecipherRouter);
+app.use("/admin_answered_questions", adminAuthMiddleware, adminAnsweredQuestionsRouter);
+app.use("/admin_answered_riddles", adminAuthMiddleware, adminAnsweredRiddlesRouter);
+
+//////////////////////////////////////////////////////////////////////////////
 
 // middleware
 app.use(errorMiddleware);

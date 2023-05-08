@@ -1,5 +1,5 @@
-const userRouter = require("./userRouter");
+const adminUserRouter = require("./userRouter");
 const adminRouter = require("./adminRouter");
-const userSessionRouter = require("./userSessionRouter");
+const adminUserSessionRouter = require("./userSessionRouter");
 
-module.exports = { userRouter, adminRouter, userSessionRouter };
+module.exports = { adminUserRouter, adminRouter, adminUserSessionRouter };

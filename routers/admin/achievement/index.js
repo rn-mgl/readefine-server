@@ -1,9 +1,9 @@
-const achievementRouter = require("./achievementRouter");
-const rewardRouter = require("./rewardRouter");
-const userAchievementRouter = require("./userAchievementRouter");
+const adminAchievementRouter = require("./achievementRouter");
+const adminRewardRouter = require("./rewardRouter");
+const adminUserAchievementRouter = require("./userAchievementRouter");
 
 module.exports = {
-  achievementRouter,
-  rewardRouter,
-  userAchievementRouter,
+  adminAchievementRouter,
+  adminRewardRouter,
+  adminUserAchievementRouter,
 };

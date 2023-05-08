@@ -1,6 +1,11 @@
-const testRouter = require("./testRouter");
-const takenTestRouter = require("./takenTestRouter");
-const testQuestionRouter = require("./testQuestionRouter");
-const testAnswerRouter = require("./testAnswerRouter");
+const adminTestRouter = require("./testRouter");
+const adminTakenTestRouter = require("./takenTestRouter");
+const adminTestQuestionRouter = require("./testQuestionRouter");
+const adminTestAnswerRouter = require("./testAnswerRouter");
 
-module.exports = { testRouter, takenTestRouter, testQuestionRouter, testAnswerRouter };
+module.exports = {
+  adminTestRouter,
+  adminTakenTestRouter,
+  adminTestQuestionRouter,
+  adminTestAnswerRouter,
+};

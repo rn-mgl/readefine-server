@@ -1,11 +1,11 @@
-const answeredDangleRouter = require("./answeredDangleRouter");
-const answeredDecipherRouter = require("./answeredDecipherRouter");
-const answeredQuestionsRouter = require("./answeredQuestionsRouter");
-const answeredRiddlesRouter = require("./answeredRiddlesRouter");
+const adminAnsweredDangleRouter = require("./answeredDangleRouter");
+const adminAnsweredDecipherRouter = require("./answeredDecipherRouter");
+const adminAnsweredQuestionsRouter = require("./answeredQuestionsRouter");
+const adminAnsweredRiddlesRouter = require("./answeredRiddlesRouter");
 
 module.exports = {
-  answeredDangleRouter,
-  answeredDecipherRouter,
-  answeredQuestionsRouter,
-  answeredRiddlesRouter,
+  adminAnsweredDangleRouter,
+  adminAnsweredDecipherRouter,
+  adminAnsweredQuestionsRouter,
+  adminAnsweredRiddlesRouter,
 };

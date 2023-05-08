@@ -1,5 +1,5 @@
-const readStoryRouter = require("./readStoryRouter");
-const storyContentRouter = require("./storyContentRouter");
-const storyRouter = require("./storyRouter");
+const adminReadStoryRouter = require("./readStoryRouter");
+const adminStoryContentRouter = require("./storyContentRouter");
+const adminStoryRouter = require("./storyRouter");
 
-module.exports = { readStoryRouter, storyContentRouter, storyRouter };
+module.exports = { adminReadStoryRouter, adminStoryContentRouter, adminStoryRouter };
