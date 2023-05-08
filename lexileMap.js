@@ -13,4 +13,4 @@ const lexile = {
   12: 1270,
 };
 
-export default lexile;
+module.exports = lexile;
