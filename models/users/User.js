@@ -44,12 +44,25 @@ class User {
 
   static async findWithEmail(email) {
     try {
-      const sql = `SELECT COUNT(1) FROM users
+      const sql = `SELECT * FROM users
                     WHERE email = '${email}'`;
       const [data, _] = await db.execute(sql);
+
       return data[0];
     } catch (error) {
       console.log(error + "--- find user with email ---");
+    }
+  }
+
+  static async findWithUsername(username) {
+    try {
+      const sql = `SELECT * FROM users
+                    WHERE username = '${username}'`;
+      const [data, _] = await db.execute(sql);
+
+      return data[0];
+    } catch (error) {
+      console.log(error + "--- find user with username ---");
     }
   }
 

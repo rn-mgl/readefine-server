@@ -3,7 +3,7 @@ const { StatusCodes } = require("http-status-codes");
 
 class NotFoundError extends CustomAPIError {
   constructor(message) {
-    this.message = message;
+    super(message);
     this.statusCode = StatusCodes.NOT_FOUND;
   }
 }

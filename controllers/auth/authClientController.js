@@ -2,6 +2,7 @@ const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../../errors");
 const User = require("../../models/users/User");
 const fns = require("../functionController");
+const validator = require("validator");
 
 const verifyUser = async (req, res) => {
   const { id } = req.user;
@@ -16,41 +17,68 @@ const verifyUser = async (req, res) => {
 };
 
 const logInUser = async (req, res) => {
-  const { candidateEmail, candidatePassword } = req.body;
+  const { loginData } = req.body;
 
-  const user = await User.findWithEmail(candidateEmail);
+  const { candidateIdentifier, candidatePassword } = loginData;
 
-  if (!user) {
-    throw new NotFoundError(`There is no user with the given email.`);
+  if (validator.isEmail(candidateIdentifier)) {
+    const user = await User.findWithEmail(candidateIdentifier);
+
+    if (!user) {
+      throw new NotFoundError(`There is no user with the given email.`);
+    }
+
+    const { user_id, username, email, password } = user;
+
+    const isMatch = await fns.isMatchedPassword(password, candidatePassword);
+
+    if (!isMatch) {
+      throw new BadRequestError(`The email and password does not match.`);
+    }
+
+    const token = fns.createToken(user_id, username, email);
+
+    res.status(StatusCodes.OK).json({ user, token });
+
+    return;
+  } else {
+    const user = await User.findWithUsername(candidateIdentifier);
+
+    if (!user) {
+      throw new NotFoundError(`There is no user with the given username.`);
+    }
+
+    const { user_id, username, email, password } = user;
+
+    const isMatch = await fns.isMatchedPassword(password, candidatePassword);
+
+    if (!isMatch) {
+      throw new BadRequestError(`The email and password does not match.`);
+    }
+
+    const token = fns.createToken(user_id, username, email);
+
+    res.status(StatusCodes.OK).json({ user, token });
+
+    return;
   }
-
-  const { user_id, username, email, password } = user;
-
-  const isMatch = await fns.isMatchedPassword(password, candidatePassword);
-
-  if (!isMatch) {
-    throw new BadRequestError(`The email and password does not match.`);
-  }
-
-  const token = fns.createToken(user_id, username, email);
-
-  res.status(StatusCodes.OK).json({ user, token });
 };
 
 const signUpUser = async (req, res) => {
-  const { name, surname, username, grade_level, email, password } = req.body;
+  const { userData } = req.body;
+  const { name, surname, username, gradeLevel, email, password } = userData;
 
   const uniqueEmail = await fns.isUniqueUserEmail(email);
 
-  if (!uniqueEmail) {
+  if (uniqueEmail) {
     throw new BadRequestError(`The email has already been taken.`);
   }
 
   const hashedPassword = await fns.hashPassword(password);
 
-  const lexile_level = fns.getLexile(grade_level);
+  const lexileLevel = fns.getLexile(gradeLevel);
 
-  const user = new User(name, surname, username, grade_level, lexile_level, email, hashedPassword);
+  const user = new User(name, surname, username, gradeLevel, lexileLevel, email, hashedPassword);
 
   const data = await user.createUser();
 

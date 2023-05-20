@@ -18,27 +18,15 @@ const isMatchedPassword = async (password, candidatePassword) => {
 };
 
 const isUniqueUserEmail = async (candidateEmail) => {
-  async (req, res) => {
-    const data = await User.findWithEmail(candidateEmail);
+  const data = await User.findWithEmail(candidateEmail);
 
-    if (!data) {
-      throw new BadRequestError(`Error in getting user with the given email. Try again later.`);
-    }
-
-    return data;
-  };
+  return data;
 };
 
 const isUniqueAdminEmail = async (candidateEmail) => {
-  async (req, res) => {
-    const data = await Admin.findWithEmail(candidateEmail);
+  const data = await Admin.findWithEmail(candidateEmail);
 
-    if (!data) {
-      throw new BadRequestError(`Error in getting user with the given email. Try again later.`);
-    }
-
-    return data;
-  };
+  return data;
 };
 
 const createToken = (id, username, email) => {

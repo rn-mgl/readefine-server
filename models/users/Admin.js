@@ -40,12 +40,23 @@ class Admin {
 
   static async findWithEmail(email) {
     try {
-      const sql = `SELECT COUNT(1) FROM admin
+      const sql = `SELECT * FROM admin
                     WHERE email = '${email}'`;
       const [data, _] = await db.execute(sql);
       return data[0];
     } catch (error) {
       console.log(error + "--- find admin with email ---");
+    }
+  }
+
+  static async findWithUsername(username) {
+    try {
+      const sql = `SELECT * FROM admin
+                    WHERE username = '${username}'`;
+      const [data, _] = await db.execute(sql);
+      return data[0];
+    } catch (error) {
+      console.log(error + "--- find admin with username ---");
     }
   }
 
