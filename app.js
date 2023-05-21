@@ -11,6 +11,7 @@ const xss = require("xss-clean");
 const helmet = require("helmet");
 const fileUpload = require("express-fileupload");
 const cloudinary = require("cloudinary").v2;
+const sendgrid = require("@sendgrid/mail");
 
 ///////////////////////////////////////// client routers /////////////////////////////////////////////////////
 const { userRouter, userSessionRouter } = require("./routers/client/users"); // user
@@ -83,6 +84,7 @@ app.use(cors());
 app.use(xss());
 app.use(helmet());
 app.use(fileUpload({ useTempFiles: true }));
+sendgrid.setApiKey(process.env.SENDGRID_KEY);
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,

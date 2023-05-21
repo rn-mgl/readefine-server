@@ -1,13 +1,17 @@
 const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../../errors");
 const User = require("../../models/users/User");
+const { sendVerifiationEmail } = require("../client/mail/verificationMail");
 const fns = require("../functionController");
 const validator = require("validator");
+const jwt = require("jsonwebtoken");
 
 const verifyUser = async (req, res) => {
-  const { id } = req.user;
+  const { token } = req.body;
 
-  const user = await User.verifyUser(id);
+  const verify = jwt.verify(token, process.env.JWT_SECRET);
+
+  const user = await User.verifyUser(verify.id);
 
   if (!user) {
     throw new BadRequestError(`Error in verifying your account. Try again later.`);
@@ -86,9 +90,11 @@ const signUpUser = async (req, res) => {
     throw new BadRequestError(`Error in signing up. Try again later.`);
   }
 
-  const token = fns.createToken(data.insertId);
+  const token = fns.createToken(data.insertId, username, email);
 
   res.status(StatusCodes.OK).json({ data, token });
+
+  const mail = await sendVerifiationEmail(email, `${name} ${surname}`, token);
 };
 
 module.exports = { logInUser, signUpUser, verifyUser };
