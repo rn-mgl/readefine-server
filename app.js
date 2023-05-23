@@ -40,6 +40,7 @@ const {
 //////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////// admin routers /////////////////////////////////////
+const adminDashboardRouter = require("./routers/admin/dashboard/dashboardRouter");
 const { adminUserRouter, adminRouter, adminUserSessionRouter } = require("./routers/admin/users"); // user
 const {
   adminAchievementRouter,
@@ -133,6 +134,9 @@ app.use("/answered_riddles", clientAuthMiddleware, answeredRiddlesRouter);
 //////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////// admin router application /////////////////////////
+
+// dashboard router application
+app.use("/admin_dashboard", adminAuthMiddleware, adminDashboardRouter);
 
 // users router application
 app.use("/admin_user", adminAuthMiddleware, adminUserRouter);

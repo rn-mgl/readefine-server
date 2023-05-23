@@ -15,7 +15,9 @@ const findWithEmail = async (req, res) => {
 };
 
 const getAllUsers = async (req, res) => {
-  const user = await User.getAllUsers();
+  const { searchFilter, sortFilter, dateRangeFilter, lexileRangeFilter } = req.query;
+
+  const user = await User.getAllUsers(searchFilter, sortFilter, dateRangeFilter, lexileRangeFilter);
 
   if (!user) {
     throw new BadRequestError(`Error in getting all users. Try again later.`);

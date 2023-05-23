@@ -66,10 +66,16 @@ class User {
     }
   }
 
-  static async getAllUsers() {
+  static async getAllUsers(searchFilter, sortFilter, dateRangeFilter, lexileRangeFilter) {
     try {
-      const sql = "SELECT * FROM users;";
+      const sql = `SELECT * FROM users
+                    WHERE ${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
+                    AND (date_joined BETWEEN '${dateRangeFilter.from}' AND '${dateRangeFilter.to}')
+                    AND (lexile_level BETWEEN '${lexileRangeFilter.from}' AND '${lexileRangeFilter.to}')
+                    ORDER BY ${sortFilter.toSort} ${sortFilter.sortMode};`;
+
       const [data, _] = await db.execute(sql);
+
       return data;
     } catch (error) {
       console.log(error + "--- get all users ---");

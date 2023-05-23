@@ -28,7 +28,7 @@ const logInAdmin = async (req, res) => {
       throw new NotFoundError(`There is no user with the given email.`);
     }
 
-    const { user_id, username, email, password } = user;
+    const { admin_id, username, email, password } = user;
 
     const isMatch = await fns.isMatchedPassword(password, candidatePassword);
 
@@ -36,9 +36,18 @@ const logInAdmin = async (req, res) => {
       throw new BadRequestError(`The email and password does not match.`);
     }
 
-    const token = fns.createToken(user_id, username, email);
+    const token = fns.createToken(admin_id, username, email);
 
-    res.status(StatusCodes.OK).json({ user, token });
+    const primary = {
+      admin_id: user.admin_id,
+      name: user.name,
+      surname: user.surname,
+      username: user.username,
+      token: `Admin Bearer ${token}`,
+      email: user.email,
+    };
+
+    res.status(StatusCodes.OK).json({ primary });
 
     return;
   } else {
@@ -48,7 +57,7 @@ const logInAdmin = async (req, res) => {
       throw new NotFoundError(`There is no user with the given username.`);
     }
 
-    const { user_id, username, email, password } = user;
+    const { admin_id, username, email, password } = user;
 
     const isMatch = await fns.isMatchedPassword(password, candidatePassword);
 
@@ -56,9 +65,18 @@ const logInAdmin = async (req, res) => {
       throw new BadRequestError(`The email and password does not match.`);
     }
 
-    const token = fns.createToken(user_id, username, email);
+    const token = fns.createToken(admin_id, username, email);
 
-    res.status(StatusCodes.OK).json({ user, token });
+    const primary = {
+      admin_id: user.admin_id,
+      name: user.name,
+      surname: user.surname,
+      username: user.username,
+      token: `Admin Bearer ${token}`,
+      email: user.email,
+    };
+
+    res.status(StatusCodes.OK).json({ primary });
 
     return;
   }

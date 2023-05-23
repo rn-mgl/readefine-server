@@ -44,7 +44,14 @@ const deleteStory = async (req, res) => {
 };
 
 const getAllStories = async (req, res) => {
-  const story = await Story.getAllStories();
+  const { searchFilter, lexileRangeFilter, sortFilter, dateRangeFilter } = req.query;
+  console.log(req.query);
+  const story = await Story.getAllStories(
+    searchFilter,
+    lexileRangeFilter,
+    sortFilter,
+    dateRangeFilter
+  );
 
   if (!story) {
     throw new BadRequestError(`Error in getting all stories. Try again later.`);

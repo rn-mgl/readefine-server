@@ -49,10 +49,15 @@ class Story {
     }
   }
 
-  static async getAllStories() {
+  static async getAllStories(searchFilter, lexileRangeFilter, sortFilter, dateRangeFilter) {
     try {
-      const sql = "SELECT * FROM story;";
+      const sql = `SELECT * FROM story
+                  WHERE ${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
+                  AND (lexile BETWEEN '${lexileRangeFilter.from}' AND '${lexileRangeFilter.to}')
+                  AND (date_added BETWEEN '${dateRangeFilter.from}' AND '${dateRangeFilter.to}')
+                  ORDER BY ${sortFilter.toSort} ${sortFilter.sortMode};`;
       const [data, _] = await db.execute(sql);
+
       return data;
     } catch (error) {
       console.log(error + "--- get all stories ---");

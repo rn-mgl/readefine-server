@@ -32,7 +32,7 @@ const logInUser = async (req, res) => {
       throw new NotFoundError(`There is no user with the given email.`);
     }
 
-    const { user_id, username, email, password } = user;
+    const { user_id, username, email, password, name, surname, is_verified } = user;
 
     const isMatch = await fns.isMatchedPassword(password, candidatePassword);
 
@@ -42,7 +42,20 @@ const logInUser = async (req, res) => {
 
     const token = fns.createToken(user_id, username, email);
 
-    res.status(StatusCodes.OK).json({ user, token });
+    const primary = {
+      user_id: user.user_id,
+      name: user.name,
+      surname: user.surname,
+      username: user.username,
+      token: `Bearer ${token}`,
+      email: user.email,
+    };
+
+    res.status(StatusCodes.OK).json({ primary });
+
+    if (!is_verified) {
+      const mail = await sendVerifiationEmail(email, `${name} ${surname}`, token);
+    }
 
     return;
   } else {
@@ -62,7 +75,16 @@ const logInUser = async (req, res) => {
 
     const token = fns.createToken(user_id, username, email);
 
-    res.status(StatusCodes.OK).json({ user, token });
+    const primary = {
+      user_id: user.user_id,
+      name: user.name,
+      surname: user.surname,
+      username: user.username,
+      token: `Bearer ${token}`,
+      email: user.email,
+    };
+
+    res.status(StatusCodes.OK).json({ primary });
 
     return;
   }
