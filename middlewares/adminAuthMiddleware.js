@@ -12,7 +12,7 @@ const adminAuthMiddleware = (req, res, next) => {
 
   const verify = jwt.verify(token, process.env.JWT_SECRET);
 
-  req.user = { id: verify.admin_id, username: verify.username, email: verify.email };
+  req.user = { id: verify.id, username: verify.username, email: verify.email };
 
   next();
 };

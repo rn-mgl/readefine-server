@@ -1,9 +1,10 @@
 const db = require("../../db/connection");
 
 class Story {
-  constructor(title, author, lexile, genre, added_by) {
+  constructor(title, author, book_cover, lexile, genre, added_by) {
     this.title = title;
     this.author = author;
+    this.book_cover = book_cover;
     this.lexile = lexile;
     this.genre = genre;
     this.added_by = added_by;
@@ -15,6 +16,7 @@ class Story {
       const storyValues = {
         title: this.title,
         author: this.author,
+        book_cover: this.book_cover,
         lexile: this.lexile,
         genre: this.genre,
         added_by: this.added_by,
@@ -26,11 +28,11 @@ class Story {
     }
   }
 
-  static async updateStory(story_id, title, author, lexile, genre, added_by) {
+  static async updateStory(story_id, title, author, book_cover, lexile, genre, added_by) {
     try {
       const sql = `UPDATE story SET ?
                     WHERE story_id = '${story_id}';`;
-      const storyValues = { title, author, lexile, genre, added_by };
+      const storyValues = { title, author, book_cover, lexile, genre, added_by };
       const [data, _] = await db.query(sql, storyValues);
       return data;
     } catch (error) {
@@ -53,8 +55,8 @@ class Story {
     try {
       const sql = `SELECT * FROM story
                   WHERE ${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
-                  AND (lexile BETWEEN '${lexileRangeFilter.from}' AND '${lexileRangeFilter.to}')
-                  AND (date_added BETWEEN '${dateRangeFilter.from}' AND '${dateRangeFilter.to}')
+                  AND (lexile BETWEEN ${lexileRangeFilter.from} AND ${lexileRangeFilter.to})
+                  AND (CAST(date_added AS DATE) BETWEEN '${dateRangeFilter.from}' AND '${dateRangeFilter.to}')
                   ORDER BY ${sortFilter.toSort} ${sortFilter.sortMode};`;
       const [data, _] = await db.execute(sql);
 

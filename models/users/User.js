@@ -70,7 +70,7 @@ class User {
     try {
       const sql = `SELECT * FROM users
                     WHERE ${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
-                    AND (date_joined BETWEEN '${dateRangeFilter.from}' AND '${dateRangeFilter.to}')
+                    AND (CAST(date_joined AS DATE) BETWEEN '${dateRangeFilter.from}' AND '${dateRangeFilter.to}')
                     AND (lexile_level BETWEEN '${lexileRangeFilter.from}' AND '${lexileRangeFilter.to}')
                     ORDER BY ${sortFilter.toSort} ${sortFilter.sortMode};`;
 

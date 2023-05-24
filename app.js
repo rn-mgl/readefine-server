@@ -13,6 +13,10 @@ const fileUpload = require("express-fileupload");
 const cloudinary = require("cloudinary").v2;
 const sendgrid = require("@sendgrid/mail");
 
+///////////////////////////////////////// global routers /////////////////////////////////////////////////////
+const fileClientRouter = require("./routers/global/fileRouter");
+const fileAdminRouter = require("./routers/global/fileRouter");
+
 ///////////////////////////////////////// client routers /////////////////////////////////////////////////////
 const { userRouter, userSessionRouter } = require("./routers/client/users"); // user
 const { readStoryRouter, storyContentRouter, storyRouter } = require("./routers/client/story"); // story
@@ -92,6 +96,11 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_KEY,
   api_secret: process.env.CLOUDINARY_SECRET,
 });
+
+///////////////////////// global router application /////////////////////////
+
+app.use("/readefine_admin_file", adminAuthMiddleware, fileAdminRouter);
+app.use("/readefine_client_file", clientAuthMiddleware, fileClientRouter);
 
 ///////////////////////// client router application /////////////////////////
 
