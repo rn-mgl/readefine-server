@@ -42,7 +42,7 @@ const deleteContent = async (req, res) => {
 };
 
 const getAllContent = async (req, res) => {
-  const { story_id } = req.body;
+  const { story_id } = req.query;
 
   const storyContent = await StoryContent.getAllContent(story_id);
 
