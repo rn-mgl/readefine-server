@@ -16,9 +16,15 @@ class Test {
     }
   }
 
-  static async getAllTests() {
+  static async getAllTests(searchFilter, lexileRangeFilter, sortFilter, dateRangeFilter) {
     try {
-      const sql = "SELECT * FROM test;";
+      const sql = `SELECT * FROM test AS t
+                   INNER JOIN story AS s ON
+                   t.story_id = s.story_id
+                   WHERE s.${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
+                  AND (s.lexile BETWEEN ${lexileRangeFilter.from} AND ${lexileRangeFilter.to})
+                  AND (CAST(s.date_added AS DATE) BETWEEN '${dateRangeFilter.from}' AND '${dateRangeFilter.to}')
+                  ORDER BY ${sortFilter.toSort} ${sortFilter.sortMode};`;
       const [data, _] = await db.execute(sql);
       return data;
     } catch (error) {
