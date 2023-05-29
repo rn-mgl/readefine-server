@@ -1,14 +1,15 @@
 const db = require("../../db/connection");
 
 class Test {
-  constructor(story_id) {
+  constructor(story_id, added_by) {
     this.story_id = story_id;
+    this.added_by = added_by;
   }
 
   async createTest() {
     try {
       const sql = `INSERT INTO test SET ?;`;
-      const testValues = { story_id: this.story_id };
+      const testValues = { story_id: this.story_id, added_by: this.added_by };
       const [data, _] = await db.query(sql, testValues);
       return data;
     } catch (error) {
@@ -17,13 +18,24 @@ class Test {
   }
 
   static async getAllTests(searchFilter, lexileRangeFilter, sortFilter, dateRangeFilter) {
+    const lexileFrom = lexileRangeFilter.from ? lexileRangeFilter.from : 0;
+    const lexileTo = lexileRangeFilter.to ? lexileRangeFilter.to : 1400;
+    const dateFrom = dateRangeFilter.from ? dateRangeFilter.from : "19990101T123000.000Z";
+    const dateTo = dateRangeFilter.to ? dateRangeFilter.to : new Date();
     try {
       const sql = `SELECT * FROM test AS t
                    INNER JOIN story AS s ON
                    t.story_id = s.story_id
-                   WHERE s.${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
-                  AND (s.lexile BETWEEN ${lexileRangeFilter.from} AND ${lexileRangeFilter.to})
-                  AND (CAST(s.date_added AS DATE) BETWEEN '${dateRangeFilter.from}' AND '${dateRangeFilter.to}')
+                   WHERE 
+                      s.${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
+                  AND 
+                      s.lexile >= '${lexileFrom}' 
+                  AND 
+                      s.lexile <= '${lexileTo}'
+                  AND 
+                      s.date_added >= '${dateFrom}' 
+                  AND 
+                      s.date_added <= '${dateTo}'
                   ORDER BY ${sortFilter.toSort} ${sortFilter.sortMode};`;
       const [data, _] = await db.execute(sql);
       return data;

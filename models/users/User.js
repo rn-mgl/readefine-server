@@ -67,11 +67,23 @@ class User {
   }
 
   static async getAllUsers(searchFilter, sortFilter, dateRangeFilter, lexileRangeFilter) {
+    const lexileFrom = lexileRangeFilter.from ? lexileRangeFilter.from : 0;
+    const lexileTo = lexileRangeFilter.to ? lexileRangeFilter.to : 1400;
+    const dateFrom = dateRangeFilter.from ? dateRangeFilter.from : "19990101T123000.000Z";
+    const dateTo = dateRangeFilter.to ? dateRangeFilter.to : new Date();
     try {
       const sql = `SELECT * FROM users
-                    WHERE ${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
-                    AND (CAST(date_joined AS DATE) BETWEEN '${dateRangeFilter.from}' AND '${dateRangeFilter.to}')
-                    AND (lexile_level BETWEEN '${lexileRangeFilter.from}' AND '${lexileRangeFilter.to}')
+                    WHERE 
+                        ${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
+                    AND 
+                        date_joined >= '${dateFrom}' 
+                    AND 
+                        date_joined <= '${dateTo}'
+
+                    AND 
+                        lexile_level >= '${lexileFrom}' 
+                    AND
+                        lexile_level <= '${lexileTo}'
                     ORDER BY ${sortFilter.toSort} ${sortFilter.sortMode};`;
 
       const [data, _] = await db.execute(sql);

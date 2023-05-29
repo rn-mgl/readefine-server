@@ -52,11 +52,21 @@ class Story {
   }
 
   static async getAllStories(searchFilter, lexileRangeFilter, sortFilter, dateRangeFilter) {
+    const lexileFrom = lexileRangeFilter.from ? lexileRangeFilter.from : 0;
+    const lexileTo = lexileRangeFilter.to ? lexileRangeFilter.to : 1400;
+    const dateFrom = dateRangeFilter.from ? dateRangeFilter.from : "19990101T123000.000Z";
+    const dateTo = dateRangeFilter.to ? dateRangeFilter.to : new Date();
     try {
       const sql = `SELECT * FROM story
                   WHERE ${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
-                  AND (lexile BETWEEN ${lexileRangeFilter.from} AND ${lexileRangeFilter.to})
-                  AND (CAST(date_added AS DATE) BETWEEN '${dateRangeFilter.from}' AND '${dateRangeFilter.to}')
+                  AND 
+                      lexile >= '${lexileFrom}' 
+                  AND 
+                      lexile <= '${lexileTo}'
+                  AND 
+                      date_added >= '${dateFrom}' 
+                  AND 
+                      date_added <= '${dateTo}'
                   ORDER BY ${sortFilter.toSort} ${sortFilter.sortMode};`;
       const [data, _] = await db.execute(sql);
 

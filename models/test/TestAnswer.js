@@ -1,3 +1,5 @@
+const db = require("../../db/connection");
+
 class TestAnswer {
   constructor(question_id, answer, choice_1, choice_2, choice_3, choice_4, added_by) {
     this.question_id = question_id;
@@ -14,7 +16,7 @@ class TestAnswer {
       const sql = "INSERT INTO test_answer SET ?;";
       const answerValues = {
         question_id: this.question_id,
-        answer: this.answerq,
+        answer: this.answer,
         choice_1: this.choice_1,
         choice_2: this.choice_2,
         choice_3: this.choice_3,

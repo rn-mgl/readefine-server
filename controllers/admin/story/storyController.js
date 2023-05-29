@@ -16,7 +16,7 @@ const createStory = async (req, res) => {
     throw new BadRequestError(`Error in creating story. Try again later.`);
   }
 
-  pages.map((page) => {
+  pages.map(async (page) => {
     const pageContent = new StoryContent(
       data.insertId,
       page.pageNumber,
@@ -26,7 +26,7 @@ const createStory = async (req, res) => {
       id
     );
 
-    const newPage = pageContent.createContent();
+    const newPage = await pageContent.createContent();
 
     if (!newPage) {
       throw new BadRequestError(`Error in adding page content. Try again later.`);
