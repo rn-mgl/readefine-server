@@ -86,9 +86,9 @@ class Achievement {
                   AND 
                       goal <= '${goalTo}'
                   AND 
-                      date_added >= '${dateFrom}' 
+                      CAST(date_added as DATE) >= '${dateFrom}' 
                   AND 
-                      date_added <= '${dateTo}'
+                      CAST(date_added as DATE) <= '${dateTo}'
                   ORDER BY ${sortFilter.toSort} ${sortFilter.sortMode};`;
 
       const [data, _] = await db.execute(sql);

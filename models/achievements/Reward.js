@@ -58,7 +58,6 @@ class Reward {
   }
 
   static async getAllRewards(searchFilter, sortFilter, dateRangeFilter) {
-    console.log(searchFilter, sortFilter, dateRangeFilter);
     const dateFrom = dateRangeFilter.from ? dateRangeFilter.from : "19990101T123000.000Z";
     const dateTo = dateRangeFilter.to ? dateRangeFilter.to : new Date();
     try {
