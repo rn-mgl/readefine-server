@@ -41,9 +41,17 @@ class Riddles {
     }
   }
 
-  static async getAllRiddles() {
+  static async getAllRiddles(searchFilter, sortFilter, dateRangeFilter) {
+    const dateFrom = dateRangeFilter.from ? dateRangeFilter.from : "19990101T123000.000Z";
+    const dateTo = dateRangeFilter.to ? dateRangeFilter.to : new Date();
     try {
-      const sql = `SELECT * FROM riddles `;
+      const sql = `SELECT * FROM riddles
+                  WHERE ${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
+                  AND 
+                      CAST(date_added AS DATE) >= '${dateFrom}' 
+                  AND 
+                      CAST(date_added AS DATE) <= '${dateTo}'
+                  ORDER BY ${sortFilter.toSort} ${sortFilter.sortMode};`;
       const [data, _] = await db.execute(sql);
       return data;
     } catch (error) {

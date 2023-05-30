@@ -44,7 +44,8 @@ const deleteRiddle = async (req, res) => {
 };
 
 const getAllRiddles = async (req, res) => {
-  const riddles = await Riddles.getAllRiddles();
+  const { searchFilter, sortFilter, dateRangeFilter } = req.query;
+  const riddles = await Riddles.getAllRiddles(searchFilter, sortFilter, dateRangeFilter);
 
   if (!riddles) {
     throw new BadRequestError(`Error in deleting riddle. Try again later.`);
