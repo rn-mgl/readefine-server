@@ -59,7 +59,13 @@ const deleteAchievement = async (req, res) => {
 };
 
 const getAllAchievements = async (req, res) => {
-  const achievement = await Achievement.getAllAchievements();
+  const { searchFilter, goalRangeFilter, sortFilter, dateRangeFilter } = req.query;
+  const achievement = await Achievement.getAllAchievements(
+    searchFilter,
+    goalRangeFilter,
+    sortFilter,
+    dateRangeFilter
+  );
 
   if (!achievement) {
     throw new BadRequestError(`Error in getting all achievements. Try again later.`);

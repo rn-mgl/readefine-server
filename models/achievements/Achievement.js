@@ -69,9 +69,23 @@ class Achievement {
     }
   }
 
-  static async getAllAchievements() {
+  static async getAllAchievements(searchFilter, goalRangeFilter, sortFilter, dateRangeFilter) {
+    const goalFrom = goalRangeFilter.from ? goalRangeFilter.from : 0;
+    const goalTo = goalRangeFilter.to ? goalRangeFilter.to : 1400;
+    const dateFrom = dateRangeFilter.from ? dateRangeFilter.from : "19990101T123000.000Z";
+    const dateTo = dateRangeFilter.to ? dateRangeFilter.to : new Date();
     try {
-      const sql = `SELECT * FROM achievement;`;
+      const sql = `SELECT * FROM achievement
+                  WHERE ${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
+                  AND 
+                      goal >= '${goalFrom}' 
+                  AND 
+                      goal <= '${goalTo}'
+                  AND 
+                      date_added >= '${dateFrom}' 
+                  AND 
+                      date_added <= '${dateTo}'
+                  ORDER BY ${sortFilter.toSort} ${sortFilter.sortMode};`;
 
       const [data, _] = await db.execute(sql);
       return data;
