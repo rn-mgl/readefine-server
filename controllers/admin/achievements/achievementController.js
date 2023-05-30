@@ -4,18 +4,12 @@ const Achievement = require("../../../models/achievements/Achievement");
 
 const createAchievement = async (req, res) => {
   const { id } = req.user;
-  const { achievement_name, achievement_type, task, goal, reward_id } = req.body;
+  const { achievement } = req.body;
+  const { name, type, task, specifics, goal, reward } = achievement;
 
-  const achievement = new Achievement(
-    achievement_name,
-    achievement_type,
-    task,
-    goal,
-    reward_id,
-    id
-  );
+  const newAchievement = new Achievement(name, type, task, specifics, goal, reward.id, id);
 
-  const data = await achievement.createAchievement();
+  const data = await newAchievement.createAchievement();
 
   if (!data) {
     throw new BadRequestError(`Error in creating achievement. Try again later.`);
@@ -27,13 +21,14 @@ const createAchievement = async (req, res) => {
 const updateAchievement = async (req, res) => {
   const { id } = req.user;
   const { achievement_id } = req.params;
-  const { achievement_name, achievement_type, task, goal, reward_id } = req.body;
+  const { achievement_name, achievement_type, task, specifics, goal, reward_id } = req.body;
 
   const achievement = await Achievement.updateAchievement(
     achievement_id,
     achievement_name,
     achievement_type,
     task,
+    specifics,
     goal,
     reward_id,
     id
