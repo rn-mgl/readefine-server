@@ -62,7 +62,6 @@ const getAllTests = async (req, res) => {
 
 const getTest = async (req, res) => {
   const { test_id } = req.params;
-
   const test = await Test.getTest(test_id);
 
   if (!test) {

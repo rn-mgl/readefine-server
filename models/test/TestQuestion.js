@@ -47,7 +47,9 @@ class TestQuestion {
 
   static async getAllQuestions(test_id) {
     try {
-      const sql = `SELECT * FROM test_question 
+      const sql = `SELECT * FROM test_question AS tq
+                    INNER JOIN test_answer AS ta
+                    ON tq.question_id = ta.question_id
                     WHERE test_id = '${test_id}';`;
       const [data, _] = await db.execute(sql);
       return data;

@@ -46,10 +46,12 @@ class Test {
 
   static async getTest(test_id) {
     try {
-      const sql = `SELECT * FROM test
-                    WHERE test_id = '${test_id}';`;
+      const sql = `SELECT * FROM test AS t
+                    INNER JOIN story AS s
+                    ON t.story_id = s.story_id
+                    WHERE t.test_id = '${test_id}';`;
       const [data, _] = await db.execute(sql);
-      return data;
+      return data[0];
     } catch (error) {
       console.log(error + "--- get test ---");
     }
