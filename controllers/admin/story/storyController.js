@@ -37,17 +37,38 @@ const createStory = async (req, res) => {
 };
 
 const updateStory = async (req, res) => {
-  const { title, author, bookCover, lexile, genre } = req.body;
+  const { story, pages } = req.body;
+  const { title, author, lexile, genre, file, book_cover } = story;
   const { story_id } = req.params;
   const { id } = req.user;
 
-  const story = await Story.updateStory(story_id, title, author, bookCover, lexile, genre, id);
+  const bookCover = file?.src ? file?.src : book_cover ? book_cover : null;
 
-  if (!story) {
-    throw new BadRequestError(`Error in updating story. Try again later.`);
+  const data = await Story.updateStory(story_id, title, author, bookCover, lexile, genre, id);
+
+  if (!data) {
+    throw new BadRequestError(`Error in creating story. Try again later.`);
   }
 
-  res.status(StatusCodes.OK).json(story);
+  pages.map(async (page) => {
+    const { content_id, header, content, file, image } = page;
+    const pageImage = file?.src ? file?.src : image ? image : null;
+
+    const newPage = await StoryContent.updateContent(
+      content_id,
+      page.page,
+      header,
+      content,
+      pageImage,
+      id
+    );
+
+    if (!newPage) {
+      throw new BadRequestError(`Error in adding page content. Try again later.`);
+    }
+  });
+
+  res.status(StatusCodes.OK).json(data);
 };
 
 const deleteStory = async (req, res) => {
