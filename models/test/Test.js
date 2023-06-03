@@ -33,9 +33,9 @@ class Test {
                   AND 
                       s.lexile <= '${lexileTo}'
                   AND 
-                      s.date_added >= '${dateFrom}' 
+                      CAST(s.date_added AS DATE) >= '${dateFrom}' 
                   AND 
-                      s.date_added <= '${dateTo}'
+                      CAST(s.date_added AS DATE) <= '${dateTo}'
                   ORDER BY ${sortFilter.toSort} ${sortFilter.sortMode};`;
       const [data, _] = await db.execute(sql);
       return data;

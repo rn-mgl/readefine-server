@@ -83,4 +83,37 @@ const deleteTest = async (req, res) => {
   res.status(StatusCodes.OK).json(test);
 };
 
-module.exports = { createTest, getAllTests, getTest, deleteTest };
+const updateTest = async (req, res) => {
+  const { questions } = req.body;
+  const { id } = req.user;
+
+  questions.map(async (q) => {
+    const question = await TestQuestion.updateQuestion(q.question_id, q.question, id);
+
+    if (!question) {
+      throw new BadRequestError(`Error in updating question. Try again later.`);
+    }
+
+    const answerIdentifier = `answer${q.question_id}`;
+
+    const answer = q[answerIdentifier];
+
+    const newAnswer = await TestAnswer.updateAnswer(
+      q.answer_id,
+      answer,
+      q.choice_1,
+      q.choice_2,
+      q.choice_3,
+      q.choice_4,
+      id
+    );
+
+    if (!newAnswer) {
+      throw new BadRequestError(`Error in updating answer. Try again later.`);
+    }
+  });
+
+  res.status(StatusCodes.OK).json({ msg: "successful" });
+};
+
+module.exports = { createTest, getAllTests, getTest, deleteTest, updateTest };

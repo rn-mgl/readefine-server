@@ -57,7 +57,8 @@ class Story {
     const dateFrom = dateRangeFilter.from ? dateRangeFilter.from : "19990101T123000.000Z";
     const dateTo = dateRangeFilter.to ? dateRangeFilter.to : new Date();
     try {
-      const sql = `SELECT * FROM story AS s
+      const sql = `SELECT s.added_by, s.author, s.book_cover, 
+                  s.date_added, s.genre, s.lexile, s.story_id, t.test_id, s.title FROM story AS s
                   LEFT JOIN test AS t
                   ON s.story_id = t.story_id
                   WHERE s.${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
@@ -66,9 +67,9 @@ class Story {
                   AND 
                       s.lexile <= '${lexileTo}'
                   AND 
-                      s.date_added >= '${dateFrom}' 
+                      CAST(s.date_added AS DATE) >= '${dateFrom}' 
                   AND 
-                      s.date_added <= '${dateTo}'
+                      CAST(s.date_added AS DATE) <= '${dateTo}'
                   ORDER BY s.${sortFilter.toSort} ${sortFilter.sortMode};`;
       const [data, _] = await db.execute(sql);
 
