@@ -27,7 +27,7 @@ class Reward {
     }
   }
 
-  static async updateReward(reward_id, reward_name, reward_type, reward, description, added_by) {
+  static async updateReward(reward_id, reward_name, reward_type, description, reward, added_by) {
     try {
       const sql = `UPDATE reward SET ?
                     WHERE reward_id = '${reward_id}';`;

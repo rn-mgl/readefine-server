@@ -21,9 +21,10 @@ const createAchievement = async (req, res) => {
 const updateAchievement = async (req, res) => {
   const { id } = req.user;
   const { achievement_id } = req.params;
-  const { achievement_name, achievement_type, task, specifics, goal, reward_id } = req.body;
+  const { achievement } = req.body;
+  const { achievement_name, achievement_type, task, specifics, goal, reward_id } = achievement;
 
-  const achievement = await Achievement.updateAchievement(
+  const data = await Achievement.updateAchievement(
     achievement_id,
     achievement_name,
     achievement_type,
@@ -34,11 +35,11 @@ const updateAchievement = async (req, res) => {
     id
   );
 
-  if (!achievement) {
+  if (!data) {
     throw new BadRequestError(`Error in updating achievement. Try again later.`);
   }
 
-  res.status(StatusCodes.OK).json(achievement);
+  res.status(StatusCodes.OK).json(data);
 };
 
 const deleteAchievement = async (req, res) => {

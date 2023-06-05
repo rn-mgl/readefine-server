@@ -20,7 +20,7 @@ class Riddles {
 
   static async updateRiddle(riddle_id, riddle, answer, added_by) {
     try {
-      const sql = `UPDATE riddles 
+      const sql = `UPDATE riddles SET ?
                     WHERE riddle_id = '${riddle_id}'`;
       const riddleValues = { riddle, answer, added_by };
       const [data, _] = await db.query(sql, riddleValues);

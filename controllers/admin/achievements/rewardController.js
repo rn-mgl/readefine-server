@@ -20,9 +20,16 @@ const createReward = async (req, res) => {
 const updateReward = async (req, res) => {
   const { id } = req.user;
   const { reward_id } = req.params;
-  const { reward_name, reward_type, reward } = req.body;
+  const { reward_name, reward_type, description, reward } = req.body;
 
-  const data = await Reward.updateReward(reward_id, reward_name, reward_type, reward, id);
+  const data = await Reward.updateReward(
+    reward_id,
+    reward_name,
+    reward_type,
+    description,
+    reward,
+    id
+  );
 
   if (!data) {
     throw new BadRequestError(`Error in updating reward. Try again later.`);
