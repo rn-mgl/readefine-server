@@ -5,6 +5,7 @@ const { sendVerifiationEmail } = require("../client/mail/verificationMail");
 const fns = require("../functionController");
 const validator = require("validator");
 const jwt = require("jsonwebtoken");
+const UserLexile = require("../../models/users/UserLexile");
 
 const verifyUser = async (req, res) => {
   const { token } = req.body;
@@ -76,12 +77,13 @@ const logInUser = async (req, res) => {
     const token = fns.createToken(user_id, username, email);
 
     const primary = {
-      user_id: user.user_id,
+      userId: user.user_id,
       name: user.name,
       surname: user.surname,
       username: user.username,
       token: `Bearer ${token}`,
       email: user.email,
+      isVerified: user.is_verified,
     };
 
     res.status(StatusCodes.OK).json({ primary });
@@ -104,12 +106,20 @@ const signUpUser = async (req, res) => {
 
   const lexileLevel = fns.getLexile(gradeLevel);
 
-  const user = new User(name, surname, username, gradeLevel, lexileLevel, email, hashedPassword);
+  const user = new User(name, surname, username, gradeLevel, email, hashedPassword);
 
   const data = await user.createUser();
 
   if (!data) {
     throw new BadRequestError(`Error in signing up. Try again later.`);
+  }
+
+  const lexile = new UserLexile(data.insertId, lexileLevel);
+
+  const lexileData = await lexile.createLexile();
+
+  if (!lexileData) {
+    throw new BadRequestError(`Error in creating lexile. Try again later.`);
   }
 
   const token = fns.createToken(data.insertId, username, email);

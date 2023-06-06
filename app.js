@@ -45,7 +45,12 @@ const {
 
 ///////////////////////////////////////// admin routers /////////////////////////////////////
 const adminDashboardRouter = require("./routers/admin/dashboard/dashboardRouter");
-const { adminUserRouter, adminRouter, adminUserSessionRouter } = require("./routers/admin/users"); // user
+const {
+  adminUserRouter,
+  adminRouter,
+  adminUserSessionRouter,
+  adminUserLexileRouter,
+} = require("./routers/admin/users"); // user
 const {
   adminAchievementRouter,
   adminRewardRouter,
@@ -150,7 +155,8 @@ app.use("/admin_dashboard", adminAuthMiddleware, adminDashboardRouter);
 // users router application
 app.use("/admin_user", adminAuthMiddleware, adminUserRouter);
 app.use("/admin", adminAuthMiddleware, adminRouter);
-app.use("/admin_session", adminAuthMiddleware, adminUserSessionRouter);
+app.use("/admin_user_session", adminAuthMiddleware, adminUserSessionRouter);
+app.use("/admin_user_lexile", adminAuthMiddleware, adminUserLexileRouter);
 
 // story router application
 app.use("/admin_story", adminAuthMiddleware, adminStoryRouter);
