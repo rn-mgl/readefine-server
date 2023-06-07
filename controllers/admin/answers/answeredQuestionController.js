@@ -18,9 +18,9 @@ const createAnswer = async (req, res) => {
 };
 
 const getAllAnsweredQuestions = async (req, res) => {
-  const { id } = req.user;
+  const { userId } = req.query;
 
-  const answeredQuestion = await AnsweredQuestion.getAllAnsweredQuestions(id);
+  const answeredQuestion = await AnsweredQuestion.getAllAnsweredQuestions(userId);
 
   if (!answeredQuestion) {
     throw new BadRequestError(`Error in getting all answered questions. Try again later.`);

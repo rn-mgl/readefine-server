@@ -28,7 +28,9 @@ class UserLexile {
                           SELECT DISTINCT date_added
                           FROM user_lexile AS ul
                           WHERE u.user_id = ul.user_id
-                        );`;
+                          ORDER BY date_added ASC
+                        )
+                        ORDER BY date_added ASC;`;
       const [data, _] = await db.execute(sql);
       return data;
     } catch (error) {

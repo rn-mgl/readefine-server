@@ -4,7 +4,7 @@ const UserLexile = require("../../../models/users/UserLexile");
 
 const getLexileProgress = async (req, res) => {
   const { userId } = req.query;
-  console.log(userId);
+
   const data = await UserLexile.getLexileProgress(userId);
 
   if (!data) {

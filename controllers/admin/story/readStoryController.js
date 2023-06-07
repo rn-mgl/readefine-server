@@ -17,4 +17,16 @@ const createReadStory = async (req, res) => {
   res.status(StatusCodes.OK).json(data);
 };
 
-module.exports = { createReadStory };
+const getReadStories = async (req, res) => {
+  const { userId } = req.query;
+
+  const data = await ReadStory.getReadStories(userId);
+
+  if (!data) {
+    throw new BadRequestError(`Error in getting read stories. Try again later.`);
+  }
+
+  res.status(StatusCodes.OK).json(data);
+};
+
+module.exports = { createReadStory, getReadStories };

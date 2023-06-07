@@ -40,7 +40,8 @@ class AnsweredQuestion {
       const sql = `SELECT * FROM answered_question AS aq
                     INNER JOIN test_question AS tq
                     ON aq.question_id = tq.question_id
-                    WHERE aq.answer_id = '${answer_id}';`;
+                    WHERE aq.answer_id = '${answer_id}'
+                    GROUP BY tq.test_id;`;
       const [data, _] = await db.execute(sql);
       return data;
     } catch (error) {

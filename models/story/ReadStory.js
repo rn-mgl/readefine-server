@@ -16,6 +16,20 @@ class ReadStory {
       console.log(error + "--- create read story ---");
     }
   }
+
+  static async getReadStories(user_id) {
+    try {
+      const sql = `SELECT * FROM read_story AS rs
+                  INNER JOIN users AS u ON rs.read_by = u.user_id
+                  INNER JOIN story AS s ON rs.story_id = s.story_id
+                  WHERE rs.read_by = '${user_id}';`;
+      const [data, _] = await db.execute(sql);
+
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }
 
 module.exports = ReadStory;
