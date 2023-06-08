@@ -66,7 +66,7 @@ const logInUser = async (req, res) => {
       throw new NotFoundError(`There is no user with the given username.`);
     }
 
-    const { user_id, username, email, password } = user;
+    const { user_id, username, email, password, is_verified } = user;
 
     const isMatch = await fns.isMatchedPassword(password, candidatePassword);
 
@@ -87,6 +87,10 @@ const logInUser = async (req, res) => {
     };
 
     res.status(StatusCodes.OK).json({ primary });
+
+    if (!is_verified) {
+      const mail = await sendVerifiationEmail(email, `${name} ${surname}`, token);
+    }
 
     return;
   }
