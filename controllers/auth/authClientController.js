@@ -1,7 +1,7 @@
 const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../../errors");
 const User = require("../../models/users/User");
-const { sendVerifiationEmail } = require("../client/mail/verificationMail");
+const { sendVerificationEmail } = require("../client/mail/verificationMail");
 const fns = require("../functionController");
 const validator = require("validator");
 const jwt = require("jsonwebtoken");
@@ -55,7 +55,7 @@ const logInUser = async (req, res) => {
     res.status(StatusCodes.OK).json({ primary });
 
     if (!is_verified) {
-      const mail = await sendVerifiationEmail(email, `${name} ${surname}`, token);
+      const mail = await sendVerificationEmail(email, `${name} ${surname}`, token);
     }
 
     return;
@@ -89,7 +89,7 @@ const logInUser = async (req, res) => {
     res.status(StatusCodes.OK).json({ primary });
 
     if (!is_verified) {
-      const mail = await sendVerifiationEmail(email, `${name} ${surname}`, token);
+      const mail = await sendVerificationEmail(email, `${name} ${surname}`, token);
     }
 
     return;
@@ -130,7 +130,7 @@ const signUpUser = async (req, res) => {
 
   res.status(StatusCodes.OK).json({ data, token });
 
-  const mail = await sendVerifiationEmail(email, `${name} ${surname}`, token);
+  const mail = await sendVerificationEmail(email, `${name} ${surname}`, token);
 };
 
 module.exports = { logInUser, signUpUser, verifyUser };

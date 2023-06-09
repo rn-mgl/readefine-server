@@ -117,6 +117,18 @@ class User {
       console.log(error + "--- get user ---");
     }
   }
+
+  static async changePassword(user_id, password) {
+    try {
+      const sql = `UPDATE users SET ?
+                  WHERE user_id = '${user_id}';`;
+      const userValues = { password };
+      const [data, _] = await db.query(sql, userValues);
+      return data;
+    } catch (error) {
+      console.log(error + "--- change password ---");
+    }
+  }
 }
 
 module.exports = User;

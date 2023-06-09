@@ -20,7 +20,7 @@ const fileAdminRouter = require("./routers/global/fileRouter");
 ///////////////////////////////////////// client routers /////////////////////////////////////////////////////
 const { userRouter, userSessionRouter } = require("./routers/client/users"); // user
 const { readStoryRouter, storyContentRouter, storyRouter } = require("./routers/client/story"); // story
-const { authAdminRouter, authClientRouter } = require("./routers/auth"); // auth
+const { authAdminRouter, authClientRouter, passwordResetRouter } = require("./routers/auth"); // auth
 const { rewardRouter, userAchievementRouter } = require("./routers/client/achievement"); // achievement
 const {
   testRouter,
@@ -112,6 +112,7 @@ app.use("/readefine_client_file", clientAuthMiddleware, fileClientRouter);
 // auth router application
 app.use("/auth_admin", authAdminRouter);
 app.use("/auth_client", authClientRouter);
+app.use("/auth_client_password_reset", passwordResetRouter);
 
 // users router application
 app.use("/user", clientAuthMiddleware, userRouter);

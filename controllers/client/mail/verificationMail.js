@@ -3,7 +3,7 @@ const { BadRequestError } = require("../../../errors");
 
 const url = "http://192.168.1.121:3000/verify";
 
-const sendVerifiationEmail = async (sendTo, toName, token) => {
+const sendVerificationEmail = async (sendTo, toName, token) => {
   const message = {
     from: `Readefine <rltnslns@gmail.com>`,
     to: sendTo,
@@ -26,7 +26,7 @@ const sendVerifiationEmail = async (sendTo, toName, token) => {
 
         <br /><br />
 
-        This link will expire in 24 hours. If you did not sign up for a comms account,
+        This link will expire in 24 hours. If you did not sign up for a Readefine account,
         you can safely ignore this email.
 
         <br /><br />
@@ -47,4 +47,4 @@ const sendVerifiationEmail = async (sendTo, toName, token) => {
   return data;
 };
 
-module.exports = { sendVerifiationEmail };
+module.exports = { sendVerificationEmail };
