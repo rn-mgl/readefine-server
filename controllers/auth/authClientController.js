@@ -66,7 +66,7 @@ const logInUser = async (req, res) => {
       throw new NotFoundError(`There is no user with the given username.`);
     }
 
-    const { user_id, username, email, password, is_verified } = user;
+    const { user_id, username, email, password, name, surname, is_verified } = user;
 
     const isMatch = await fns.isMatchedPassword(password, candidatePassword);
 

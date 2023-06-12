@@ -41,6 +41,8 @@ const getLexile = (gradeLevel) => {
   return lexile[gradeLevel];
 };
 
+const createUUID = () => {};
+
 module.exports = {
   hashPassword,
   isMatchedPassword,
@@ -48,4 +50,5 @@ module.exports = {
   isUniqueAdminEmail,
   createToken,
   getLexile,
+  createUUID,
 };
