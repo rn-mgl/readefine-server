@@ -3,7 +3,8 @@ const { BadRequestError, NotFoundError } = require("../../../errors");
 const Test = require("../../../models/test/Test");
 
 const getAllTests = async (req, res) => {
-  const test = await Test.getAllTests();
+  const { searchFilter, lexileRangeFilter, sortFilter, dateRangeFilter } = req.query;
+  const test = await Test.getAllTests(searchFilter, lexileRangeFilter, sortFilter, dateRangeFilter);
 
   if (!test) {
     throw new BadRequestError(`Error in getting all tests. Try again later.`);

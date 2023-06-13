@@ -24,7 +24,7 @@ const sendPasswordReset = async (req, res) => {
     throw new BadRequestError(`The email you entered does not use the username you entered.`);
   }
 
-  const token = createToken(user_id, username, email);
+  const token = createToken(user_id, username, email, "user");
 
   const mail = await sendPasswordResetEmail(email, `${name} ${surname}`, token);
 

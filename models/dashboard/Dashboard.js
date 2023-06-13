@@ -19,6 +19,21 @@ class Dashboard {
       console.log(error + " --- get counts ---");
     }
   }
+
+  static async getSingleUserCounts(user_id) {
+    try {
+      const sql = `SELECT (SELECT COUNT(read_id) FROM read_story WHERE read_by = '${user_id}') AS readCount,
+                  (SELECT COUNT(taken_id) FROM taken_test WHERE taken_by = '${user_id}') AS testCount,
+                  (SELECT COUNT(user_achievement_id) FROM user_achievement WHERE user_id = '${user_id}') AS achievementCount,
+                  (SELECT COUNT(user_achievement_id) FROM user_achievement WHERE user_id = '${user_id}') AS rewardCount,
+                  (SELECT COUNT(answer_id) FROM answered_riddles WHERE answered_by = '${user_id}') AS riddleCount`;
+
+      const [data, _] = await db.execute(sql);
+      return data[0];
+    } catch (error) {
+      console.log(error + " --- get counts ---");
+    }
+  }
 }
 
 module.exports = Dashboard;

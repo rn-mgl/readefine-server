@@ -36,7 +36,7 @@ const logInAdmin = async (req, res) => {
       throw new BadRequestError(`The email and password does not match.`);
     }
 
-    const token = fns.createToken(admin_id, username, email);
+    const token = fns.createToken(admin_id, username, email, "admin");
 
     const primary = {
       admin_id: user.admin_id,
@@ -44,6 +44,7 @@ const logInAdmin = async (req, res) => {
       surname: user.surname,
       username: user.username,
       token: `Admin Bearer ${token}`,
+      role: "admin",
       email: user.email,
     };
 
@@ -65,7 +66,7 @@ const logInAdmin = async (req, res) => {
       throw new BadRequestError(`The email and password does not match.`);
     }
 
-    const token = fns.createToken(admin_id, username, email);
+    const token = fns.createToken(admin_id, username, email, "admin");
 
     const primary = {
       admin_id: user.admin_id,
@@ -73,6 +74,7 @@ const logInAdmin = async (req, res) => {
       surname: user.surname,
       username: user.username,
       token: `Admin Bearer ${token}`,
+      role: "admin",
       email: user.email,
     };
 
@@ -103,7 +105,7 @@ const signUpAdmin = async (req, res) => {
     throw new BadRequestError(`Error in signing up. Try again later.`);
   }
 
-  const token = fns.createToken(data.insertId);
+  const token = fns.createToken(data.insertId, username, email, "admin");
 
   res.status(StatusCodes.OK).json({ data, token });
 };

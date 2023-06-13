@@ -41,7 +41,7 @@ const logInUser = async (req, res) => {
       throw new BadRequestError(`The email and password does not match.`);
     }
 
-    const token = fns.createToken(user_id, username, email);
+    const token = fns.createToken(user_id, username, email, "user");
 
     const primary = {
       user_id: user.user_id,
@@ -49,6 +49,7 @@ const logInUser = async (req, res) => {
       surname: user.surname,
       username: user.username,
       token: `Bearer ${token}`,
+      role: "user",
       email: user.email,
     };
 
@@ -74,7 +75,7 @@ const logInUser = async (req, res) => {
       throw new BadRequestError(`The email and password does not match.`);
     }
 
-    const token = fns.createToken(user_id, username, email);
+    const token = fns.createToken(user_id, username, email, "user");
 
     const primary = {
       userId: user.user_id,
@@ -83,6 +84,7 @@ const logInUser = async (req, res) => {
       username: user.username,
       token: `Bearer ${token}`,
       email: user.email,
+      role: "user",
       isVerified: user.is_verified,
     };
 
@@ -126,7 +128,7 @@ const signUpUser = async (req, res) => {
     throw new BadRequestError(`Error in creating lexile. Try again later.`);
   }
 
-  const token = fns.createToken(data.insertId, username, email);
+  const token = fns.createToken(data.insertId, username, email, "user");
 
   res.status(StatusCodes.OK).json({ data, token });
 

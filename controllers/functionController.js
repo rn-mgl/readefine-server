@@ -29,8 +29,8 @@ const isUniqueAdminEmail = async (candidateEmail) => {
   return data;
 };
 
-const createToken = (id, username, email) => {
-  const token = jwt.sign({ id, username, email }, process.env.JWT_SECRET, {
+const createToken = (id, username, email, role) => {
+  const token = jwt.sign({ id, username, email, role }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_TTL,
   });
 
