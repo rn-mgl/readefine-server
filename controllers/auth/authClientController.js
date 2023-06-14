@@ -51,6 +51,8 @@ const logInUser = async (req, res) => {
       token: `Bearer ${token}`,
       role: "user",
       email: user.email,
+      role: "user",
+      isVerified: user.is_verified,
     };
 
     res.status(StatusCodes.OK).json({ primary });
