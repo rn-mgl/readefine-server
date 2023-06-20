@@ -5,10 +5,10 @@ const AnsweredQuestion = require("../../../models/answers/AnsweredQuestion");
 
 const takeTest = async (req, res) => {
   const { id } = req.user;
-  const { selectedChoices } = req.body;
+  const { selectedChoices, score } = req.body;
   const { taken_id } = req.params;
 
-  const takenTest = new TakenTest(id, taken_id);
+  const takenTest = new TakenTest(id, taken_id, score);
 
   const data = await takenTest.takeTest();
 
@@ -18,6 +18,7 @@ const takeTest = async (req, res) => {
 
   for (let i = 1; i <= 10; i++) {
     const { answer, questionId } = selectedChoices[`choice${i}`];
+
     const answerQuestion = new AnsweredQuestion(questionId, id, answer);
     const newAnswer = answerQuestion.createAnswer();
 

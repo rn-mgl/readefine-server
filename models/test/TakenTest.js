@@ -1,9 +1,10 @@
 const db = require("../../db/connection");
 
 class TakenTest {
-  constructor(taken_by, test_id) {
+  constructor(taken_by, test_id, score) {
     this.taken_by = taken_by;
     this.test_id = test_id;
+    this.score = score;
   }
 
   async takeTest() {
@@ -12,6 +13,7 @@ class TakenTest {
       const takeValues = {
         taken_by: this.taken_by,
         test_id: this.test_id,
+        score: this.score,
       };
       const [data, _] = await db.query(sql, takeValues);
       return data;

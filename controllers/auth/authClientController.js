@@ -27,18 +27,24 @@ const logInUser = async (req, res) => {
   const { candidateIdentifier, candidatePassword } = loginData;
 
   if (validator.isEmail(candidateIdentifier)) {
-    const user = await User.findWithEmail(candidateIdentifier);
+    const findEmail = await User.findWithEmail(candidateIdentifier);
 
-    if (!user) {
+    if (!findEmail) {
       throw new NotFoundError(`There is no user with the given email.`);
     }
 
-    const { user_id, username, email, password, name, surname, is_verified } = user;
+    const { user_id, username, email, password, name, surname, is_verified } = findEmail;
 
     const isMatch = await fns.isMatchedPassword(password, candidatePassword);
 
     if (!isMatch) {
       throw new BadRequestError(`The email and password does not match.`);
+    }
+
+    const user = await User.getUser(findEmail.user_id);
+
+    if (!user) {
+      throw new BadRequestError(`Could not get your data. Try again later.`);
     }
 
     const token = fns.createToken(user_id, username, email, "user");
@@ -53,6 +59,7 @@ const logInUser = async (req, res) => {
       email: user.email,
       role: "user",
       isVerified: user.is_verified,
+      lexile: user.lexile,
     };
 
     res.status(StatusCodes.OK).json({ primary });
@@ -63,18 +70,24 @@ const logInUser = async (req, res) => {
 
     return;
   } else {
-    const user = await User.findWithUsername(candidateIdentifier);
+    const findUser = await User.findWithUsername(candidateIdentifier);
 
-    if (!user) {
+    if (!findUser) {
       throw new NotFoundError(`There is no user with the given username.`);
     }
 
-    const { user_id, username, email, password, name, surname, is_verified } = user;
+    const { user_id, username, email, password, name, surname, is_verified } = findUser;
 
     const isMatch = await fns.isMatchedPassword(password, candidatePassword);
 
     if (!isMatch) {
       throw new BadRequestError(`The email and password does not match.`);
+    }
+
+    const user = await User.getUser(findUser.user_id);
+
+    if (!user) {
+      throw new BadRequestError(`Could not get your data. Try again later.`);
     }
 
     const token = fns.createToken(user_id, username, email, "user");
@@ -88,6 +101,7 @@ const logInUser = async (req, res) => {
       email: user.email,
       role: "user",
       isVerified: user.is_verified,
+      lexile: user.lexile,
     };
 
     res.status(StatusCodes.OK).json({ primary });
