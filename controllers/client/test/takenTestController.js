@@ -1,17 +1,29 @@
 const { StatusCodes } = require("http-status-codes");
 const { BadRequestError, NotFoundError } = require("../../../errors");
 const TakenTest = require("../../../models/test/TakenTest");
+const AnsweredQuestion = require("../../../models/answers/AnsweredQuestion");
 
 const takeTest = async (req, res) => {
   const { id } = req.user;
-  const { test_id } = req.params;
+  const { selectedChoices } = req.body;
+  const { taken_id } = req.params;
 
-  const takenTest = new TakenTest(id, test_id);
+  const takenTest = new TakenTest(id, taken_id);
 
   const data = await takenTest.takeTest();
 
   if (!data) {
     throw new BadRequestError(`Error in recording the test you took. Try again later.`);
+  }
+
+  for (let i = 1; i <= 10; i++) {
+    const { answer, questionId } = selectedChoices[`choice${i}`];
+    const answerQuestion = new AnsweredQuestion(questionId, id, answer);
+    const newAnswer = answerQuestion.createAnswer();
+
+    if (!newAnswer) {
+      throw new BadRequestError(`Error in recording the answer. Try again later.`);
+    }
   }
 
   res.status(StatusCodes.OK).json(data);

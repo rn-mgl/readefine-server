@@ -2,6 +2,6 @@ const controller = require("../../../controllers/admin/dashboard/dashboardContro
 const express = require("express");
 const router = express.Router();
 
-router.route("/").get(controller.getCounts);
+router.route("/").get(controller.getDashboardData);
 
 module.exports = router;

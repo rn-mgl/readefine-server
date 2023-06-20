@@ -2,14 +2,30 @@ const { BadRequestError } = require("../../../errors");
 const Dashboard = require("../../../models/dashboard/Dashboard");
 const { StatusCodes } = require("http-status-codes");
 
-const getCounts = async (req, res) => {
-  const data = await Dashboard.getCounts();
+const getDashboardData = async (req, res) => {
+  const { query } = req.query;
 
-  if (!data) {
-    throw new BadRequestError(`Error in getting counts for dashboard.`);
+  if (query === "counts") {
+    const data = await Dashboard.getCounts();
+
+    if (!data) {
+      throw new BadRequestError(`Error in getting counts for dashboard.`);
+    }
+
+    res.status(StatusCodes.OK).json(data);
+    return;
   }
 
-  res.status(StatusCodes.OK).json(data);
+  if (query === "updates") {
+    const data = await Dashboard.getUpdates();
+
+    if (!data) {
+      throw new BadRequestError(`Error in getting updates for dashboard.`);
+    }
+
+    res.status(StatusCodes.OK).json(data);
+    return;
+  }
 };
 
-module.exports = { getCounts };
+module.exports = { getDashboardData };

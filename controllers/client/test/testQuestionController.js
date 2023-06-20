@@ -3,9 +3,9 @@ const { BadRequestError, NotFoundError } = require("../../../errors");
 const TestQuestion = require("../../../models/test/TestQuestion");
 
 const getAllQuestions = async (req, res) => {
-  const { test_id } = req.body;
+  const { testId } = req.query;
 
-  const testQuestion = await TestQuestion.getAllQuestions(test_id);
+  const testQuestion = await TestQuestion.getAllQuestions(testId);
 
   if (!testQuestion) {
     throw new BadRequestError(`Error in getting all test question. Try again later.`);

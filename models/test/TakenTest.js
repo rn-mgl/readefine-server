@@ -11,7 +11,7 @@ class TakenTest {
       const sql = "INSERT INTO taken_test SET ?;";
       const takeValues = {
         taken_by: this.taken_by,
-        test_id: this.test_idtaken_by,
+        test_id: this.test_id,
       };
       const [data, _] = await db.query(sql, takeValues);
       return data;
