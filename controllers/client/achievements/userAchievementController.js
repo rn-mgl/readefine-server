@@ -19,8 +19,13 @@ const recieveAchievement = async (req, res) => {
 
 const getAllUserAchievements = async (req, res) => {
   const { id } = req.user;
-
-  const userAchievement = await UserAchievement.getAllUserAchievements(id);
+  const { searchFilter, sortFilter, showFilter } = req.query;
+  const userAchievement = await UserAchievement.getAllUserAchievements(
+    id,
+    searchFilter,
+    sortFilter,
+    showFilter
+  );
 
   if (!userAchievement) {
     throw new BadRequestError(`Error in getting all your achievements. Try again later.`);
