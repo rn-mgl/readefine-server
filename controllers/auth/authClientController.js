@@ -33,7 +33,7 @@ const logInUser = async (req, res) => {
       throw new NotFoundError(`There is no user with the given email.`);
     }
 
-    const { user_id, username, email, password, name, surname, is_verified } = findEmail;
+    const { user_id, username, email, password } = findEmail;
 
     const isMatch = await fns.isMatchedPassword(password, candidatePassword);
 
@@ -64,10 +64,6 @@ const logInUser = async (req, res) => {
 
     res.status(StatusCodes.OK).json({ primary });
 
-    if (!is_verified) {
-      const mail = await sendVerificationEmail(email, `${name} ${surname}`, token);
-    }
-
     return;
   } else {
     const findUser = await User.findWithUsername(candidateIdentifier);
@@ -76,7 +72,7 @@ const logInUser = async (req, res) => {
       throw new NotFoundError(`There is no user with the given username.`);
     }
 
-    const { user_id, username, email, password, name, surname, is_verified } = findUser;
+    const { user_id, username, email, password } = findUser;
 
     const isMatch = await fns.isMatchedPassword(password, candidatePassword);
 
@@ -105,10 +101,6 @@ const logInUser = async (req, res) => {
     };
 
     res.status(StatusCodes.OK).json({ primary });
-
-    if (!is_verified) {
-      const mail = await sendVerificationEmail(email, `${name} ${surname}`, token);
-    }
 
     return;
   }

@@ -2,10 +2,11 @@ const { StatusCodes } = require("http-status-codes");
 const { BadRequestError, NotFoundError } = require("../../../errors");
 const TakenTest = require("../../../models/test/TakenTest");
 const AnsweredQuestion = require("../../../models/answers/AnsweredQuestion");
+const UserLexile = require("../../../models/users/UserLexile");
 
 const takeTest = async (req, res) => {
   const { id } = req.user;
-  const { selectedChoices, score } = req.body;
+  const { selectedChoices, score, legibleForGrowth, lexile } = req.body;
   const { taken_id } = req.params;
 
   const takenTest = new TakenTest(id, taken_id, score);
@@ -24,6 +25,18 @@ const takeTest = async (req, res) => {
 
     if (!newAnswer) {
       throw new BadRequestError(`Error in recording the answer. Try again later.`);
+    }
+  }
+
+  if (legibleForGrowth) {
+    const toAdd = Math.floor(score / 2);
+
+    const userLexile = new UserLexile(id, lexile + toAdd);
+
+    const newLexileRecord = userLexile.createLexile();
+
+    if (!newLexileRecord) {
+      throw new BadRequestError(`Error in recording your new lexile. Try again later.`);
     }
   }
 
