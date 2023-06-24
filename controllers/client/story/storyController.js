@@ -2,9 +2,11 @@ const { StatusCodes } = require("http-status-codes");
 const { BadRequestError, NotFoundError } = require("../../../errors");
 const Story = require("../../../models/story/Story");
 
-const getAllStories = async (req, res) => {
+const getAllUserStories = async (req, res) => {
+  const { id } = req.user;
   const { searchFilter, lexileRangeFilter, sortFilter, dateRangeFilter } = req.query;
-  const story = await Story.getAllStories(
+  const story = await Story.getAllUserStories(
+    id,
     searchFilter,
     lexileRangeFilter,
     sortFilter,
@@ -30,4 +32,4 @@ const getStory = async (req, res) => {
   res.status(StatusCodes.OK).json(story);
 };
 
-module.exports = { getAllStories, getStory };
+module.exports = { getAllUserStories, getStory };

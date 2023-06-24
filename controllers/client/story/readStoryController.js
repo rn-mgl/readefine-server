@@ -4,9 +4,9 @@ const ReadStory = require("../../../models/story/ReadStory");
 
 const createReadStory = async (req, res) => {
   const { id } = req.user;
-  const { story_id } = req.params;
+  const { storyId } = req.body;
 
-  const readStory = new ReadStory(id, story_id);
+  const readStory = new ReadStory(id, storyId);
 
   const data = await readStory.createReadStory();
 

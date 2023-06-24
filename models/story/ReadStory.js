@@ -7,10 +7,18 @@ class ReadStory {
   }
 
   async createReadStory() {
+    // read story if not yet read to avoid duplicates
     try {
-      const sql = "INSERT INTO read_story SET ?;";
+      const sql = `INSERT INTO read_story (read_by, story_id)
+                   SELECT * FROM 
+                    (SELECT '${this.read_by}' AS read_by, '${this.story_id}' AS story_id) AS tmp
+                   WHERE NOT EXISTS (
+                    SELECT read_by FROM read_story 
+                    WHERE read_by = '${this.read_by}'
+                    AND story_id = '${this.story_id}'
+                   ) LIMIT 1`;
       const readStoryValues = { read_by: this.read_by, story_id: this.story_id };
-      const [data, _] = await db.query(sql, readStoryValues);
+      const [data, _] = await db.execute(sql);
       return data;
     } catch (error) {
       console.log(error + "--- create read story ---");
