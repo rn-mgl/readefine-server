@@ -18,7 +18,7 @@ const fileClientRouter = require("./routers/global/fileRouter");
 const fileAdminRouter = require("./routers/global/fileRouter");
 
 ///////////////////////////////////////// client routers /////////////////////////////////////////////////////
-const { userRouter, userSessionRouter } = require("./routers/client/users"); // user
+const { userRouter, userSessionRouter, userLexileRouter } = require("./routers/client/users"); // user
 const { readStoryRouter, storyContentRouter, storyRouter } = require("./routers/client/story"); // story
 const { authAdminRouter, authClientRouter, passwordResetRouter } = require("./routers/auth"); // auth
 const {
@@ -124,6 +124,7 @@ app.use("/archives", clientAuthMiddleware, archivesRouter);
 
 // users router application
 app.use("/user", clientAuthMiddleware, userRouter);
+app.use("/user_lexile", clientAuthMiddleware, userLexileRouter);
 app.use("/session", clientAuthMiddleware, userSessionRouter);
 
 // story router application

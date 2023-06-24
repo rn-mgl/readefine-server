@@ -93,15 +93,27 @@ class Story {
 
     try {
       const sql = `SELECT s.added_by, s.author, s.book_cover, 
-                  s.date_added, s.genre, s.lexile, s.story_id, t.test_id, s.title, 
+                  s.date_added, s.genre, s.lexile, s.story_id, t.test_id, s.title, rs.read_by,
+
                   CASE
-                    WHEN rs.read_by IS NULL THEN 0 ELSE 1
-                  END AS is_read
+                    WHEN rs.read_by = '${userId}' THEN 1 ELSE 0
+                  END AS is_read,
+
+                  CASE
+                    WHEN tt.taken_by = '${userId}' THEN 1 ELSE 0
+                  END AS is_taken
+
                   FROM story AS s
+
                   LEFT JOIN test AS t
                   ON s.story_id = t.story_id
+
                   LEFT JOIN read_story AS rs
                   ON s.story_id = rs.story_id
+
+                  LEFT JOIN taken_test AS tt
+                  ON t.test_id = tt.test_id
+
                   WHERE s.${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
                   AND 
                       s.lexile >= '${lexileFrom}' 

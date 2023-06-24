@@ -59,7 +59,6 @@ const logInUser = async (req, res) => {
       email: user.email,
       role: "user",
       isVerified: user.is_verified,
-      lexile: user.lexile,
     };
 
     res.status(StatusCodes.OK).json({ primary });
@@ -97,7 +96,6 @@ const logInUser = async (req, res) => {
       email: user.email,
       role: "user",
       isVerified: user.is_verified,
-      lexile: user.lexile,
     };
 
     res.status(StatusCodes.OK).json({ primary });

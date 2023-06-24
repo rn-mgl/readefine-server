@@ -37,6 +37,20 @@ class UserLexile {
       console.log(error + "--- get user ---");
     }
   }
+
+  static async getLatestLexile(user_id) {
+    try {
+      const sql = `SELECT * FROM user_lexile
+                   WHERE lexile_id = (
+                    SELECT MAX(lexile_id) FROM user_lexile
+                    WHERE user_id = '${user_id}'
+                   );`;
+      const [data, _] = await db.execute(sql);
+      return data[0];
+    } catch (error) {
+      console.log(error + "--- get latest lexile ---");
+    }
+  }
 }
 
 module.exports = UserLexile;

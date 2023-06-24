@@ -59,14 +59,19 @@ class Test {
       const sql = `SELECT t.test_id, t.story_id, t.date_added, t.added_by, 
                    s.story_id, s.book_cover, s.title, s.author, s.lexile, s.genre, s.added_by, s.date_added, 
                    tt.score,
+
                     CASE 
-                      WHEN tt.taken_by IS NOT NULL THEN 1 ELSE 0
+                      WHEN tt.taken_by = '${userId}' THEN 1 ELSE 0
                     END AS is_taken
+
                    FROM test AS t
+
                    INNER JOIN story AS s ON
                    t.story_id = s.story_id
+
                    LEFT JOIN taken_test AS tt ON
                    t.test_id = tt.test_id
+
                    WHERE 
                       s.${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
                   AND 
