@@ -110,9 +110,11 @@ class Story {
 
                   LEFT JOIN read_story AS rs
                   ON s.story_id = rs.story_id
+                  AND rs.read_by = '${userId}'
 
                   LEFT JOIN taken_test AS tt
                   ON t.test_id = tt.test_id
+                  AND tt.taken_by = '${userId}'
 
                   WHERE s.${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
                   AND 

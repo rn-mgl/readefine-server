@@ -17,22 +17,7 @@ const recieveAchievement = async (req, res) => {
   res.status(StatusCodes.OK).json(data);
 };
 
-const getAllUserAchievements = async (req, res) => {
-  const { id } = req.user;
-  const { searchFilter, sortFilter, showFilter } = req.query;
-  const userAchievement = await UserAchievement.getAllUserAchievements(
-    id,
-    searchFilter,
-    sortFilter,
-    showFilter
-  );
-
-  if (!userAchievement) {
-    throw new BadRequestError(`Error in getting all your achievements. Try again later.`);
-  }
-
-  res.status(StatusCodes.OK).json(userAchievement);
-};
+const getAllUserAchievements = async (req, res) => {};
 
 const getUserAchievement = async (req, res) => {
   const { user_achievement_id } = req.params;

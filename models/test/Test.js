@@ -67,10 +67,12 @@ class Test {
                    FROM test AS t
 
                    INNER JOIN story AS s ON
-                   t.story_id = s.story_id
+                    t.story_id = s.story_id
 
                    LEFT JOIN taken_test AS tt ON
-                   t.test_id = tt.test_id
+                    t.test_id = tt.test_id
+                    AND tt.taken_by = '${userId}'
+                   
 
                    WHERE 
                       s.${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
