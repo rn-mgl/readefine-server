@@ -37,7 +37,6 @@ const {
   dailyDangleRouter,
   dailyDecipherRouter,
   riddlesRouter,
-  wordsRouter,
 } = require("./routers/client/minigames"); // minigames
 const {
   answeredDangleRouter,
@@ -50,6 +49,7 @@ const {
 
 ///////////////////////////////////////// admin routers /////////////////////////////////////
 const adminDashboardRouter = require("./routers/admin/dashboard/dashboardRouter");
+const adminWordsRouter = require("./routers/admin/words/wordsRouter");
 const {
   adminUserRouter,
   adminRouter,
@@ -76,7 +76,6 @@ const {
   adminDailyDangleRouter,
   adminDailyDecipherRouter,
   adminRiddlesRouter,
-  adminWordsRouter,
 } = require("./routers/admin/minigames"); // minigames
 const {
   adminAnsweredDangleRouter,
@@ -147,7 +146,6 @@ app.use("/test_answer", clientAuthMiddleware, testAnswerRouter);
 app.use("/dangle", clientAuthMiddleware, dailyDangleRouter);
 app.use("/decipher", clientAuthMiddleware, dailyDecipherRouter);
 app.use("/riddles", clientAuthMiddleware, riddlesRouter);
-app.use("/words", clientAuthMiddleware, wordsRouter);
 
 // answers router application
 app.use("/answered_dangle", clientAuthMiddleware, answeredDangleRouter);
@@ -189,13 +187,14 @@ app.use("/admin_test_answer", adminAuthMiddleware, adminTestAnswerRouter);
 app.use("/admin_dangle", adminAuthMiddleware, adminDailyDangleRouter);
 app.use("/admin_decipher", adminAuthMiddleware, adminDailyDecipherRouter);
 app.use("/admin_riddles", adminAuthMiddleware, adminRiddlesRouter);
-app.use("/admin_words", adminAuthMiddleware, adminWordsRouter);
 
 // answers router application
 app.use("/admin_answered_dangle", adminAuthMiddleware, adminAnsweredDangleRouter);
 app.use("/admin_answered_decipher", adminAuthMiddleware, adminAnsweredDecipherRouter);
 app.use("/admin_answered_questions", adminAuthMiddleware, adminAnsweredQuestionsRouter);
 app.use("/admin_answered_riddles", adminAuthMiddleware, adminAnsweredRiddlesRouter);
+
+app.use("/admin_words", adminAuthMiddleware, adminWordsRouter);
 
 //////////////////////////////////////////////////////////////////////////////
 
