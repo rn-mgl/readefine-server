@@ -35,6 +35,28 @@ class Words {
       console.log(error + "--- get all words ---");
     }
   }
+
+  static async getRandomWord() {
+    try {
+      // get word
+      const sqlWord = `SELECT * FROM words AS w
+                  WHERE LENGTH(word) <= 5
+                  ORDER BY RAND()
+                  LIMIT 1`;
+      const [word, _1] = await db.execute(sqlWord);
+
+      // get definitions of word
+      const sqlDefinition = `SELECT * FROM word_definition AS wd
+                            LEFT JOIN word_part_of_speech AS WPS
+                            on wd.definition_id = wps.definition_id
+                            WHERE word_id = '${word[0].word_id}'`;
+      const [definition, _2] = await db.execute(sqlDefinition);
+
+      return { wordData: word[0], definitionData: definition };
+    } catch (error) {
+      console.log(error + "--- get random word ---");
+    }
+  }
 }
 
 module.exports = Words;

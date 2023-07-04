@@ -70,4 +70,14 @@ const getAllWords = async (req, res) => {
   res.status(StatusCodes.OK).json(words);
 };
 
-module.exports = { addWord, getAllWords };
+const getRandomWord = async (req, res) => {
+  const word = await Words.getRandomWord();
+
+  if (!word) {
+    throw new BadRequestError(`Error in getting random word. Try again later.`);
+  }
+
+  res.status(StatusCodes.OK).json(word);
+};
+
+module.exports = { addWord, getAllWords, getRandomWord };
