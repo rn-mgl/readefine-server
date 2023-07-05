@@ -9,6 +9,12 @@ const addWord = async (req, res) => {
   const { data } = req.body;
   const { word, phonetics, meanings } = data;
 
+  const exists = await Words.getWord(word);
+
+  if (exists) {
+    throw new BadRequestError(`The word ${word} already exists.`);
+  }
+
   let phonetic = "";
 
   for (let i = 0; i < phonetics.length; i++) {
@@ -30,8 +36,8 @@ const addWord = async (req, res) => {
   }
 
   meanings.map(async (m) => {
-    let definition,
-      example = "";
+    let definition = "";
+    let example = "";
 
     for (let j = 0; j < m.definitions?.length; j++) {
       const d = m.definitions[j];

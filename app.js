@@ -18,6 +18,7 @@ const fileClientRouter = require("./routers/global/fileRouter");
 const fileAdminRouter = require("./routers/global/fileRouter");
 
 ///////////////////////////////////////// client routers /////////////////////////////////////////////////////
+const wordsRouter = require("./routers/client/words/wordsRouter");
 const { userRouter, userSessionRouter, userLexileRouter } = require("./routers/client/users"); // user
 const { readStoryRouter, storyContentRouter, storyRouter } = require("./routers/client/story"); // story
 const { authAdminRouter, authClientRouter, passwordResetRouter } = require("./routers/auth"); // auth
@@ -33,11 +34,7 @@ const {
   testQuestionRouter,
   testAnswerRouter,
 } = require("./routers/client/test"); // test
-const {
-  dailyDangleRouter,
-  dailyDecipherRouter,
-  riddlesRouter,
-} = require("./routers/client/minigames"); // minigames
+const { riddlesRouter, minigameDashboardRouter } = require("./routers/client/minigames"); // minigames
 const {
   answeredDangleRouter,
   answeredDecipherRouter,
@@ -72,11 +69,7 @@ const {
   adminTestQuestionRouter,
   adminTestAnswerRouter,
 } = require("./routers/admin/test"); // test
-const {
-  adminDailyDangleRouter,
-  adminDailyDecipherRouter,
-  adminRiddlesRouter,
-} = require("./routers/admin/minigames"); // minigames
+const { adminRiddlesRouter } = require("./routers/admin/minigames"); // minigames
 const {
   adminAnsweredDangleRouter,
   adminAnsweredDecipherRouter,
@@ -143,15 +136,16 @@ app.use("/test_question", clientAuthMiddleware, testQuestionRouter);
 app.use("/test_answer", clientAuthMiddleware, testAnswerRouter);
 
 // minigames router application
-app.use("/dangle", clientAuthMiddleware, dailyDangleRouter);
-app.use("/decipher", clientAuthMiddleware, dailyDecipherRouter);
 app.use("/riddles", clientAuthMiddleware, riddlesRouter);
+app.use("/minigames_dashboard", clientAuthMiddleware, minigameDashboardRouter);
 
 // answers router application
 app.use("/answered_dangle", clientAuthMiddleware, answeredDangleRouter);
 app.use("/answered_decipher", clientAuthMiddleware, answeredDecipherRouter);
 app.use("/answered_questions", clientAuthMiddleware, answeredQuestionsRouter);
 app.use("/answered_riddles", clientAuthMiddleware, answeredRiddlesRouter);
+
+app.use("/words", clientAuthMiddleware, wordsRouter);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -184,8 +178,6 @@ app.use("/admin_test_question", adminAuthMiddleware, adminTestQuestionRouter);
 app.use("/admin_test_answer", adminAuthMiddleware, adminTestAnswerRouter);
 
 // minigames router application
-app.use("/admin_dangle", adminAuthMiddleware, adminDailyDangleRouter);
-app.use("/admin_decipher", adminAuthMiddleware, adminDailyDecipherRouter);
 app.use("/admin_riddles", adminAuthMiddleware, adminRiddlesRouter);
 
 // answers router application

@@ -1,5 +1,4 @@
-const dailyDangleRouter = require("./dailyDangleRouter");
-const dailyDecipherRouter = require("./dailyDecipherRouter");
 const riddlesRouter = require("./riddlesRouter");
+const minigameDashboardRouter = require("./minigameDashboardRouter");
 
-module.exports = { dailyDangleRouter, dailyDecipherRouter, riddlesRouter };
+module.exports = { riddlesRouter, minigameDashboardRouter };

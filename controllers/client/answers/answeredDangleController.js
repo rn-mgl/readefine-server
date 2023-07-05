@@ -3,10 +3,10 @@ const { BadRequestError, NotFoundError } = require("../../../errors");
 const AnsweredDangle = require("../../../models/answers/AnsweredDangle");
 
 const createAnswer = async (req, res) => {
-  const { question_id, answer } = req.body;
+  const { wordId, answer, timer } = req.body;
   const { id } = req.user;
 
-  const answeredDangle = new AnsweredDangle(question_id, id, answer);
+  const answeredDangle = new AnsweredDangle(id, wordId, answer, timer);
 
   const data = await answeredDangle.createAnswer();
 

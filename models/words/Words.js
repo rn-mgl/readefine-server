@@ -57,6 +57,16 @@ class Words {
       console.log(error + "--- get random word ---");
     }
   }
+
+  static async getWord(word) {
+    try {
+      const sql = `SELECT * FROM words WHERE word = '${word}' LIMIT 1;`;
+      const [data, _] = await db.execute(sql);
+      return data[0];
+    } catch (error) {
+      console.log(error + "--- get word ---");
+    }
+  }
 }
 
 module.exports = Words;
