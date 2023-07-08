@@ -69,6 +69,18 @@ class Riddles {
       console.log(error + "--- get riddle ---");
     }
   }
+
+  static async getRandomRiddle() {
+    try {
+      const sql = `SELECT * FROM riddles
+                  ORDER BY RAND()
+                  LIMIT 1;`;
+      const [data, _] = await db.execute(sql);
+      return data[0];
+    } catch (error) {
+      console.log("--- get random riddle ---");
+    }
+  }
 }
 
 module.exports = Riddles;

@@ -3,10 +3,10 @@ const { BadRequestError, NotFoundError } = require("../../../errors");
 const AnsweredRiddles = require("../../../models/answers/AnsweredRiddles");
 
 const createAnswer = async (req, res) => {
-  const { riddle_id, answer, duration } = req.body;
+  const { riddleId, answer, timer } = req.body;
   const { id } = req.user;
 
-  const answeredRiddles = new AnsweredRiddles(riddle_id, id, answer, duration);
+  const answeredRiddles = new AnsweredRiddles(riddleId, id, answer, timer);
 
   const data = await answeredRiddles.createAnswer();
 

@@ -12,16 +12,14 @@ const getAllRiddles = async (req, res) => {
   res.status(StatusCodes.OK).json(riddles);
 };
 
-const getRiddle = async (req, res) => {
-  const { riddle_id } = req.params;
-
-  const riddles = await Riddles.getRiddle(riddle_id);
+const getRandomRiddle = async (req, res) => {
+  const riddles = await Riddles.getRandomRiddle();
 
   if (!riddles) {
-    throw new BadRequestError(`Error in deleting riddle. Try again later.`);
+    throw new BadRequestError(`Error in getting random riddle. Try again later.`);
   }
 
   res.status(StatusCodes.OK).json(riddles);
 };
 
-module.exports = { getAllRiddles, getRiddle };
+module.exports = { getAllRiddles, getRandomRiddle };

@@ -66,4 +66,21 @@ const getRiddle = async (req, res) => {
   res.status(StatusCodes.OK).json(riddles);
 };
 
-module.exports = { createRiddle, deleteRiddle, updateRiddle, getAllRiddles, getRiddle };
+const getRandomRiddle = async (req, res) => {
+  const riddle = await Riddles.getRandomRiddle();
+
+  if (!riddle) {
+    throw new BadRequestError(`Error in getting random riddle. Try again later.`);
+  }
+
+  res.status(StatusCodes.OK).json(riddle);
+};
+
+module.exports = {
+  createRiddle,
+  deleteRiddle,
+  updateRiddle,
+  getAllRiddles,
+  getRiddle,
+  getRandomRiddle,
+};
