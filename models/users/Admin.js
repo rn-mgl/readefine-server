@@ -75,9 +75,23 @@ class Admin {
       const sql = `SELECT * FROM admin
                   WHERE admin_id = '${admin_id}';`;
       const [data, _] = await db.execute(sql);
-      return data;
+      return data[0];
     } catch (error) {
       console.log(error + "--- get admin ---");
+    }
+  }
+
+  static async updateAdmin(admin_id, image, name, surname, username) {
+    try {
+      const sql = `UPDATE admin SET ? 
+                  WHERE admin_id = '${admin_id}'`;
+
+      const adminValues = { image, name, surname, username };
+
+      const [data, _] = await db.query(sql, adminValues);
+      return data;
+    } catch (error) {
+      console.log(error + " --- update admin ---");
     }
   }
 }
