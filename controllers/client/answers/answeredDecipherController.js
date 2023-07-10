@@ -3,10 +3,10 @@ const { BadRequestError, NotFoundError } = require("../../../errors");
 const AnsweredDecipher = require("../../../models/answers/AnsweredDecipher");
 
 const createAnswer = async (req, res) => {
-  const { question_id, answer } = req.body;
+  const { wordId, answer, timer } = req.body;
   const { id } = req.user;
 
-  const answeredDecipher = new AnsweredDecipher(question_id, id, answer);
+  const answeredDecipher = new AnsweredDecipher(id, wordId, answer, timer);
 
   const data = await answeredDecipher.createAnswer();
 
