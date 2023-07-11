@@ -50,7 +50,7 @@ const logInUser = async (req, res) => {
     const token = fns.createToken(user_id, username, email, "user");
 
     const primary = {
-      user_id: user.user_id,
+      userId: user.user_id,
       name: user.name,
       surname: user.surname,
       username: user.username,

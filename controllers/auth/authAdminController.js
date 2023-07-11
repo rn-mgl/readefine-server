@@ -39,7 +39,7 @@ const logInAdmin = async (req, res) => {
     const token = fns.createToken(admin_id, username, email, "admin");
 
     const primary = {
-      admin_id: user.admin_id,
+      adminId: user.admin_id,
       name: user.name,
       surname: user.surname,
       username: user.username,
@@ -69,7 +69,7 @@ const logInAdmin = async (req, res) => {
     const token = fns.createToken(admin_id, username, email, "admin");
 
     const primary = {
-      admin_id: user.admin_id,
+      adminId: user.admin_id,
       name: user.name,
       surname: user.surname,
       username: user.username,

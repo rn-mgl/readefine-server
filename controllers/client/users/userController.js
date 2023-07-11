@@ -25,7 +25,7 @@ const getAllUsers = async (req, res) => {
 };
 
 const getUser = async (req, res) => {
-  const { user_id } = req.body;
+  const { user_id } = req.params;
 
   const user = await User.getUser(user_id);
 
