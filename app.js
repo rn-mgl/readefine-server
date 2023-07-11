@@ -47,6 +47,7 @@ const {
 ///////////////////////////////////////// admin routers /////////////////////////////////////
 const adminDashboardRouter = require("./routers/admin/dashboard/dashboardRouter");
 const adminWordsRouter = require("./routers/admin/words/wordsRouter");
+const { adminActivitiesRouter } = require("./routers/admin/activities/");
 const {
   adminUserRouter,
   adminRouter,
@@ -186,7 +187,11 @@ app.use("/admin_answered_decipher", adminAuthMiddleware, adminAnsweredDecipherRo
 app.use("/admin_answered_questions", adminAuthMiddleware, adminAnsweredQuestionsRouter);
 app.use("/admin_answered_riddles", adminAuthMiddleware, adminAnsweredRiddlesRouter);
 
+// words
 app.use("/admin_words", adminAuthMiddleware, adminWordsRouter);
+
+// activities
+app.use("/admin_activities", adminActivitiesRouter, adminActivitiesRouter);
 
 //////////////////////////////////////////////////////////////////////////////
 
