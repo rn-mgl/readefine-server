@@ -26,10 +26,14 @@ class UserLexile {
                         AND 
                           ul.date_added IN (
                           SELECT DISTINCT date_added
-                          FROM user_lexile AS ul
-                          WHERE u.user_id = ul.user_id
+                          FROM user_lexile AS sub_ul
+                          WHERE u.user_id = sub_ul.user_id
                           ORDER BY date_added ASC
                         )
+                        AND
+                          MONTH(ul.date_added) = MONTH(CURDATE())
+                        AND
+                          YEAR(ul.date_added) = YEAR(CURDATE())
                         ORDER BY date_added ASC;`;
       const [data, _] = await db.execute(sql);
       return data;

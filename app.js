@@ -22,6 +22,7 @@ const wordsRouter = require("./routers/client/words/wordsRouter");
 const { userRouter, userSessionRouter, userLexileRouter } = require("./routers/client/users"); // user
 const { readStoryRouter, storyContentRouter, storyRouter } = require("./routers/client/story"); // story
 const { authAdminRouter, authClientRouter, passwordResetRouter } = require("./routers/auth"); // auth
+const { userActivitiesRouter } = require("./routers/client/activities");
 const {
   rewardRouter,
   userAchievementRouter,
@@ -146,7 +147,11 @@ app.use("/answered_decipher", clientAuthMiddleware, answeredDecipherRouter);
 app.use("/answered_questions", clientAuthMiddleware, answeredQuestionsRouter);
 app.use("/answered_riddles", clientAuthMiddleware, answeredRiddlesRouter);
 
+// word router application
 app.use("/words", clientAuthMiddleware, wordsRouter);
+
+// activities router application
+app.use("/activities", clientAuthMiddleware, userActivitiesRouter);
 
 //////////////////////////////////////////////////////////////////////////////
 
