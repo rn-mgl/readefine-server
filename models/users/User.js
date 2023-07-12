@@ -129,6 +129,18 @@ class User {
       console.log(error + "--- change password ---");
     }
   }
+
+  static async updateUser(user_id, name, surname, username, image) {
+    try {
+      const sql = `UPDATE users SET ? WHERE user_id = '${user_id}';`;
+      const userValues = { name, surname, username, image };
+      const [data, _] = await db.query(sql, userValues);
+
+      return data;
+    } catch (error) {
+      console.log(error + "--- update user ---");
+    }
+  }
 }
 
 module.exports = User;

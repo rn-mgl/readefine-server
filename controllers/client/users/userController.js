@@ -35,5 +35,16 @@ const getUser = async (req, res) => {
 
   res.status(StatusCodes.OK).json(user);
 };
+const updateUser = async (req, res) => {
+  const { name, surname, username, image } = req.body;
+  const { user_id } = req.params;
 
-module.exports = { findWithEmail, getAllUsers, getUser };
+  const data = await User.updateUser(user_id, name, surname, username, image);
+
+  if (!data) {
+    throw new BadRequestError(`Error in updating your profile. Try again later.`);
+  }
+
+  res.status(StatusCodes.OK).json(data);
+};
+module.exports = { findWithEmail, getAllUsers, getUser, updateUser };

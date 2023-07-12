@@ -14,8 +14,8 @@ const cloudinary = require("cloudinary").v2;
 const sendgrid = require("@sendgrid/mail");
 
 ///////////////////////////////////////// global routers /////////////////////////////////////////////////////
-const fileClientRouter = require("./routers/global/fileRouter");
-const fileAdminRouter = require("./routers/global/fileRouter");
+const fileClientRouter = require("./routers/client/files/fileRouter");
+const fileAdminRouter = require("./routers/admin/files/fileRouter");
 
 ///////////////////////////////////////// client routers /////////////////////////////////////////////////////
 const wordsRouter = require("./routers/client/words/wordsRouter");

@@ -1,8 +1,8 @@
 const cloudinary = require("cloudinary").v2;
 const { StatusCodes } = require("http-status-codes");
-const { BadRequestError } = require("../../errors");
+const { BadRequestError } = require("../../../errors");
 
-const uploadAdminFile = async (req, res) => {
+const uploadFile = async (req, res) => {
   const file = req.files.file;
   const tempFilePath = file.tempFilePath;
   const name = file.name;
@@ -20,8 +20,4 @@ const uploadAdminFile = async (req, res) => {
   res.status(StatusCodes.OK).json({ url: data.secure_url });
 };
 
-const uploadClientFile = async (req, res) => {
-  console.log(req);
-};
-
-module.exports = { uploadAdminFile, uploadClientFile };
+module.exports = { uploadFile };
