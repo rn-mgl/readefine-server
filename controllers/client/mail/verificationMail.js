@@ -9,11 +9,11 @@ const sendVerificationEmail = async (sendTo, toName, token) => {
     to: sendTo,
     subject: "Account Verification",
     text: "Click the link to verify your account.",
-    html: `Hello ${toName},
+    html: `<h1> Hello <i>${toName}</i></h1>
 
         <br /><br />
 
-        You registered an account on Readefine, 
+        You <b>registered an account</b> on Readefine, 
 
         <br /><br />
 
@@ -22,11 +22,13 @@ const sendVerificationEmail = async (sendTo, toName, token) => {
 
         <br /><br />
 
-        <a href="${url}/${token}">Verify Readefine Account</a> 
+        <a href="${url}/${token}">
+          <h4>Verify My Readefine Account</h4>
+        </a> 
 
         <br /><br />
 
-        This link will expire in 24 hours. If you did not sign up for a Readefine account,
+        This link will expire in <b>24 hours.</b> If you did not sign up for a Readefine account,
         you can safely ignore this email.
 
         <br /><br />
@@ -35,7 +37,7 @@ const sendVerificationEmail = async (sendTo, toName, token) => {
 
         <br /><br />
 
-        Readefine | Developers.`,
+        Readefine | <i>Developers.</i>`,
   };
 
   const data = await sendgrid.send(message);

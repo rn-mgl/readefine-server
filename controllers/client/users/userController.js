@@ -1,6 +1,8 @@
 const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../../../errors");
 const User = require("../../../models/users/User");
+const UserLexile = require("../../../models/users/UserLexile");
+const lexile = require("../../../lexileMap");
 
 const findWithEmail = async (req, res) => {
   const { email } = req.user;
@@ -35,16 +37,45 @@ const getUser = async (req, res) => {
 
   res.status(StatusCodes.OK).json(user);
 };
+
 const updateUser = async (req, res) => {
-  const { name, surname, username, image } = req.body;
-  const { user_id } = req.params;
+  const { type } = req.body;
 
-  const data = await User.updateUser(user_id, name, surname, username, image);
+  if (type === "main") {
+    const { name, surname, username, image } = req.body;
+    const { user_id } = req.params;
 
-  if (!data) {
-    throw new BadRequestError(`Error in updating your profile. Try again later.`);
+    const data = await User.updateUser(user_id, name, surname, username, image);
+
+    if (!data) {
+      throw new BadRequestError(`Error in updating your profile. Try again later.`);
+    }
+
+    res.status(StatusCodes.OK).json(data);
+    return;
+  } else if (type === "grade") {
+    const { chosenGrade } = req.body;
+    const { user_id } = req.params;
+
+    const data = await User.updateGradeLevel(user_id, chosenGrade);
+
+    if (!data) {
+      throw new BadRequestError(`Error in updating your grade level. Try again later.`);
+    }
+
+    const lexileLevel = lexile[chosenGrade];
+
+    const newLexile = new UserLexile(user_id, lexileLevel);
+
+    const lexileData = await newLexile.createLexile();
+
+    if (!lexileData) {
+      throw new BadRequestError(`Error in updating your lexile level. Try again later.`);
+    }
+
+    res.status(StatusCodes.OK).json(data);
+    return;
   }
-
-  res.status(StatusCodes.OK).json(data);
 };
+
 module.exports = { findWithEmail, getAllUsers, getUser, updateUser };

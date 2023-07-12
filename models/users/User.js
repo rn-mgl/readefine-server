@@ -141,6 +141,18 @@ class User {
       console.log(error + "--- update user ---");
     }
   }
+
+  static async updateGradeLevel(user_id, grade_level) {
+    try {
+      const sql = `UPDATE users SET ? WHERE user_id = '${user_id}';`;
+      const userValues = { grade_level };
+
+      const [data, _] = await db.query(sql, userValues);
+      return data;
+    } catch (error) {
+      console.log(error + "--- update grade level ---");
+    }
+  }
 }
 
 module.exports = User;
