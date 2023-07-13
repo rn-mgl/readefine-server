@@ -3,15 +3,17 @@ const { BadRequestError, NotFoundError } = require("../../../errors");
 const UserSession = require("../../../models/users/UserSession");
 
 const createSession = async (req, res) => {
-  const { id } = req.body;
+  const { type, id } = req.body;
 
-  const userSession = new UserSession(id);
+  const userSession = new UserSession(id, type);
 
-  if (!userSession) {
+  const newSession = await userSession.createSession();
+
+  if (!newSession) {
     throw new BadRequestError(`Error in creating session. Try again later.`);
   }
 
-  res.status(StatusCodes.OK).json(userSession);
+  res.status(StatusCodes.OK).json(newSession);
 };
 
 module.exports = { createSession };

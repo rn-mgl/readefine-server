@@ -7,37 +7,82 @@ class UserActivities {
     try {
       const sqlDangle = `SELECT * FROM answered_dangle AS ad
                         INNER JOIN words AS w ON ad.word_id = w.word_id
-                        WHERE answered_by = '${user_id}';`;
+                        WHERE answered_by = '${user_id}'
+                        ORDER BY ad.date_answered DESC;`;
 
       const sqlDecipher = `SELECT * FROM answered_decipher AS ad
                           INNER JOIN words AS w ON ad.word_id = w.word_id
-                          WHERE answered_by = '${user_id}';`;
+                          WHERE answered_by = '${user_id}'
+                          ORDER BY ad.date_answered DESC;`;
 
-      const sqlRiddles = `SELECT ar.answer_id, r.riddle, r.answer AS correct_answer, ar.answer AS my_answer FROM answered_riddles AS ar
+      const sqlRiddles = `SELECT ar.answer_id, ar.date_answered, r.riddle, r.answer AS correct_answer, ar.answer AS my_answer FROM answered_riddles AS ar
                           INNER JOIN riddles AS r ON ar.riddle_id = r.riddle_id
-                          WHERE answered_by = '${user_id}';`;
+                          WHERE answered_by = '${user_id}'
+                          ORDER BY ar.date_answered DESC;`;
 
-      const sqlQuestions = `SELECT aq.answer_id, aq.answer AS my_answer, tq.question, ta.answer AS correct_answer 
+      const sqlQuestions = `SELECT aq.answer_id, aq.date_answered, aq.answer AS my_answer, tq.question, ta.answer AS correct_answer 
                           FROM answered_question AS aq
                           INNER JOIN test_question AS tq ON aq.question_id = tq.question_id
                           INNER JOIN test_answer AS ta on tq.question_id = ta.question_id
-                          WHERE answered_by = '${user_id}';`;
+                          WHERE answered_by = '${user_id}'
+                          ORDER BY aq.date_answered DESC;`;
 
-      const sqlReadStory = `SELECT * FROM read_story AS rs
-                            INNER JOIN story AS s ON rs.story_id = s.story_id
-                            WHERE rs.read_by = '${user_id}';`;
+      const sqlReadStory = `SELECT s.added_by, s.author, s.book_cover, 
+                            s.date_added, s.genre, s.lexile, s.story_id, t.test_id, s.title, rs.read_by,
 
-      const sqlTakenTest = `SELECT * FROM taken_test AS tt
-                            INNER JOIN test AS t ON tt.test_id = t.test_id
-                            INNER JOIN story AS s ON t.story_id = s.story_id
-                            WHERE tt.taken_by = '${user_id}';`;
+                            CASE
+                              WHEN rs.read_by = '${user_id}' THEN 1 ELSE 0
+                            END AS is_read,
+
+                            CASE
+                              WHEN tt.taken_by = '${user_id}' THEN 1 ELSE 0
+                            END AS is_taken
+
+                            FROM story AS s
+
+                            LEFT JOIN test AS t
+                            ON s.story_id = t.story_id
+
+                            LEFT JOIN read_story AS rs
+                            ON s.story_id = rs.story_id
+                            AND rs.read_by = '${user_id}'
+
+                            LEFT JOIN taken_test AS tt
+                            ON t.test_id = tt.test_id
+                            AND tt.taken_by = '${user_id}'
+                            
+                            WHERE rs.read_by = '${user_id}'
+                            ORDER BY rs.date_read DESC;`;
+
+      const sqlTakenTest = `SELECT t.test_id, t.story_id, t.date_added, t.added_by, 
+                            s.story_id, s.book_cover, s.title, s.author, s.lexile, s.genre, s.added_by, s.date_added, 
+                            tt.score,
+
+                            CASE 
+                              WHEN tt.taken_by = '${user_id}' THEN 1 ELSE 0
+                            END AS is_taken
+
+                            FROM test AS t
+
+                            INNER JOIN story AS s ON
+                            t.story_id = s.story_id
+
+                            LEFT JOIN taken_test AS tt ON
+                            t.test_id = tt.test_id
+                            AND tt.taken_by = '${user_id}'
+                            
+                            WHERE tt.taken_by = '${user_id}'
+                            ORDER BY tt.date_taken DESC;`;
 
       const sqlAchievement = `SELECT * FROM user_achievement AS ua 
                             INNER JOIN achievement AS a ON ua.achievement_id = a.achievement_id
-                            WHERE ua.user_id = '${user_id}';`;
+                            INNER JOIN reward AS r ON a.reward_id = r.reward_id
+                            WHERE ua.user_id = '${user_id}'
+                            ORDER BY ua.date_achieved DESC;`;
 
       const sqlSession = `SELECT * FROM user_session
-                          WHERE user_id = '${user_id}';`;
+                          WHERE user_id = '${user_id}'
+                          ORDER BY date_logged DESC;`;
 
       const [dangleData, _1] = await db.execute(sqlDangle);
       const [decipherData, _2] = await db.execute(sqlDecipher);
