@@ -5,31 +5,45 @@ class AdminActivities {
 
   static async getAllAdminActivities(admin_id) {
     try {
-      const sqlAchievement = `SELECT * FROM achievement WHERE added_by = '${admin_id}';`;
+      const sqlAchievement = `SELECT * FROM achievement 
+                              WHERE added_by = '${admin_id}'
+                              ORDER BY date_added DESC;`;
 
       const sqlReward = `SELECT * FROM reward AS r
                         INNER JOIN achievement AS a ON r.reward_id = a.reward_id
-                        WHERE r.added_by = '${admin_id}';`;
+                        WHERE r.added_by = '${admin_id}'
+                        ORDER BY r.date_added DESC;`;
 
-      const sqlRiddles = `SELECT * FROM riddles WHERE added_by = '${admin_id}';`;
+      const sqlRiddles = `SELECT * FROM riddles 
+                        WHERE added_by = '${admin_id}'
+                        ORDER BY date_added DESC;`;
 
-      const sqlStory = `SELECT * FROM story WHERE added_by = '${admin_id}';`;
+      const sqlStory = `SELECT * FROM story 
+                       WHERE added_by = '${admin_id}'
+                       ORDER BY date_added DESC;`;
 
       const sqlStoryContent = `SELECT * FROM story_content AS sc 
                                 INNER JOIN story AS s ON sc.story_id = s.story_id
-                                WHERE sc.added_by = '${admin_id}';`;
+                                WHERE sc.added_by = '${admin_id}'
+                                ORDER BY sc.date_added DESC;`;
 
       const sqlTest = `SELECT * FROM test AS t 
                         INNER JOIN story AS s ON t.story_id = s.story_id
-                        WHERE t.added_by = '${admin_id}';`;
+                        WHERE t.added_by = '${admin_id}'
+                        ORDER BY t.date_added DESC;`;
 
       const sqlTestAnswer = `SELECT * FROM test_answer AS ta
                             INNER JOIN test_question AS tq ON ta.question_id = tq.question_id
                             INNER JOIN test AS t ON tq.test_id = t.test_id
                             INNER JOIN story AS s ON t.story_id = s.story_id
-                            WHERE ta.added_by = '${admin_id}';`;
+                            WHERE ta.added_by = '${admin_id}'
+                            ORDER BY ta.date_added DESC;`;
 
-      const sqlTestQuestion = `SELECT * FROM test_question WHERE added_by = '${admin_id}';`;
+      const sqlTestQuestion = `SELECT * FROM test_question AS tq
+                              INNER JOIN test AS t ON tq.test_id = t.test_id
+                              INNER JOIN story AS s ON t.story_id = s.story_id
+                              WHERE tq.added_by = '${admin_id}'
+                              ORDER BY tq.date_added DESC;`;
 
       const [achievementData, _1] = await db.execute(sqlAchievement);
       const [rewardData, _2] = await db.execute(sqlReward);
