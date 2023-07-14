@@ -6,7 +6,7 @@ class UserAchievement {
     this.user_id = user_id;
   }
 
-  async recieveAchievement() {
+  async receiveAchievement() {
     try {
       const sql = "INSERT INTO user_achievement SET ?;";
       const achievementValues = {
@@ -46,6 +46,30 @@ class UserAchievement {
       return data;
     } catch (error) {
       console.log(error + "--- get achievement ---");
+    }
+  }
+
+  static async checkSessionAchievement(user_id) {
+    try {
+      const sql = `SELECT * FROM achievement AS a
+                    INNER JOIN reward AS r ON a.reward_id = r.reward_id
+                    WHERE
+                      achievement_type = 'user_session'
+                    AND
+                      goal <= (
+                        SELECT COUNT(session_id) AS sessions 
+                        FROM user_session 
+                        WHERE user_id = '${user_id}'
+                      )
+                    AND
+                      achievement_id NOT IN (
+                        SELECT ua.achievement_id FROM user_achievement AS ua 
+                        WHERE user_id = '${user_id}' 
+                      );`;
+      const [data, _] = await db.query(sql);
+      return data;
+    } catch (error) {
+      console.log(error + "--- check session achievement ---");
     }
   }
 }
