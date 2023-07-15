@@ -78,7 +78,7 @@ class UserActivities {
                             INNER JOIN achievement AS a ON ua.achievement_id = a.achievement_id
                             INNER JOIN reward AS r ON a.reward_id = r.reward_id
                             WHERE ua.user_id = '${user_id}'
-                            ORDER BY ua.date_achieved DESC;`;
+                            ORDER BY ua.date_updated DESC;`;
 
       const sqlSession = `SELECT * FROM user_session
                           WHERE user_id = '${user_id}'

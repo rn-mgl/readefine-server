@@ -2,13 +2,13 @@ const { StatusCodes } = require("http-status-codes");
 const { BadRequestError, NotFoundError } = require("../../../errors");
 const Achievement = require("../../../models/achievements/Achievement");
 
-const getAllAchievements = async (req, res) => {
-  const { searchFilter, goalRangeFilter, sortFilter, dateRangeFilter } = req.query;
-  const achievement = await Achievement.getAllAchievements(
+const getAllUserAchievements = async (req, res) => {
+  const { searchFilter, goalRangeFilter, sortFilter } = req.query;
+
+  const achievement = await Achievement.getAllUserAchievements(
     searchFilter,
     goalRangeFilter,
-    sortFilter,
-    dateRangeFilter
+    sortFilter
   );
 
   if (!achievement) {
@@ -18,4 +18,4 @@ const getAllAchievements = async (req, res) => {
   res.status(StatusCodes.OK).json(achievement);
 };
 
-module.exports = { getAllAchievements };
+module.exports = { getAllUserAchievements };

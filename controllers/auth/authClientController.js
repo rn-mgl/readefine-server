@@ -1,11 +1,15 @@
 const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../../errors");
+
 const User = require("../../models/users/User");
-const { sendVerificationEmail } = require("../client/mail/verificationMail");
+const UserLexile = require("../../models/users/UserLexile");
+const UserAchievement = require("../../models/achievements/UserAchievement");
+
 const fns = require("../functionController");
 const validator = require("validator");
 const jwt = require("jsonwebtoken");
-const UserLexile = require("../../models/users/UserLexile");
+
+const { sendVerificationEmail } = require("../client/mail/verificationMail");
 
 const verifyUser = async (req, res) => {
   const { token } = req.body;
@@ -135,6 +139,12 @@ const signUpUser = async (req, res) => {
   }
 
   const token = fns.createToken(data.insertId, username, email, "user");
+
+  const achievementAssign = await UserAchievement.assignUserAchievements(data.insertId);
+
+  if (!achievementAssign) {
+    throw new BadRequestError(`Error in assigning achievements. Try again later.`);
+  }
 
   res.status(StatusCodes.OK).json({ data, token });
 

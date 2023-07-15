@@ -34,26 +34,50 @@ const checkUserAchievement = async (req, res) => {
   const { type } = req.query;
   const { user_id } = req.params;
 
-  if (type === "session") {
-    const data = await UserAchievement.checkSessionAchievement(user_id);
+  if (type === "days online") {
+    const data = await UserAchievement.checkDaysOnlineAchievement(user_id);
 
     if (!data) {
       throw new BadRequestError(`Error in checking achievements. Try again later.`);
     }
 
-    const achievement = data[0];
+    res.status(StatusCodes.OK).json(data);
+    return;
+  }
+};
 
-    if (achievement?.achievement_id) {
-      const userAchievement = new UserAchievement(achievement?.achievement_id, user_id);
+const updateUserAchievements = async (req, res) => {
+  const { type, specifics, userId } = req.body;
 
-      const newAchievement = await userAchievement.receiveAchievement();
+  // check type to be updated
+  if (type === "user_session" && specifics === "days_online") {
+    // increment points
+    const data = await UserAchievement.incrementSessionPoints(userId);
 
-      if (!newAchievement) {
-        throw new BadRequestError(`Error in receiving achievement. Try again later.`);
-      }
+    if (!data) {
+      throw new BadRequestError(`Error in updating your achievement points. Try again later.`);
     }
 
-    res.status(StatusCodes.OK).json(achievement);
+    // check if an achievement is accomplished
+    const check = await UserAchievement.checkDaysOnlineAchievement(userId);
+
+    if (!check) {
+      throw new BadRequestError(`Error in checking your achievement points. Try again later.`);
+    }
+
+    // see those achievements for it to not be repeated
+    check?.map(async (achievement) => {
+      const seeAchievement = await UserAchievement.seeUserAchievements(
+        achievement.user_achievement_id
+      );
+
+      if (!seeAchievement) {
+        throw new BadRequestError(`Error in seeing your achievement points. Try again later.`);
+      }
+    });
+
+    // return array of achievements
+    res.status(StatusCodes.OK).json(check);
     return;
   }
 };
@@ -63,4 +87,5 @@ module.exports = {
   getUserAchievement,
   getAllUserAchievements,
   checkUserAchievement,
+  updateUserAchievements,
 };

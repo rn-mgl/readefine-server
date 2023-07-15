@@ -100,6 +100,27 @@ class Achievement {
     }
   }
 
+  static async getAllUserAchievements(searchFilter, goalRangeFilter, sortFilter) {
+    const goalFrom = goalRangeFilter.from ? goalRangeFilter.from : 0;
+    const goalTo = goalRangeFilter.to ? goalRangeFilter.to : 1400;
+    try {
+      const sql = `SELECT * FROM achievement AS a
+                  INNER JOIN reward AS r ON
+                  a.reward_id = r.reward_id
+                  WHERE ${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
+                  AND 
+                      goal >= '${goalFrom}' 
+                  AND 
+                      goal <= '${goalTo}'
+                  ORDER BY ${sortFilter.toSort} ${sortFilter.sortMode};`;
+
+      const [data, _] = await db.execute(sql);
+      return data;
+    } catch (error) {
+      console.log(error + "--- get all achievements ---");
+    }
+  }
+
   static async getAchievement(achievement_id) {
     try {
       const sql = `SELECT * FROM achievement AS a
