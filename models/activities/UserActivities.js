@@ -74,11 +74,28 @@ class UserActivities {
                             WHERE tt.taken_by = '${user_id}'
                             ORDER BY tt.date_taken DESC;`;
 
-      const sqlAchievement = `SELECT * FROM user_achievement AS ua 
-                            INNER JOIN achievement AS a ON ua.achievement_id = a.achievement_id
-                            INNER JOIN reward AS r ON a.reward_id = r.reward_id
-                            WHERE ua.user_id = '${user_id}'
-                            ORDER BY ua.date_updated DESC;`;
+      const sqlAchievement = `SELECT ua.user_achievement_id, ua.user_id, ua.points,
+
+                              a.achievement_id, a.achievement_name, a.achievement_type, a.specifics, a.task, a.goal,
+
+                              r.reward_id, r.reward_name, r.reward_type, r.reward, r.description,
+
+                              CASE
+                                WHEN ua.points >= a.goal THEN 1 ELSE 0
+                              END AS is_received
+
+                              FROM user_achievement AS ua 
+
+                              INNER JOIN achievement AS a 
+                              ON ua.achievement_id = a.achievement_id
+
+                              INNER JOIN reward AS r 
+                              ON a.reward_id = r.reward_id
+
+                              WHERE ua.user_id = '${user_id}'
+                              AND ua.points >= a.goal
+                              
+                              ORDER BY ua.date_updated DESC;`;
 
       const sqlSession = `SELECT * FROM user_session
                           WHERE user_id = '${user_id}'
