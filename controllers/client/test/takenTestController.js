@@ -3,13 +3,14 @@ const { BadRequestError, NotFoundError } = require("../../../errors");
 const TakenTest = require("../../../models/test/TakenTest");
 const AnsweredQuestion = require("../../../models/answers/AnsweredQuestion");
 const UserLexile = require("../../../models/users/UserLexile");
+const UserAchievement = require("../../../models/achievements/UserAchievement");
 
 const takeTest = async (req, res) => {
   const { id } = req.user;
-  const { selectedChoices, score, legibleForGrowth, lexile } = req.body;
-  const { taken_id } = req.params;
+  const { selectedChoices, testId, score, legibleForGrowth, lexile } = req.body;
 
-  const takenTest = new TakenTest(id, taken_id, score);
+  // record test
+  const takenTest = new TakenTest(id, testId, score);
 
   const data = await takenTest.takeTest();
 
@@ -17,10 +18,12 @@ const takeTest = async (req, res) => {
     throw new BadRequestError(`Error in recording the test you took. Try again later.`);
   }
 
+  // record answers
   for (let i = 1; i <= 10; i++) {
     const { answer, questionId } = selectedChoices[`choice${i}`];
 
-    const answerQuestion = new AnsweredQuestion(questionId, id, answer);
+    const answerQuestion = new AnsweredQuestion(questionId, id, answer, data.insertId);
+
     const newAnswer = answerQuestion.createAnswer();
 
     if (!newAnswer) {
@@ -28,6 +31,7 @@ const takeTest = async (req, res) => {
     }
   }
 
+  // check if user took test within their lexile range
   if (legibleForGrowth) {
     const toAdd = Math.floor(score / 2);
 
@@ -38,9 +42,13 @@ const takeTest = async (req, res) => {
     if (!newLexileRecord) {
       throw new BadRequestError(`Error in recording your new lexile. Try again later.`);
     }
+
+    // return to add to make request in front end for user lexile points
+    res.status(StatusCodes.OK).json({ toAdd });
+    return;
   }
 
-  res.status(StatusCodes.OK).json(data);
+  res.status(StatusCodes.OK).json({ toAdd: 0 });
 };
 
 const getAllTakenTests = async (req, res) => {

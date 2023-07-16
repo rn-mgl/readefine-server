@@ -1,10 +1,11 @@
 const db = require("../../db/connection");
 
 class AnsweredQuestion {
-  constructor(question_id, answered_by, answer) {
+  constructor(question_id, answered_by, answer, taken_id) {
     this.question_id = question_id;
     this.answered_by = answered_by;
     this.answer = answer;
+    this.taken_id = taken_id;
   }
 
   async createAnswer() {
@@ -14,6 +15,7 @@ class AnsweredQuestion {
         question_id: this.question_id,
         answered_by: this.answered_by,
         answer: this.answer,
+        taken_id: this.taken_id,
       };
       const [data, _] = await db.query(sql, answerValues);
       return data;

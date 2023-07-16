@@ -17,7 +17,21 @@ const receiveAchievement = async (req, res) => {
   res.status(StatusCodes.OK).json(data);
 };
 
-const getAllUserAchievements = async (req, res) => {};
+const getAllUserAchievements = async (req, res) => {
+  const { searchFilter, goalRangeFilter, sortFilter } = req.query;
+
+  const achievement = await UserAchievement.getAllUserAchievements(
+    searchFilter,
+    goalRangeFilter,
+    sortFilter
+  );
+
+  if (!achievement) {
+    throw new BadRequestError(`Error in getting all achievements. Try again later.`);
+  }
+
+  res.status(StatusCodes.OK).json(achievement);
+};
 
 const getUserAchievement = async (req, res) => {
   const { user_achievement_id } = req.params;
@@ -60,6 +74,39 @@ const updateUserAchievements = async (req, res) => {
 
     // check if an achievement is accomplished
     const check = await UserAchievement.checkDaysOnlineAchievement(userId);
+
+    if (!check) {
+      throw new BadRequestError(`Error in checking your achievement points. Try again later.`);
+    }
+
+    // see those achievements for it to not be repeated
+    check?.map(async (achievement) => {
+      const seeAchievement = await UserAchievement.seeUserAchievements(
+        achievement.user_achievement_id
+      );
+
+      if (!seeAchievement) {
+        throw new BadRequestError(`Error in seeing your achievement points. Try again later.`);
+      }
+    });
+
+    // return array of achievements
+    res.status(StatusCodes.OK).json(check);
+    return;
+  }
+
+  if (type === "user_lexile" && specifics === "lexile_growth") {
+    const { toAdd } = req.body;
+
+    // increment points
+    const data = await UserAchievement.incrementLexilePoints(userId, toAdd);
+
+    if (!data) {
+      throw new BadRequestError(`Error in updating your achievement points. Try again later.`);
+    }
+
+    // check if an achievement is accomplished
+    const check = await UserAchievement.checkLexileGrowthAchievement(userId);
 
     if (!check) {
       throw new BadRequestError(`Error in checking your achievement points. Try again later.`);

@@ -24,11 +24,11 @@ class UserLexile {
                         WHERE 
                           u.user_id = '${user_id}'
                         AND 
-                          ul.date_added IN (
-                          SELECT DISTINCT date_added
+                          DATE(ul.date_added) IN (
+                          SELECT DISTINCT DATE(date_added)
                           FROM user_lexile AS sub_ul
                           WHERE u.user_id = sub_ul.user_id
-                          ORDER BY date_added ASC
+                          ORDER BY date_added DESC
                         )
                         AND
                           MONTH(ul.date_added) = MONTH(CURDATE())

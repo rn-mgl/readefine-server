@@ -21,10 +21,29 @@ class UserAchievement {
     }
   }
 
-  static async getAllUserAchievements() {
+  static async getAllUserAchievements(searchFilter, goalRangeFilter, sortFilter) {
+    const goalFrom = goalRangeFilter.from ? goalRangeFilter.from : 0;
+    const goalTo = goalRangeFilter.to ? goalRangeFilter.to : 1400;
     try {
+      const sql = `SELECT * FROM user_achievement AS ua
+
+                  INNER JOIN achievement AS a 
+                  ON ua.achievement_id = a.achievement_id
+
+                  INNER JOIN reward AS r 
+                  ON a.reward_id = r.reward_id
+                  
+                  WHERE ${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
+                  AND 
+                      goal >= '${goalFrom}' 
+                  AND 
+                      goal <= '${goalTo}'
+                  ORDER BY ${sortFilter.toSort} ${sortFilter.sortMode};`;
+
+      const [data, _] = await db.execute(sql);
+      return data;
     } catch (error) {
-      console.log(error + "--- get all achievements ---");
+      console.log(error + "--- get all user achievements ---");
     }
   }
 
@@ -80,6 +99,38 @@ class UserAchievement {
       return data;
     } catch (error) {
       console.log(error + "--- check session achievement ---");
+    }
+  }
+
+  static async incrementLexilePoints(user_id, lexile) {
+    try {
+      const sql = `UPDATE user_achievement AS ua
+                  INNER JOIN achievement AS a ON ua.achievement_id = a.achievement_id
+                  SET ua.points = ua.points + ${lexile}
+                  WHERE a.achievement_type = 'user_lexile'
+                  AND a.specifics = 'lexile_growth'
+                  AND ua.user_id = '${user_id}';`;
+      const [data, _] = await db.execute(sql);
+      return data;
+    } catch (error) {
+      console.log(error + "--- increment lexile points ---");
+    }
+  }
+
+  static async checkLexileGrowthAchievement(user_id) {
+    try {
+      const sql = `SELECT * FROM user_achievement AS ua
+                  INNER JOIN achievement AS a ON ua.achievement_id = a.achievement_id
+                  INNER JOIN reward AS r ON a.reward_id = r.reward_id
+                  WHERE ua.points >= a.goal
+                  AND ua.is_seen = '0'
+                  AND a.achievement_type = 'user_lexile'
+                  AND a.specifics = 'lexile_growth'
+                  AND ua.user_id = '${user_id}';`;
+      const [data, _] = await db.query(sql);
+      return data;
+    } catch (error) {
+      console.log(error + "--- check lexile growth achievement ---");
     }
   }
 
