@@ -3,7 +3,8 @@ const { BadRequestError, NotFoundError } = require("../../../errors");
 const UserSession = require("../../../models/users/UserSession");
 
 const createSession = async (req, res) => {
-  const { type, id } = req.body;
+  const { type } = req.body;
+  const { id } = req.user;
 
   const userSession = new UserSession(id, type);
 

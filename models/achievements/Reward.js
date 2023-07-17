@@ -123,6 +123,19 @@ class Reward {
       console.log(error + "--- select reward ---");
     }
   }
+
+  static async getUserReward(reward_id) {
+    try {
+      const sql = `SELECT * FROM reward AS r
+                    INNER JOIN achievement AS a ON r.reward_id = a.reward_id
+                    INNER JOIN user_achievement AS ua ON a.achievement_id = ua.achievement_id
+                    WHERE r.reward_id = '${reward_id}';`;
+      const [data, _] = await db.execute(sql);
+      return data[0];
+    } catch (error) {
+      console.log(error + "--- select reward ---");
+    }
+  }
 }
 
 module.exports = Reward;

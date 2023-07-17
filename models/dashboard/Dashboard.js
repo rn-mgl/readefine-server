@@ -56,8 +56,6 @@ class Dashboard {
                     INNER JOIN achievement AS a ON ua.achievement_id = a.achievement_id
                     WHERE user_id = '${user_id}' AND ua.points >= a.goal) AS achievementCount,
 
-                  (SELECT COUNT(user_achievement_id) FROM user_achievement WHERE user_id = '${user_id}') AS rewardCount,
-
                   (SELECT COUNT(answer_id) FROM answered_riddles WHERE answered_by = '${user_id}') AS riddleCount`;
 
       const [data, _] = await db.execute(sql);

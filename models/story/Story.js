@@ -58,9 +58,17 @@ class Story {
     const dateTo = dateRangeFilter.to ? dateRangeFilter.to : new Date();
     try {
       const sql = `SELECT s.added_by, s.author, s.book_cover, 
-                  s.date_added, s.genre, s.lexile, s.story_id, t.test_id, s.title FROM story AS s
+                  s.date_added, s.genre, s.lexile, s.story_id, t.test_id, s.title,
+
+                  CASE 
+                    WHEN t.story_id IS NOT NULL THEN 1 ELSE 0
+                  END AS has_test
+                  
+                  FROM story AS s
+
                   LEFT JOIN test AS t
                   ON s.story_id = t.story_id
+                  
                   WHERE s.${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
                   AND 
                       s.lexile >= '${lexileFrom}' 

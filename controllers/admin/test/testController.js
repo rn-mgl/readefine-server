@@ -1,14 +1,14 @@
 const { StatusCodes } = require("http-status-codes");
-const { BadRequestError, NotFoundError } = require("../../../errors");
+const { BadRequestError } = require("../../../errors");
 const Test = require("../../../models/test/Test");
 const TestQuestion = require("../../../models/test/TestQuestion");
 const TestAnswer = require("../../../models/test/TestAnswer");
 
 const createTest = async (req, res) => {
-  const { story_id, pages } = req.body;
+  const { storyId, pages } = req.body;
   const { id } = req.user;
 
-  const test = new Test(story_id, id);
+  const test = new Test(storyId, id);
 
   const data = await test.createTest();
 

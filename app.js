@@ -112,7 +112,6 @@ app.use("/readefine_client_file", clientAuthMiddleware, fileClientRouter);
 app.use("/auth_admin", authAdminRouter);
 app.use("/auth_client", authClientRouter);
 app.use("/auth_client_password_reset", passwordResetRouter);
-app.use("/session", userSessionRouter);
 
 // user archives
 app.use("/archives", clientAuthMiddleware, archivesRouter);
@@ -149,6 +148,9 @@ app.use("/answered_riddles", clientAuthMiddleware, answeredRiddlesRouter);
 
 // word router application
 app.use("/words", clientAuthMiddleware, wordsRouter);
+
+// user session application
+app.use("/session", clientAuthMiddleware, userSessionRouter);
 
 // activities router application
 app.use("/activities", clientAuthMiddleware, userActivitiesRouter);

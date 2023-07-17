@@ -25,6 +25,18 @@ const getReward = async (req, res) => {
   res.status(StatusCodes.OK).json(data);
 };
 
+const getUserReward = async (req, res) => {
+  const { reward_id } = req.params;
+
+  const data = await Reward.getUserReward(reward_id);
+
+  if (!data) {
+    throw new BadRequestError(`Error in getting reward. Try again later.`);
+  }
+
+  res.status(StatusCodes.OK).json(data);
+};
+
 const getAllUserRewards = async (req, res) => {
   const { id } = req.user;
   const { searchFilter, sortFilter, showFilter } = req.query;
@@ -37,4 +49,4 @@ const getAllUserRewards = async (req, res) => {
   res.status(StatusCodes.OK).json(userAchievement);
 };
 
-module.exports = { getAllRewards, getReward, getAllUserRewards };
+module.exports = { getAllRewards, getReward, getAllUserRewards, getUserReward };

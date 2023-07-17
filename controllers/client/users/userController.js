@@ -1,5 +1,5 @@
 const { StatusCodes } = require("http-status-codes");
-const { NotFoundError, BadRequestError } = require("../../../errors");
+const { NotFoundError, BadRequestError, UnauthorizedError } = require("../../../errors");
 const User = require("../../../models/users/User");
 const UserLexile = require("../../../models/users/UserLexile");
 const lexile = require("../../../lexileMap");
@@ -16,18 +16,13 @@ const findWithEmail = async (req, res) => {
   res.status(StatusCodes.OK).json(user);
 };
 
-const getAllUsers = async (req, res) => {
-  const user = await User.getAllUsers();
-
-  if (!user) {
-    throw new BadRequestError(`Error in getting all users. Try again later.`);
-  }
-
-  res.status(StatusCodes.OK).json(user);
-};
-
 const getUser = async (req, res) => {
   const { user_id } = req.params;
+  const { id } = req.user;
+
+  if (parseInt(user_id) !== id) {
+    throw new UnauthorizedError(`You can only access your own information.`);
+  }
 
   const user = await User.getUser(user_id);
 
@@ -40,10 +35,15 @@ const getUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   const { type } = req.body;
+  const { id } = req.user;
 
   if (type === "main") {
     const { name, surname, username, image } = req.body;
     const { user_id } = req.params;
+
+    if (parseInt(user_id) !== id) {
+      throw new UnauthorizedError(`You can only access your own information.`);
+    }
 
     const data = await User.updateUser(user_id, name, surname, username, image);
 
@@ -56,6 +56,10 @@ const updateUser = async (req, res) => {
   } else if (type === "grade") {
     const { chosenGrade } = req.body;
     const { user_id } = req.params;
+
+    if (parseInt(user_id) !== id) {
+      throw new UnauthorizedError(`You can only access your own information.`);
+    }
 
     const data = await User.updateGradeLevel(user_id, chosenGrade);
 
@@ -78,4 +82,4 @@ const updateUser = async (req, res) => {
   }
 };
 
-module.exports = { findWithEmail, getAllUsers, getUser, updateUser };
+module.exports = { findWithEmail, getUser, updateUser };
