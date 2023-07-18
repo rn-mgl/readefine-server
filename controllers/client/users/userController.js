@@ -3,6 +3,7 @@ const { NotFoundError, BadRequestError, UnauthorizedError } = require("../../../
 const User = require("../../../models/users/User");
 const UserLexile = require("../../../models/users/UserLexile");
 const lexile = require("../../../lexileMap");
+const { isMatchedPassword, hashPassword } = require("../../functionController");
 
 const findWithEmail = async (req, res) => {
   const { email } = req.user;
@@ -79,6 +80,37 @@ const updateUser = async (req, res) => {
 
     res.status(StatusCodes.OK).json(data);
     return;
+  } else if (type === "password") {
+    const { oldPassword, newPassword } = req.body;
+    const { user_id } = req.params;
+
+    if (parseInt(user_id) !== id) {
+      throw new UnauthorizedError(`You can only access your own information.`);
+    }
+
+    const userData = await User.getUser(id);
+
+    if (!userData) {
+      throw new BadRequestError(`Error in getting user. Try again later.`);
+    }
+
+    const { password } = userData;
+
+    const isCorrectOldPassword = await isMatchedPassword(password, oldPassword);
+
+    if (!isCorrectOldPassword) {
+      throw new BadRequestError(`The old password you entered is incorrect.`);
+    }
+
+    const hashedPassword = await hashPassword(newPassword);
+
+    const changedPassword = await User.changePassword(id, hashedPassword);
+
+    if (!changedPassword) {
+      throw new BadRequestError(`Error in changing password. Try again later.`);
+    }
+
+    res.status(StatusCodes.OK).json(changedPassword);
   }
 };
 
