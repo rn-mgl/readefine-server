@@ -37,14 +37,15 @@ const getUser = async (req, res) => {
 const updateUser = async (req, res) => {
   const { type } = req.body;
   const { id } = req.user;
+  const { user_id } = req.params;
+
+  if (parseInt(user_id) !== id) {
+    throw new UnauthorizedError(`You can only access your own information.`);
+  }
 
   if (type === "main") {
     const { name, surname, username, image } = req.body;
     const { user_id } = req.params;
-
-    if (parseInt(user_id) !== id) {
-      throw new UnauthorizedError(`You can only access your own information.`);
-    }
 
     const data = await User.updateUser(user_id, name, surname, username, image);
 
@@ -57,10 +58,6 @@ const updateUser = async (req, res) => {
   } else if (type === "grade") {
     const { chosenGrade } = req.body;
     const { user_id } = req.params;
-
-    if (parseInt(user_id) !== id) {
-      throw new UnauthorizedError(`You can only access your own information.`);
-    }
 
     const data = await User.updateGradeLevel(user_id, chosenGrade);
 
@@ -82,11 +79,6 @@ const updateUser = async (req, res) => {
     return;
   } else if (type === "password") {
     const { oldPassword, newPassword } = req.body;
-    const { user_id } = req.params;
-
-    if (parseInt(user_id) !== id) {
-      throw new UnauthorizedError(`You can only access your own information.`);
-    }
 
     const userData = await User.getUser(id);
 

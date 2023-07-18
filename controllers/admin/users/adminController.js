@@ -1,6 +1,7 @@
 const { StatusCodes, BAD_GATEWAY } = require("http-status-codes");
-const { BadRequestError, NotFoundError } = require("../../../errors");
+const { BadRequestError, NotFoundError, UnauthorizedError } = require("../../../errors");
 const Admin = require("../../../models/users/Admin");
+const { hashPassword, isMatchedPassword } = require("../../functionController");
 
 const findWithEmail = async (req, res) => {
   const { email } = req.user;
@@ -37,16 +38,54 @@ const getAdmin = async (req, res) => {
 };
 
 const updateAdmin = async (req, res) => {
-  const { image, name, surname, username } = req.body;
+  const { type } = req.body;
+
   const { admin_id } = req.params;
+  const { id } = req.user;
 
-  const data = await Admin.updateAdmin(admin_id, image, name, surname, username);
-
-  if (!data) {
-    throw new BadRequestError(`Error in updating admin. Try again later.`);
+  if (parseInt(admin_id) !== id) {
+    throw new UnauthorizedError(`You are not allowed to change other's data.`);
   }
 
-  res.status(StatusCodes.OK).json(data);
+  if (type === "main") {
+    const { image, name, surname, username } = req.body;
+
+    const data = await Admin.updateAdmin(admin_id, image, name, surname, username);
+
+    if (!data) {
+      throw new BadRequestError(`Error in updating admin. Try again later.`);
+    }
+
+    res.status(StatusCodes.OK).json(data);
+
+    return;
+  } else if (type === "password") {
+    const { oldPassword, newPassword } = req.body;
+
+    const adminData = await Admin.getAdmin(id);
+
+    if (!adminData) {
+      throw new BadRequestError(`Error in getting admin. Try again later.`);
+    }
+
+    const { password } = adminData;
+
+    const isCorrectOldPassword = await isMatchedPassword(password, oldPassword);
+
+    if (!isCorrectOldPassword) {
+      throw new BadRequestError(`The old password you entered is incorrect.`);
+    }
+
+    const hashedPassword = await hashPassword(newPassword);
+
+    const changedPassword = await Admin.changePassword(id, hashedPassword);
+
+    if (!changedPassword) {
+      throw new BadRequestError(`Error in changing password. Try again later.`);
+    }
+
+    res.status(StatusCodes.OK).json(changedPassword);
+  }
 };
 
 module.exports = { findWithEmail, getAdmin, getAllAdmins, updateAdmin };

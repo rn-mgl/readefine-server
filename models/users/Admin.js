@@ -94,6 +94,20 @@ class Admin {
       console.log(error + " --- update admin ---");
     }
   }
+
+  static async changePassword(admin_id, password) {
+    try {
+      const sql = `UPDATE admin SET ? 
+                  WHERE admin_id = '${admin_id}'`;
+
+      const adminValues = { password };
+
+      const [data, _] = await db.query(sql, adminValues);
+      return data;
+    } catch (error) {
+      console.log(error + " --- update admin password ---");
+    }
+  }
 }
 
 module.exports = Admin;
