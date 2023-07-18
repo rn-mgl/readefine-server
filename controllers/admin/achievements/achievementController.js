@@ -1,6 +1,8 @@
 const { StatusCodes } = require("http-status-codes");
 const { BadRequestError, NotFoundError } = require("../../../errors");
 const Achievement = require("../../../models/achievements/Achievement");
+const User = require("../../../models/users/User");
+const UserAchievement = require("../../../models/achievements/UserAchievement");
 
 const createAchievement = async (req, res) => {
   const { id } = req.user;
@@ -14,6 +16,20 @@ const createAchievement = async (req, res) => {
   if (!data) {
     throw new BadRequestError(`Error in creating achievement. Try again later.`);
   }
+
+  const users = await User.getRawUsers();
+
+  if (!users) {
+    throw new BadRequestError(`Error in getting users.`);
+  }
+
+  users?.map(async (user) => {
+    const assignAchievement = await UserAchievement.assignAchievement(data.insertId, user.user_id);
+
+    if (!assignAchievement) {
+      throw new BadRequestError(`Error in assigning achievement to users.`);
+    }
+  });
 
   res.status(StatusCodes.OK).json(data);
 };

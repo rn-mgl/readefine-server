@@ -153,6 +153,16 @@ class User {
       console.log(error + "--- update grade level ---");
     }
   }
+
+  static async getRawUsers() {
+    try {
+      const sql = `SELECT * FROM users;`;
+      const [data, _] = await db.execute(sql);
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }
 
 module.exports = User;

@@ -61,72 +61,44 @@ const checkUserAchievement = async (req, res) => {
 };
 
 const updateUserAchievements = async (req, res) => {
-  const { type, specifics, userId } = req.body;
+  const { type, specifics, toAdd } = req.body;
 
-  // check type to be updated
-  if (type === "user_session" && specifics === "days_online") {
-    // increment points
-    const data = await UserAchievement.incrementSessionPoints(userId);
+  const { id } = req.user;
 
-    if (!data) {
-      throw new BadRequestError(`Error in updating your achievement points. Try again later.`);
-    }
+  const TYPES = {
+    sessions: type === "user_session" && specifics === "days_online",
+    lexile: type === "user_lexile" && specifics === "lexile_growth",
+    readCount: type === "read_story" && specifics === "book_count",
+    testCount: type === "answered_tests" && specifics === "book_count",
+  };
 
-    // check if an achievement is accomplished
-    const check = await UserAchievement.checkDaysOnlineAchievement(userId);
+  // increment points
+  const data = await UserAchievement.incrementUserAchievementPoints(id, toAdd, type, specifics);
 
-    if (!check) {
-      throw new BadRequestError(`Error in checking your achievement points. Try again later.`);
-    }
-
-    // see those achievements for it to not be repeated
-    check?.map(async (achievement) => {
-      const seeAchievement = await UserAchievement.seeUserAchievements(
-        achievement.user_achievement_id
-      );
-
-      if (!seeAchievement) {
-        throw new BadRequestError(`Error in seeing your achievement points. Try again later.`);
-      }
-    });
-
-    // return array of achievements
-    res.status(StatusCodes.OK).json(check);
-    return;
+  if (!data) {
+    throw new BadRequestError(`Error in updating your achievement points. Try again later.`);
   }
 
-  if (type === "user_lexile" && specifics === "lexile_growth") {
-    const { toAdd } = req.body;
+  // check if an achievement is accomplished
+  const check = await UserAchievement.checkUserAchievementPoints(id, type, specifics);
 
-    // increment points
-    const data = await UserAchievement.incrementLexilePoints(userId, toAdd);
-
-    if (!data) {
-      throw new BadRequestError(`Error in updating your achievement points. Try again later.`);
-    }
-
-    // check if an achievement is accomplished
-    const check = await UserAchievement.checkLexileGrowthAchievement(userId);
-
-    if (!check) {
-      throw new BadRequestError(`Error in checking your achievement points. Try again later.`);
-    }
-
-    // see those achievements for it to not be repeated
-    check?.map(async (achievement) => {
-      const seeAchievement = await UserAchievement.seeUserAchievements(
-        achievement.user_achievement_id
-      );
-
-      if (!seeAchievement) {
-        throw new BadRequestError(`Error in seeing your achievement points. Try again later.`);
-      }
-    });
-
-    // return array of achievements
-    res.status(StatusCodes.OK).json(check);
-    return;
+  if (!check) {
+    throw new BadRequestError(`Error in checking your achievement points. Try again later.`);
   }
+
+  // see those achievements for it to not be repeated
+  check?.map(async (achievement) => {
+    const seeAchievement = await UserAchievement.seeUserAchievements(
+      achievement.user_achievement_id
+    );
+
+    if (!seeAchievement) {
+      throw new BadRequestError(`Error in seeing your achievement points. Try again later.`);
+    }
+  });
+
+  // return array of achievements
+  res.status(StatusCodes.OK).json(check);
 };
 
 module.exports = {
