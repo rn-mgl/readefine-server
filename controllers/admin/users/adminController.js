@@ -28,6 +28,12 @@ const getAllAdmins = async (req, res) => {
 const getAdmin = async (req, res) => {
   const { admin_id } = req.params;
 
+  const { id } = req.user;
+
+  if (parseInt(admin_id) !== id) {
+    throw new UnauthorizedError(`You are not allowed to get other's data.`);
+  }
+
   const admin = await Admin.getAdmin(admin_id);
 
   if (!admin) {
