@@ -29,7 +29,7 @@ const logInUser = async (req, res) => {
   const { loginData } = req.body;
 
   const { candidateIdentifier, candidatePassword } = loginData;
-  console.log(candidateIdentifier);
+
   if (validator.isEmail(candidateIdentifier)) {
     const findEmail = await User.findWithEmail(candidateIdentifier);
 
