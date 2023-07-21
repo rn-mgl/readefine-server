@@ -87,17 +87,9 @@ class Story {
     }
   }
 
-  static async getAllUserStories(
-    userId,
-    searchFilter,
-    lexileRangeFilter,
-    sortFilter,
-    dateRangeFilter
-  ) {
+  static async getAllUserStories(userId, searchFilter, lexileRangeFilter, sortFilter) {
     const lexileFrom = lexileRangeFilter.from ? lexileRangeFilter.from : 0;
     const lexileTo = lexileRangeFilter.to ? lexileRangeFilter.to : 1400;
-    const dateFrom = dateRangeFilter.from ? dateRangeFilter.from : "19990101T123000.000Z";
-    const dateTo = dateRangeFilter.to ? dateRangeFilter.to : new Date();
 
     try {
       const sql = `SELECT s.added_by, s.author, s.book_cover, 
@@ -129,10 +121,6 @@ class Story {
                       s.lexile >= '${lexileFrom}' 
                   AND 
                       s.lexile <= '${lexileTo}'
-                  AND 
-                      CAST(s.date_added AS DATE) >= '${dateFrom}' 
-                  AND 
-                      CAST(s.date_added AS DATE) <= '${dateTo}'
                   ORDER BY s.${sortFilter.toSort} ${sortFilter.sortMode};`;
       const [data, _] = await db.execute(sql);
 

@@ -4,14 +4,8 @@ const Story = require("../../../models/story/Story");
 
 const getAllUserStories = async (req, res) => {
   const { id } = req.user;
-  const { searchFilter, lexileRangeFilter, sortFilter, dateRangeFilter } = req.query;
-  const story = await Story.getAllUserStories(
-    id,
-    searchFilter,
-    lexileRangeFilter,
-    sortFilter,
-    dateRangeFilter
-  );
+  const { searchFilter, lexileRangeFilter, sortFilter } = req.query;
+  const story = await Story.getAllUserStories(id, searchFilter, lexileRangeFilter, sortFilter);
 
   if (!story) {
     throw new BadRequestError(`Error in getting all stories. Try again later.`);
