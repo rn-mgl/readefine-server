@@ -37,7 +37,7 @@ const createStory = async (req, res) => {
 };
 
 const updateStory = async (req, res) => {
-  const { story, pages } = req.body;
+  const { story, pages, toDelete } = req.body;
   const { title, author, lexile, genre, file, book_cover } = story;
   const { story_id } = req.params;
   const { id } = req.user;
@@ -50,21 +50,39 @@ const updateStory = async (req, res) => {
     throw new BadRequestError(`Error in creating story. Try again later.`);
   }
 
+  toDelete.map(async (contentId) => {
+    const deleteContent = await StoryContent.deleteContent(contentId);
+
+    if (!deleteContent) {
+      throw new BadRequestError(`Error in deleting story content. Try again later.`);
+    }
+  });
+
   pages.map(async (page) => {
     const { content_id, header, content, file, image } = page;
     const pageImage = file?.src ? file?.src : image ? image : null;
 
-    const newPage = await StoryContent.updateContent(
-      content_id,
-      page.page,
-      header,
-      content,
-      pageImage,
-      id
-    );
+    if (!content_id) {
+      const newPage = new StoryContent(story_id, page.page, header, content, pageImage, id);
 
-    if (!newPage) {
-      throw new BadRequestError(`Error in adding page content. Try again later.`);
+      const addPage = await newPage.createContent();
+
+      if (!addPage) {
+        throw new BadRequestError(`Error in adding page content. Try again later.`);
+      }
+    } else {
+      const editPage = await StoryContent.updateContent(
+        content_id,
+        page.page,
+        header,
+        content,
+        pageImage,
+        id
+      );
+
+      if (!editPage) {
+        throw new BadRequestError(`Error in editing page content. Try again later.`);
+      }
     }
   });
 
