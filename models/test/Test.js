@@ -73,7 +73,6 @@ class Test {
                     t.test_id = tt.test_id
                     AND tt.taken_by = '${userId}'
                    
-
                    WHERE 
                       s.${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
                   AND 

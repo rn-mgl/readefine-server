@@ -21,7 +21,7 @@ class UserAchievement {
     }
   }
 
-  static async getAllUserAchievements(searchFilter, goalRangeFilter, sortFilter) {
+  static async getAllUserAchievements(searchFilter, goalRangeFilter, sortFilter, user_id) {
     const goalFrom = goalRangeFilter.from ? goalRangeFilter.from : 0;
     const goalTo = goalRangeFilter.to ? goalRangeFilter.to : 1400;
     try {
@@ -29,6 +29,7 @@ class UserAchievement {
 
                   INNER JOIN achievement AS a 
                   ON ua.achievement_id = a.achievement_id
+                  AND ua.user_id = '${user_id}'
 
                   INNER JOIN reward AS r 
                   ON a.reward_id = r.reward_id

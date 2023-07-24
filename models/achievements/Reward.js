@@ -90,7 +90,8 @@ class Reward {
                       LEFT JOIN user_achievement AS ua 
                       ON ua.achievement_id = a.achievement_ID
 
-                      INNER JOIN reward AS r ON r.reward_id = a.reward_id`;
+                      INNER JOIN reward AS r ON r.reward_id = a.reward_id
+                      WHERE ua.user_id = '${user_id}'`;
 
       const sqlUser = `SELECT * FROM user_achievement AS ua
 
@@ -100,7 +101,7 @@ class Reward {
                       INNER JOIN reward AS r 
                       ON r.reward_id = a.reward_id
 
-                      WHERE user_id = '${user_id}'
+                      WHERE ua.user_id = '${user_id}'
                       AND a.goal <= ua.points
                       AND r.${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
 

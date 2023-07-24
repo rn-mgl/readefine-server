@@ -19,11 +19,13 @@ const receiveAchievement = async (req, res) => {
 
 const getAllUserAchievements = async (req, res) => {
   const { searchFilter, goalRangeFilter, sortFilter } = req.query;
+  const { id } = req.user;
 
   const achievement = await UserAchievement.getAllUserAchievements(
     searchFilter,
     goalRangeFilter,
-    sortFilter
+    sortFilter,
+    id
   );
 
   if (!achievement) {
