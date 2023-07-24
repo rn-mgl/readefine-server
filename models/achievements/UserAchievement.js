@@ -29,8 +29,7 @@ class UserAchievement {
 
                   INNER JOIN achievement AS a 
                   ON ua.achievement_id = a.achievement_id
-                  AND ua.user_id = '${user_id}'
-
+                  
                   INNER JOIN reward AS r 
                   ON a.reward_id = r.reward_id
                   
@@ -39,6 +38,8 @@ class UserAchievement {
                       goal >= '${goalFrom}' 
                   AND 
                       goal <= '${goalTo}'
+                  AND 
+                      ua.user_id = '${user_id}' 
                   ORDER BY ${sortFilter.toSort} ${sortFilter.sortMode};`;
 
       const [data, _] = await db.execute(sql);
