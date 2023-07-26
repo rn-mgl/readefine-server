@@ -23,11 +23,7 @@ const { userRouter, userSessionRouter, userLexileRouter } = require("./routers/c
 const { readStoryRouter, storyContentRouter, storyRouter } = require("./routers/client/story"); // story
 const { authAdminRouter, authClientRouter, passwordResetRouter } = require("./routers/auth"); // auth
 const { userActivitiesRouter } = require("./routers/client/activities");
-const {
-  rewardRouter,
-  userAchievementRouter,
-  achievementRouter,
-} = require("./routers/client/achievement"); // achievement
+const { rewardRouter, userAchievementRouter } = require("./routers/client/achievement"); // achievement
 const archivesRouter = require("./routers/client/archives/archivesRouter"); //archives
 const {
   testRouter,
@@ -126,7 +122,6 @@ app.use("/story_content", clientAuthMiddleware, storyContentRouter);
 app.use("/read_story", clientAuthMiddleware, readStoryRouter);
 
 // achievement router application
-app.use("/achievement", clientAuthMiddleware, achievementRouter);
 app.use("/user_achievement", clientAuthMiddleware, userAchievementRouter);
 app.use("/reward", clientAuthMiddleware, rewardRouter);
 
