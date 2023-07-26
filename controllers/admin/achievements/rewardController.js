@@ -51,8 +51,8 @@ const deleteReward = async (req, res) => {
 };
 
 const getAllRewards = async (req, res) => {
-  const { searchFilter, sortFilter, dateRangeFilter } = req.query;
-  const data = await Reward.getAllRewards(searchFilter, sortFilter, dateRangeFilter);
+  const { searchFilter, sortFilter, dateRangeFilter, typeFilter } = req.query;
+  const data = await Reward.getAllRewards(searchFilter, sortFilter, dateRangeFilter, typeFilter);
 
   if (!data) {
     throw new BadRequestError(`Error in getting all rewards. Try again later.`);

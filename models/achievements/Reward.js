@@ -57,12 +57,14 @@ class Reward {
     }
   }
 
-  static async getAllRewards(searchFilter, sortFilter, dateRangeFilter) {
+  static async getAllRewards(searchFilter, sortFilter, dateRangeFilter, typeFilter) {
     const dateFrom = dateRangeFilter.from ? dateRangeFilter.from : "19990101T123000.000Z";
     const dateTo = dateRangeFilter.to ? dateRangeFilter.to : new Date();
     try {
       const sql = `SELECT * FROM reward
-                  WHERE ${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
+                  WHERE reward_name LIKE '%${searchFilter}%'
+                  AND
+                      reward_type LIKE '%${typeFilter}%'
                   AND 
                       CAST(date_added AS DATE) >= '${dateFrom}' 
                   AND 
@@ -77,9 +79,10 @@ class Reward {
     }
   }
 
-  static async getAllUserRewards(user_id, searchFilter, sortFilter, showFilter) {
+  static async getAllUserRewards(user_id, searchFilter, sortFilter, showFilter, typeFilter) {
     try {
-      const sqlAll = `SELECT ua.user_achievement_id, r.reward_id, r.reward_name, r.reward_type, r.reward, r.description, r.added_by, r.date_added,
+      const sqlAll = `SELECT ua.user_achievement_id, r.reward_id, r.reward_name, 
+                          r.reward_type, r.reward, r.description, r.added_by, r.date_added,
 
                       CASE
                         WHEN ua.points >= a.goal THEN 1 ELSE 0
@@ -87,11 +90,21 @@ class Reward {
                       
                       FROM achievement AS a
 
-                      LEFT JOIN user_achievement AS ua 
-                      ON ua.achievement_id = a.achievement_ID
+                      INNER JOIN user_achievement AS ua 
+                      ON ua.achievement_id = a.achievement_id
 
-                      INNER JOIN reward AS r ON r.reward_id = a.reward_id
-                      WHERE ua.user_id = '${user_id}'`;
+                      INNER JOIN reward AS r 
+                      ON r.reward_id = a.reward_id
+
+                      WHERE ua.user_id = '${user_id}'
+
+                      AND 
+                        r.reward_name LIKE '%${searchFilter}%'
+
+                      AND
+                        r.reward_type LIKE '%${typeFilter}%'
+                        
+                      ORDER BY ${sortFilter.toSort} ${sortFilter.sortMode}`;
 
       const sqlUser = `SELECT * FROM user_achievement AS ua
 
@@ -102,10 +115,18 @@ class Reward {
                       ON r.reward_id = a.reward_id
 
                       WHERE ua.user_id = '${user_id}'
-                      AND a.goal <= ua.points
-                      AND r.${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
+
+                      AND 
+                        a.goal <= ua.points
+
+                      AND 
+                        r.reward_name LIKE '%${searchFilter}%'
+
+                      AND
+                        r.reward_type LIKE '%${typeFilter}%'
 
                       ORDER BY ${sortFilter.toSort} ${sortFilter.sortMode};`;
+
       const toQuery = showFilter.toShow === "all" ? sqlAll : sqlUser;
       const [data, _] = await db.execute(toQuery);
       return data;
