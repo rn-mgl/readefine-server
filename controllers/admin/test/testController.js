@@ -1,19 +1,26 @@
 const { StatusCodes } = require("http-status-codes");
-const { BadRequestError } = require("../../../errors");
+const { BadRequestError, NotFoundError } = require("../../../errors");
 const Test = require("../../../models/test/Test");
 const TestQuestion = require("../../../models/test/TestQuestion");
 const TestAnswer = require("../../../models/test/TestAnswer");
+const Story = require("../../../models/story/Story");
 
 const createTest = async (req, res) => {
   const { storyId, pages } = req.body;
   const { id } = req.user;
+
+  const ifExist = await Story.getStory(storyId);
+
+  if (!ifExist) {
+    throw new NotFoundError(`The story you are trying to add a test to does not exist.`);
+  }
 
   const test = new Test(storyId, id);
 
   const data = await test.createTest();
 
   if (!data) {
-    throw new BadRequestError(`Error in creating test. Try again later.`);
+    throw new BadRequestError(`There was a problem in creating the test.`);
   }
 
   pages.map(async (page, index) => {
@@ -22,7 +29,7 @@ const createTest = async (req, res) => {
     const newQuestion = await questionContent.createQuestion();
 
     if (!newQuestion) {
-      throw new BadRequestError(`Error in creating question. Try again later.`);
+      throw new BadRequestError(`There was a problem in creating the test question.`);
     }
 
     const answerIdentifier = `answer${index + 1}`;
@@ -42,7 +49,7 @@ const createTest = async (req, res) => {
     const newAnswer = await answerContent.createAnswer();
 
     if (!newAnswer) {
-      throw new BadRequestError(`Error in creating answer. Try again later.`);
+      throw new BadRequestError(`There was a problem in creating the test answer.`);
     }
   });
 
@@ -54,7 +61,7 @@ const getAllTests = async (req, res) => {
   const test = await Test.getAllTests(searchFilter, lexileRangeFilter, sortFilter, dateRangeFilter);
 
   if (!test) {
-    throw new BadRequestError(`Error in getting all tests. Try again later.`);
+    throw new BadRequestError(`There was a problem in getting all tests.`);
   }
 
   res.status(StatusCodes.OK).json(test);
@@ -65,7 +72,7 @@ const getTest = async (req, res) => {
   const test = await Test.getTest(test_id);
 
   if (!test) {
-    throw new BadRequestError(`Error in getting test. Try again later.`);
+    throw new NotFoundError(`The test you are trying to view does not exist.`);
   }
 
   res.status(StatusCodes.OK).json(test);
@@ -73,6 +80,12 @@ const getTest = async (req, res) => {
 
 const deleteTest = async (req, res) => {
   const { test_id } = req.params;
+
+  const ifExist = await Test.getTest(test_id);
+
+  if (!ifExist) {
+    throw new NotFoundError(`The test you are trying to delete does not exist.`);
+  }
 
   const test = await Test.deleteTest(test_id);
 
@@ -84,14 +97,32 @@ const deleteTest = async (req, res) => {
 };
 
 const updateTest = async (req, res) => {
-  const { questions } = req.body;
+  const { questions, testId } = req.body;
   const { id } = req.user;
 
+  const ifExist = await Test.getTest(testId);
+
+  if (!ifExist) {
+    throw new NotFoundError(`The test you are trying to update does not exist.`);
+  }
+
   questions.map(async (q) => {
+    const ifQuestionExist = await TestQuestion.getQuestion(q.question_id);
+
+    if (!ifQuestionExist) {
+      throw new NotFoundError(`The test question you are trying to update does not exist.`);
+    }
+
     const question = await TestQuestion.updateQuestion(q.question_id, q.question, id);
 
     if (!question) {
-      throw new BadRequestError(`Error in updating question. Try again later.`);
+      throw new BadRequestError(`There was a problem in updating the test question.`);
+    }
+
+    const ifAnswerExist = await TestAnswer.getAnswer(q.answer_id);
+
+    if (!ifAnswerExist) {
+      throw new NotFoundError(`The test answer you are trying to update does not exist.`);
     }
 
     const answerIdentifier = `answer${q.question_id}`;
@@ -109,7 +140,7 @@ const updateTest = async (req, res) => {
     );
 
     if (!newAnswer) {
-      throw new BadRequestError(`Error in updating answer. Try again later.`);
+      throw new BadRequestError(`There was a problem in updating the test answer.`);
     }
   });
 

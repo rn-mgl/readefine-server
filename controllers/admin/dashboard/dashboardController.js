@@ -9,7 +9,7 @@ const getDashboardData = async (req, res) => {
     const data = await Dashboard.getCounts();
 
     if (!data) {
-      throw new BadRequestError(`Error in getting counts for dashboard.`);
+      throw new BadRequestError(`There was a problem in getting the latest counts.`);
     }
 
     res.status(StatusCodes.OK).json(data);
@@ -20,7 +20,7 @@ const getDashboardData = async (req, res) => {
     const data = await Dashboard.getUpdates();
 
     if (!data) {
-      throw new BadRequestError(`Error in getting updates for dashboard.`);
+      throw new BadRequestError(`There was a problem in getting the latest updates.`);
     }
 
     res.status(StatusCodes.OK).json(data);

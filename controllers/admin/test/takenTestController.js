@@ -2,6 +2,8 @@ const { StatusCodes } = require("http-status-codes");
 const { BadRequestError, NotFoundError } = require("../../../errors");
 const TakenTest = require("../../../models/test/TakenTest");
 
+// not used, maintain
+
 const takeTest = async (req, res) => {
   const { id } = req.user;
   const { test_id } = req.params;

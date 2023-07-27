@@ -1,6 +1,7 @@
 const { StatusCodes } = require("http-status-codes");
 const { BadRequestError, NotFoundError } = require("../../../errors");
 const TestAnswer = require("../../../models/test/TestAnswer");
+const Test = require("../../../models/test/Test");
 
 const createAnswer = async (req, res) => {
   const { id } = req.user;
@@ -19,7 +20,7 @@ const createAnswer = async (req, res) => {
   const data = await testAnswer.createAnswer();
 
   if (!data) {
-    throw new BadRequestError(`Error in creating answer. Try again later.`);
+    throw new BadRequestError(`There was a problem in creating the answer ${answer}.`);
   }
 
   res.status(StatusCodes.OK).json(data);
@@ -29,6 +30,12 @@ const updateAnswer = async (req, res) => {
   const { answer_id } = req.params;
   const { id } = req.user;
   const { answer, choice_1, choice_2, choice_3, choice_4 } = req.body;
+
+  const ifExist = await TestAnswer.getAnswer(answer_id);
+
+  if (!ifExist) {
+    throw new NotFoundError(`The answer you are trying to update does not exist.`);
+  }
 
   const testAnswer = await TestAnswer.updateAnswer(
     answer_id,
@@ -41,7 +48,7 @@ const updateAnswer = async (req, res) => {
   );
 
   if (!testAnswer) {
-    throw new BadRequestError(`Error in updating test answer. Try again later.`);
+    throw new BadRequestError(`There was a problem in trying to update the answer.`);
   }
 
   res.status(StatusCodes.OK).json(testAnswer);
@@ -50,10 +57,16 @@ const updateAnswer = async (req, res) => {
 const deleteAnswer = async (req, res) => {
   const { answer_id } = req.params;
 
+  const ifExist = await TestAnswer.getAnswer(answer_id);
+
+  if (!ifExist) {
+    throw new NotFoundError(`The answer you are trying to delete does not exist.`);
+  }
+
   const testAnswer = await TestAnswer.deleteAnswer(answer_id);
 
   if (!testAnswer) {
-    throw new BadRequestError(`Error in deleting test answer. Try again later.`);
+    throw new BadRequestError(`There was a problem in deleting the test answer.`);
   }
 
   res.status(StatusCodes.OK).json(testAnswer);
@@ -62,10 +75,16 @@ const deleteAnswer = async (req, res) => {
 const getAllAnswers = async (req, res) => {
   const { test_id } = req.body;
 
+  const ifExist = await Test.getTest(test_id);
+
+  if (!ifExist) {
+    throw new NotFoundError(`The test you are trying to get does not exist.`);
+  }
+
   const testAnswer = await TestAnswer.getAllAnswers(test_id);
 
   if (!testAnswer) {
-    throw new BadRequestError(`Error in getting all test answers. Try again later.`);
+    throw new BadRequestError(`There was a problem in getting all the test answers.`);
   }
 
   res.status(StatusCodes.OK).json(testAnswer);
@@ -77,7 +96,7 @@ const getAnswer = async (req, res) => {
   const testAnswer = await TestAnswer.getAnswer(answer_id);
 
   if (!testAnswer) {
-    throw new BadRequestError(`Error in getting test answers. Try again later.`);
+    throw new NotFoundError(`The test answer you are trying to get does not exist.`);
   }
 
   res.status(StatusCodes.OK).json(testAnswer);

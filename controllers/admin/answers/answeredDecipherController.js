@@ -2,6 +2,8 @@ const { StatusCodes } = require("http-status-codes");
 const { BadRequestError, NotFoundError } = require("../../../errors");
 const AnsweredDecipher = require("../../../models/answers/AnsweredDecipher");
 
+// not used, maintain
+
 const createAnswer = async (req, res) => {
   const { question_id, answer } = req.body;
   const { id } = req.user;

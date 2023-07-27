@@ -14,7 +14,7 @@ const uploadFile = async (req, res) => {
   });
 
   if (!data) {
-    throw new BadRequestError(`Error in uploading image ${name}. Try again later.`);
+    throw new BadRequestError(`There was a problem uploading image ${name}.`);
   }
 
   res.status(StatusCodes.OK).json({ url: data.secure_url });

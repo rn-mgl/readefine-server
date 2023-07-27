@@ -2,6 +2,8 @@ const { StatusCodes } = require("http-status-codes");
 const { BadRequestError, NotFoundError } = require("../../../errors");
 const AnsweredDangle = require("../../../models/answers/AnsweredDangle");
 
+// not used, maintain
+
 const createAnswer = async (req, res) => {
   const { question_id, answer } = req.body;
   const { id } = req.user;

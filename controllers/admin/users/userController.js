@@ -1,7 +1,6 @@
 const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../../../errors");
 const User = require("../../../models/users/User");
-const { createUUID } = require("../../functionController");
 
 const findWithEmail = async (req, res) => {
   const { email } = req.user;
@@ -21,7 +20,7 @@ const getAllUsers = async (req, res) => {
   const user = await User.getAllUsers(searchFilter, sortFilter, dateRangeFilter, lexileRangeFilter);
 
   if (!user) {
-    throw new BadRequestError(`Error in getting all users. Try again later.`);
+    throw new BadRequestError(`There was a problem in getting all the users.`);
   }
 
   res.status(StatusCodes.OK).json(user);
@@ -33,7 +32,7 @@ const getUser = async (req, res) => {
   const user = await User.getUser(user_id);
 
   if (!user) {
-    throw new BadRequestError(`Error in getting user. Try again later.`);
+    throw new NotFoundError(`The user you are trying to view does not exist.`);
   }
 
   res.status(StatusCodes.OK).json(user);

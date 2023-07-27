@@ -12,7 +12,7 @@ const addWord = async (req, res) => {
   const exists = await Words.getWord(word);
 
   if (exists) {
-    throw new BadRequestError(`The word ${word} already exists.`);
+    throw new NotFoundError(`The word ${word} already exists.`);
   }
 
   let phonetic = "";
@@ -52,14 +52,14 @@ const addWord = async (req, res) => {
     const createDefinition = await newDefinition.addDefinition();
 
     if (!createDefinition) {
-      throw new BadRequestError(`Error in creating definition. Try again later.`);
+      throw new BadRequestError(`There was a problem in creating the definition.`);
     }
 
     const newPartOfSpeech = new WordPartOfSpeech(createDefinition.insertId, m.partOfSpeech, id);
     const createPartOfSpeech = await newPartOfSpeech.addPartOfSpeech();
 
     if (!createPartOfSpeech) {
-      throw new BadRequestError(`Error in creating part of speech. Try again later.`);
+      throw new BadRequestError(`There was a problem in creating the part of speech.`);
     }
   });
 
@@ -70,7 +70,7 @@ const getAllWords = async (req, res) => {
   const words = await Words.getAllWords();
 
   if (!words) {
-    throw new BadRequestError(`Error in getting all words. Try again later.`);
+    throw new BadRequestError(`There was a problem in getting all the words.`);
   }
 
   res.status(StatusCodes.OK).json(words);
@@ -80,7 +80,7 @@ const getRandomWord = async (req, res) => {
   const word = await Words.getRandomWord();
 
   if (!word) {
-    throw new BadRequestError(`Error in getting random word. Try again later.`);
+    throw new BadRequestError(`There was a problem in getting a random word.`);
   }
 
   res.status(StatusCodes.OK).json(word);
