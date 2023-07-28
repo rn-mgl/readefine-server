@@ -154,13 +154,13 @@ class User {
     }
   }
 
-  static async getRawUsers() {
+  static async getAllRawUsers() {
     try {
       const sql = `SELECT * FROM users;`;
       const [data, _] = await db.execute(sql);
       return data;
     } catch (error) {
-      console.log(error);
+      console.log(error + "--- get raw users ---");
     }
   }
 }

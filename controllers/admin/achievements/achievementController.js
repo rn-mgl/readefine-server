@@ -17,7 +17,7 @@ const createAchievement = async (req, res) => {
     throw new BadRequestError(`There was a problem in creating the achievement ${name}.`);
   }
 
-  const users = await User.getRawUsers();
+  const users = await User.getAllRawUsers();
 
   if (!users) {
     throw new BadRequestError(

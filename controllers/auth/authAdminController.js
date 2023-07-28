@@ -89,10 +89,16 @@ const signUpAdmin = async (req, res) => {
 
   const { name, surname, username, email, password } = userData;
 
-  const uniqueEmail = await fns.isUniqueAdminEmail(email);
+  const uniqueUsername = await Admin.findWithUsername(email);
 
-  if (!uniqueEmail) {
-    throw new BadRequestError(`The email has already been taken.`);
+  if (uniqueUsername) {
+    throw new BadRequestError(`The username has already been taken.`);
+  }
+
+  const uniqueEmail = await Admin.findWithEmail(email);
+
+  if (uniqueEmail) {
+    throw new BadRequestError(`The email has already an account in Readefine.`);
   }
 
   const hashedPassword = await fns.hashPassword(password);

@@ -11,7 +11,7 @@ const createSession = async (req, res) => {
   const newSession = await userSession.createSession();
 
   if (!newSession) {
-    throw new BadRequestError(`Error in creating session. Try again later.`);
+    throw new BadRequestError(`There was a problem in updating your session records.`);
   }
 
   res.status(StatusCodes.OK).json(newSession);

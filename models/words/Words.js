@@ -58,6 +58,16 @@ class Words {
     }
   }
 
+  static async getWordById(word_id) {
+    try {
+      const sql = `SELECT * FROM words WHERE word_id = '${word_id}';`;
+      const [data, _] = await db.execute(sql);
+      return data[0];
+    } catch (error) {
+      console.log(error + "--- get word by id ---");
+    }
+  }
+
   static async getWord(word) {
     try {
       const sql = `SELECT * FROM words WHERE word = '${word}' LIMIT 1;`;

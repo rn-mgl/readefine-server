@@ -21,6 +21,12 @@ const getUser = async (req, res) => {
   const { user_id } = req.params;
   const { id } = req.user;
 
+  const ifExist = await User.getUser(user_id);
+
+  if (!ifExist) {
+    throw new NotFoundError(`You can only access your own information.`);
+  }
+
   if (parseInt(user_id) !== id) {
     throw new UnauthorizedError(`You can only access your own information.`);
   }
@@ -38,6 +44,12 @@ const updateUser = async (req, res) => {
   const { type } = req.body;
   const { id } = req.user;
   const { user_id } = req.params;
+
+  const ifExist = await User.getUser(user_id);
+
+  if (!ifExist) {
+    throw new NotFoundError(`You can only access your own information.`);
+  }
 
   if (parseInt(user_id) !== id) {
     throw new UnauthorizedError(`You can only access your own information.`);

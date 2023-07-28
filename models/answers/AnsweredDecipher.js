@@ -44,7 +44,7 @@ class AnsweredDecipher {
                     ON ad.decipher_id = dd.decipher_id
                     WHERE ad.answer_id = '${answer_id}';`;
       const [data, _] = await db.execute(sql);
-      return data;
+      return data[0];
     } catch (error) {
       console.log(error + "--- get answered question ---");
     }

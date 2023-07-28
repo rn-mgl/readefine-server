@@ -8,7 +8,7 @@ const getAllUserStories = async (req, res) => {
   const story = await Story.getAllUserStories(id, searchFilter, lexileRangeFilter, sortFilter);
 
   if (!story) {
-    throw new BadRequestError(`Error in getting all stories. Try again later.`);
+    throw new BadRequestError(`There was a problem in getting all the stories.`);
   }
 
   res.status(StatusCodes.OK).json(story);
@@ -20,7 +20,7 @@ const getStory = async (req, res) => {
   const story = await Story.getStory(story_id);
 
   if (!story) {
-    throw new BadRequestError(`Error in getting story. Try again later.`);
+    throw new NotFoundError(`The story you are trying to view does not exist.`);
   }
 
   res.status(StatusCodes.OK).json(story);

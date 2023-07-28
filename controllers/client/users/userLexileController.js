@@ -8,7 +8,7 @@ const getLatestLexile = async (req, res) => {
   const lexile = await UserLexile.getLatestLexile(id);
 
   if (!lexile) {
-    throw new BadRequestError(`Error in getting your Lexile. Try again later.`);
+    throw new BadRequestError(`There was a problem in getting your Lexile level.`);
   }
 
   res.status(StatusCodes.OK).json(lexile);

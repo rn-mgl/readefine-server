@@ -14,7 +14,7 @@ const getAllUserTests = async (req, res) => {
   );
 
   if (!test) {
-    throw new BadRequestError(`Error in getting all user's tests. Try again later.`);
+    throw new BadRequestError(`There was a problem in getting all tests.`);
   }
 
   res.status(StatusCodes.OK).json(test);
@@ -26,7 +26,7 @@ const getTest = async (req, res) => {
   const test = await Test.getTest(test_id);
 
   if (!test) {
-    throw new BadRequestError(`Error in getting test. Try again later.`);
+    throw new NotFoundError(`The test you are trying to view does not exist.`);
   }
 
   res.status(StatusCodes.OK).json(test);

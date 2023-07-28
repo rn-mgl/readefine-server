@@ -22,7 +22,7 @@ class TakenTest {
     }
   }
 
-  static async getAllTakenTests(taken_by, testId) {
+  static async getTakenTest(taken_by, testId) {
     try {
       const sql = `SELECT tt.taken_id, tt.taken_by, 
                     t.test_id, s.title, s.author, s.lexile, s.genre,
@@ -53,21 +53,6 @@ class TakenTest {
       return data;
     } catch (error) {
       console.log(error + "--- get all taken tests ---");
-    }
-  }
-
-  static async getTakenTest(taken_id) {
-    try {
-      const sql = `SELECT s.title, s.lexile, tt.date_taken FROM taken_test AS tt
-                    INNER JOIN test AS t
-                    ON tt.test_id = t.test_id
-                    INNER JOIN story AS s
-                    ON t.story_id = s.story_id
-                    WHERE tt.taken_id = '${taken_id}'`;
-      const [data, _] = await db.execute(sql);
-      return data;
-    } catch (error) {
-      console.log(error + "--- get taken test ---");
     }
   }
 

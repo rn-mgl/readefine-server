@@ -63,7 +63,7 @@ class TestQuestion {
       const sql = `SELECT * FROM test_question 
                     WHERE question_id = '${question_id}';`;
       const [data, _] = await db.execute(sql);
-      return data;
+      return data[0];
     } catch (error) {
       console.log(error + "--- get question ---");
     }

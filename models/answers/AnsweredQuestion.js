@@ -45,7 +45,7 @@ class AnsweredQuestion {
                     WHERE aq.answer_id = '${answer_id}'
                     GROUP BY tq.test_id;`;
       const [data, _] = await db.execute(sql);
-      return data;
+      return data[0];
     } catch (error) {
       console.log(error + "--- get answered question ---");
     }

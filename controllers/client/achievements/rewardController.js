@@ -8,7 +8,7 @@ const getUserReward = async (req, res) => {
   const data = await Reward.getUserReward(reward_id);
 
   if (!data) {
-    throw new BadRequestError(`Error in getting reward. Try again later.`);
+    throw new NotFoundError(`The reward you are trying to view does not exist.`);
   }
 
   res.status(StatusCodes.OK).json(data);
@@ -27,7 +27,7 @@ const getAllUserRewards = async (req, res) => {
   );
 
   if (!userAchievement) {
-    throw new BadRequestError(`Error in getting all your achievements. Try again later.`);
+    throw new BadRequestError(`There was a problem in getting all your rewards.`);
   }
 
   res.status(StatusCodes.OK).json(userAchievement);

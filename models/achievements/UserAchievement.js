@@ -64,7 +64,7 @@ class UserAchievement {
       const sql = `SELECT * user_achievement
                     WHERE user_achievement_id = '${user_achievement_id}';`;
       const [data, _] = await db.execute(sql);
-      return data;
+      return data[0];
     } catch (error) {
       console.log(error + "--- get achievement ---");
     }

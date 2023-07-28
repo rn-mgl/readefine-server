@@ -8,7 +8,7 @@ const getAllPlayCounts = async (req, res) => {
   const counts = await MinigameDashboard.getAllPlayCounts(id);
 
   if (!counts) {
-    throw new BadRequestError(`Error in getting your play counts. Try again later.`);
+    throw new BadRequestError(`There was a problem in getting all your play counts.`);
   }
 
   res.status(StatusCodes.OK).json(counts);
