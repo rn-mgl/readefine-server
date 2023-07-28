@@ -73,7 +73,13 @@ class Achievement {
     }
   }
 
-  static async getAllAchievements(searchFilter, goalRangeFilter, sortFilter, dateRangeFilter) {
+  static async getAllAchievements(
+    searchFilter,
+    goalRangeFilter,
+    sortFilter,
+    dateRangeFilter,
+    typeFilter
+  ) {
     const goalFrom = goalRangeFilter.from ? goalRangeFilter.from : 0;
     const goalTo = goalRangeFilter.to ? goalRangeFilter.to : 1400;
     const dateFrom = dateRangeFilter.from ? dateRangeFilter.from : "19990101T123000.000Z";
@@ -83,6 +89,8 @@ class Achievement {
                   INNER JOIN reward AS r ON
                   a.reward_id = r.reward_id
                   WHERE ${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
+                  AND
+                      a.achievement_type LIKE '%${typeFilter}%'
                   AND 
                       goal >= '${goalFrom}' 
                   AND 

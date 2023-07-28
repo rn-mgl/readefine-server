@@ -21,7 +21,13 @@ class UserAchievement {
     }
   }
 
-  static async getAllUserAchievements(searchFilter, goalRangeFilter, sortFilter, user_id) {
+  static async getAllUserAchievements(
+    searchFilter,
+    goalRangeFilter,
+    sortFilter,
+    typeFilter,
+    user_id
+  ) {
     const goalFrom = goalRangeFilter.from ? goalRangeFilter.from : 0;
     const goalTo = goalRangeFilter.to ? goalRangeFilter.to : 1400;
     try {
@@ -34,6 +40,8 @@ class UserAchievement {
                   ON a.reward_id = r.reward_id
                   
                   WHERE ${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
+                  AND
+                      a.achievement_type LIKE '%${typeFilter}%'
                   AND 
                       goal >= '${goalFrom}' 
                   AND 

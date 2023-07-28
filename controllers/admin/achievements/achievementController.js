@@ -87,13 +87,14 @@ const deleteAchievement = async (req, res) => {
 };
 
 const getAllAchievements = async (req, res) => {
-  const { searchFilter, goalRangeFilter, sortFilter, dateRangeFilter } = req.query;
+  const { searchFilter, goalRangeFilter, sortFilter, dateRangeFilter, typeFilter } = req.query;
 
   const achievement = await Achievement.getAllAchievements(
     searchFilter,
     goalRangeFilter,
     sortFilter,
-    dateRangeFilter
+    dateRangeFilter,
+    typeFilter
   );
 
   if (!achievement) {
