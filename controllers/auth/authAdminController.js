@@ -63,7 +63,7 @@ const logInAdmin = async (req, res) => {
     const isMatch = await fns.isMatchedPassword(password, candidatePassword);
 
     if (!isMatch) {
-      throw new BadRequestError(`The email and password does not match.`);
+      throw new BadRequestError(`The username and password does not match.`);
     }
 
     const token = fns.createToken(admin_id, username, email, "admin");
@@ -92,13 +92,13 @@ const signUpAdmin = async (req, res) => {
   const uniqueUsername = await Admin.findWithUsername(email);
 
   if (uniqueUsername) {
-    throw new BadRequestError(`The username has already been taken.`);
+    throw new BadRequestError(`The username ${username} has already been taken.`);
   }
 
   const uniqueEmail = await Admin.findWithEmail(email);
 
   if (uniqueEmail) {
-    throw new BadRequestError(`The email has already an account in Readefine.`);
+    throw new BadRequestError(`The email ${email} is already used in Readefine.`);
   }
 
   const hashedPassword = await fns.hashPassword(password);

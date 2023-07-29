@@ -80,7 +80,7 @@ const logInUser = async (req, res) => {
     const isMatch = await fns.isMatchedPassword(password, candidatePassword);
 
     if (!isMatch) {
-      throw new BadRequestError(`The email and password does not match.`);
+      throw new BadRequestError(`The username and password does not match.`);
     }
 
     const user = await User.getUser(findUser.user_id);
@@ -115,13 +115,13 @@ const signUpUser = async (req, res) => {
   const uniqueEmail = await User.findWithEmail(email);
 
   if (uniqueEmail) {
-    throw new BadRequestError(`The email you entered has already an account in Readefine.`);
+    throw new BadRequestError(`The email ${email} is already used in Readefine.`);
   }
 
   const uniqueUserName = await User.findWithUsername(username);
 
   if (uniqueUserName) {
-    throw new BadRequestError(`The username has already been taken.`);
+    throw new BadRequestError(`The username ${username} has already been taken.`);
   }
 
   const hashedPassword = await fns.hashPassword(password);
