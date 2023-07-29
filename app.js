@@ -193,7 +193,7 @@ app.use("/admin_answered_riddles", adminAuthMiddleware, adminAnsweredRiddlesRout
 app.use("/admin_words", adminAuthMiddleware, adminWordsRouter);
 
 // activities
-app.use("/admin_activities", adminActivitiesRouter, adminActivitiesRouter);
+app.use("/admin_activities", adminAuthMiddleware, adminActivitiesRouter);
 
 //////////////////////////////////////////////////////////////////////////////
 
