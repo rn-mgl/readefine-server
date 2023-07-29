@@ -59,6 +59,12 @@ const updateUser = async (req, res) => {
     const { name, surname, username, image } = req.body;
     const { user_id } = req.params;
 
+    const ifUsernameTaken = await User.findWithUsername(username);
+
+    if (ifUsernameTaken && ifUsernameTaken.user_id !== id) {
+      throw new BadRequestError(`The username is already taken.`);
+    }
+
     const data = await User.updateUser(user_id, name, surname, username, image);
 
     if (!data) {

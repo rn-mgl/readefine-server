@@ -62,6 +62,12 @@ const updateAdmin = async (req, res) => {
   if (type === "main") {
     const { image, name, surname, username } = req.body;
 
+    const ifUsernameTaken = await Admin.findWithUsername(username);
+
+    if (ifUsernameTaken && ifUsernameTaken.admin_id !== id) {
+      throw new BadRequestError(`The username is already taken.`);
+    }
+
     const data = await Admin.updateAdmin(admin_id, image, name, surname, username);
 
     if (!data) {
