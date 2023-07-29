@@ -10,7 +10,7 @@ const getAllUserActivities = async (req, res) => {
   const ifExist = await User.getUser(user_id);
 
   if (!ifExist) {
-    throw new NotFoundError(`The user you are trying to get the achievement to does not exist.`);
+    throw new NotFoundError(`You can only access your own information.`);
   }
 
   if (parseInt(user_id) !== id) {
