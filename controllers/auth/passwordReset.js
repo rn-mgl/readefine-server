@@ -2,7 +2,7 @@ const { StatusCodes } = require("http-status-codes");
 const { BadRequestError, NotFoundError } = require("../../errors");
 const { sendPasswordResetEmail } = require("../client/mail/passwordResetMail");
 const User = require("../../models/users/User");
-const { createToken, hashPassword } = require("../functionController");
+const { createSignUpToken, hashPassword } = require("../functionController");
 const jwt = require("jsonwebtoken");
 
 const sendPasswordReset = async (req, res) => {
@@ -24,7 +24,7 @@ const sendPasswordReset = async (req, res) => {
     throw new BadRequestError(`The email you entered does not use the username you entered.`);
   }
 
-  const token = createToken(user_id, username, email, "user");
+  const token = createSignUpToken(user_id, username, email, "user");
 
   const mail = await sendPasswordResetEmail(email, `${name} ${surname}`, token);
 

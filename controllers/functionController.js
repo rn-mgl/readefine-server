@@ -29,7 +29,15 @@ const isUniqueAdminEmail = async (candidateEmail) => {
   return data;
 };
 
-const createToken = (id, username, email, role) => {
+const createSignUpToken = (id, username, email, role) => {
+  const token = jwt.sign({ id, username, email, role }, process.env.JWT_SECRET, {
+    expiresIn: process.env.EMAIL_TTL,
+  });
+
+  return token;
+};
+
+const createLogInToken = (id, username, email, role) => {
   const token = jwt.sign({ id, username, email, role }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_TTL,
   });
@@ -48,7 +56,8 @@ module.exports = {
   isMatchedPassword,
   isUniqueUserEmail,
   isUniqueAdminEmail,
-  createToken,
+  createSignUpToken,
+  createLogInToken,
   getLexile,
   createUUID,
 };

@@ -145,7 +145,7 @@ app.use("/answered_riddles", clientAuthMiddleware, answeredRiddlesRouter);
 app.use("/words", clientAuthMiddleware, wordsRouter);
 
 // user session application
-app.use("/session", clientAuthMiddleware, userSessionRouter);
+app.use("/session", userSessionRouter);
 
 // activities router application
 app.use("/activities", clientAuthMiddleware, userActivitiesRouter);

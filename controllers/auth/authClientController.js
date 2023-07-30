@@ -51,23 +51,42 @@ const logInUser = async (req, res) => {
       throw new BadRequestError(`Could not get your data. Try again later.`);
     }
 
-    const token = fns.createToken(user_id, username, email, "user");
+    if (!user.is_verified) {
+      const token = fns.createSignUpToken(user_id, username, email, "user");
 
-    const primary = {
-      userId: user.user_id,
-      name: user.name,
-      surname: user.surname,
-      username: user.username,
-      token: `Bearer ${token}`,
-      role: "user",
-      email: user.email,
-      role: "user",
-      isVerified: user.is_verified,
-    };
+      const primary = {
+        userId: user.user_id,
+        name: user.name,
+        surname: user.surname,
+        username: user.username,
+        token: `Bearer ${token}`,
+        email: user.email,
+        role: "user",
+        isVerified: user.is_verified,
+      };
 
-    res.status(StatusCodes.OK).json({ primary });
+      res.status(StatusCodes.OK).json({ primary });
 
-    return;
+      const mail = await sendVerificationEmail(email, `${user.name} ${user.surname}`, token);
+      return;
+    } else {
+      const token = fns.createLogInToken(user_id, username, email, "user");
+
+      const primary = {
+        userId: user.user_id,
+        name: user.name,
+        surname: user.surname,
+        username: user.username,
+        token: `Bearer ${token}`,
+        email: user.email,
+        role: "user",
+        isVerified: user.is_verified,
+      };
+
+      res.status(StatusCodes.OK).json({ primary });
+
+      return;
+    }
   } else {
     const findUser = await User.findWithUsername(candidateIdentifier);
 
@@ -89,22 +108,42 @@ const logInUser = async (req, res) => {
       throw new BadRequestError(`Could not get your data. Try again later.`);
     }
 
-    const token = fns.createToken(user_id, username, email, "user");
+    if (!user.is_verified) {
+      const token = fns.createSignUpToken(user_id, username, email, "user");
 
-    const primary = {
-      userId: user.user_id,
-      name: user.name,
-      surname: user.surname,
-      username: user.username,
-      token: `Bearer ${token}`,
-      email: user.email,
-      role: "user",
-      isVerified: user.is_verified,
-    };
+      const primary = {
+        userId: user.user_id,
+        name: user.name,
+        surname: user.surname,
+        username: user.username,
+        token: `Bearer ${token}`,
+        email: user.email,
+        role: "user",
+        isVerified: user.is_verified,
+      };
 
-    res.status(StatusCodes.OK).json({ primary });
+      res.status(StatusCodes.OK).json({ primary });
 
-    return;
+      const mail = await sendVerificationEmail(email, `${user.name} ${user.surname}`, token);
+      return;
+    } else {
+      const token = fns.createLogInToken(user_id, username, email, "user");
+
+      const primary = {
+        userId: user.user_id,
+        name: user.name,
+        surname: user.surname,
+        username: user.username,
+        token: `Bearer ${token}`,
+        email: user.email,
+        role: "user",
+        isVerified: user.is_verified,
+      };
+
+      res.status(StatusCodes.OK).json({ primary });
+
+      return;
+    }
   }
 };
 
@@ -125,11 +164,8 @@ const signUpUser = async (req, res) => {
   }
 
   const hashedPassword = await fns.hashPassword(password);
-
   const lexileLevel = fns.getLexile(gradeLevel);
-
   const user = new User(name, surname, username, gradeLevel, email, hashedPassword);
-
   const data = await user.createUser();
 
   if (!data) {
@@ -137,15 +173,13 @@ const signUpUser = async (req, res) => {
   }
 
   const lexile = new UserLexile(data.insertId, lexileLevel);
-
   const lexileData = await lexile.createLexile();
 
   if (!lexileData) {
     throw new BadRequestError(`Error in creating lexile. Try again later.`);
   }
 
-  const token = fns.createToken(data.insertId, username, email, "user");
-
+  const token = fns.createSignUpToken(data.insertId, username, email, "user");
   const achievementAssign = await UserAchievement.assignUserAchievements(data.insertId);
 
   if (!achievementAssign) {
