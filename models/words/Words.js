@@ -47,7 +47,7 @@ class Words {
 
       // get definitions of word
       const sqlDefinition = `SELECT * FROM word_definition AS wd
-                            LEFT JOIN word_part_of_speech AS WPS
+                            LEFT JOIN word_part_of_speech AS wps
                             on wd.definition_id = wps.definition_id
                             WHERE word_id = '${word[0].word_id}'`;
       const [definition, _2] = await db.execute(sqlDefinition);
