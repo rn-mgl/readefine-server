@@ -1,7 +1,7 @@
 const sendgrid = require("@sendgrid/mail");
 const { BadRequestError } = require("../../../errors");
 
-const url = "http://192.168.1.121:3000/reset";
+const url = "https://readefine.vercel.app/reset";
 
 const sendPasswordResetEmail = async (sendTo, toName, token) => {
   const message = {
