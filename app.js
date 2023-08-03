@@ -51,6 +51,7 @@ const {
   adminRouter,
   adminUserSessionRouter,
   adminUserLexileRouter,
+  adminSessionRouter,
 } = require("./routers/admin/users"); // user
 const {
   adminAchievementRouter,
@@ -193,6 +194,9 @@ app.use("/admin_answered_riddles", adminAuthMiddleware, adminAnsweredRiddlesRout
 
 // words
 app.use("/admin_words", adminAuthMiddleware, adminWordsRouter);
+
+//sessions
+app.use("/admin_session", adminSessionRouter);
 
 // activities
 app.use("/admin_activities", adminAuthMiddleware, adminActivitiesRouter);

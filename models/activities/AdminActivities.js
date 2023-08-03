@@ -45,6 +45,10 @@ class AdminActivities {
                               WHERE tq.added_by = '${admin_id}'
                               ORDER BY tq.date_added DESC;`;
 
+      const sqlSession = `SELECT * FROM admin_session
+                              WHERE admin_id = '${admin_id}'
+                              ORDER BY date_logged DESC;`;
+
       const [achievementData, _1] = await db.execute(sqlAchievement);
       const [rewardData, _2] = await db.execute(sqlReward);
       const [riddlesData, _3] = await db.execute(sqlRiddles);
@@ -53,6 +57,7 @@ class AdminActivities {
       const [testData, _6] = await db.execute(sqlTest);
       const [testAnswerData, _7] = await db.execute(sqlTestAnswer);
       const [testQuestionData, _8] = await db.execute(sqlTestQuestion);
+      const [sessionData, _9] = await db.execute(sqlSession);
 
       return {
         achievementData,
@@ -63,6 +68,7 @@ class AdminActivities {
         testData,
         testAnswerData,
         testQuestionData,
+        sessionData,
       };
     } catch (error) {
       console.log(error + "--- get all admin activities ---");
