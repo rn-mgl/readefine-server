@@ -118,6 +118,16 @@ class User {
     }
   }
 
+  static async getUserCount() {
+    try {
+      const sql = `SELECT COUNT(user_id) AS user_count FROM users;`;
+      const [data, _] = await db.execute(sql);
+      return data[0];
+    } catch (error) {
+      console.log(error + "--- get user count ---");
+    }
+  }
+
   static async changePassword(user_id, password) {
     try {
       const sql = `UPDATE users SET ?

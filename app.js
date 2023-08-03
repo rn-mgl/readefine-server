@@ -16,6 +16,7 @@ const sendgrid = require("@sendgrid/mail");
 ///////////////////////////////////////// global routers /////////////////////////////////////////////////////
 const fileClientRouter = require("./routers/client/files/fileRouter");
 const fileAdminRouter = require("./routers/admin/files/fileRouter");
+const warmerRouter = require("./routers/global/warmerRouter");
 
 ///////////////////////////////////////// client routers /////////////////////////////////////////////////////
 const wordsRouter = require("./routers/client/words/wordsRouter");
@@ -101,6 +102,7 @@ cloudinary.config({
 
 app.use("/readefine_admin_file", adminAuthMiddleware, fileAdminRouter);
 app.use("/readefine_client_file", clientAuthMiddleware, fileClientRouter);
+app.use("/warmer", warmerRouter);
 
 ///////////////////////// client router application /////////////////////////
 
