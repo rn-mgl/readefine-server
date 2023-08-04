@@ -17,18 +17,6 @@ const isMatchedPassword = async (password, candidatePassword) => {
   return isMatch;
 };
 
-const isUniqueUserEmail = async (candidateEmail) => {
-  const data = await User.findWithEmail(candidateEmail);
-
-  return data;
-};
-
-const isUniqueAdminEmail = async (candidateEmail) => {
-  const data = await Admin.findWithEmail(candidateEmail);
-
-  return data;
-};
-
 const createSignUpToken = (id, username, email, role) => {
   const token = jwt.sign({ id, username, email, role }, process.env.JWT_SECRET, {
     expiresIn: process.env.EMAIL_TTL,
@@ -49,15 +37,10 @@ const getLexile = (gradeLevel) => {
   return lexile[gradeLevel];
 };
 
-const createUUID = () => {};
-
 module.exports = {
   hashPassword,
   isMatchedPassword,
-  isUniqueUserEmail,
-  isUniqueAdminEmail,
   createSignUpToken,
   createLogInToken,
   getLexile,
-  createUUID,
 };
