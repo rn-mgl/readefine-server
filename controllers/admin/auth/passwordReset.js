@@ -2,7 +2,7 @@ const { StatusCodes } = require("http-status-codes");
 const { BadRequestError, NotFoundError } = require("../../../errors");
 const { sendPasswordResetEmail } = require("../mail/passwordResetMail");
 const Admin = require("../../../models/users/Admin");
-const { createSignUpToken, hashPassword } = require("../../functionController");
+const { createSignUpToken, hashPassword, isTokenExpired } = require("../../functionController");
 const jwt = require("jsonwebtoken");
 
 const sendPasswordReset = async (req, res) => {
@@ -43,13 +43,19 @@ const sendPasswordReset = async (req, res) => {
 
 const changePassword = async (req, res) => {
   const { newPassword, retypedPassword } = req.body;
-  const { token } = req.params;
+  const { admin_token } = req.params;
 
-  if (!token) {
+  if (!admin_token) {
     throw new BadRequestError(`You are not authorized to change this user's password.`);
   }
 
-  const verify = jwt.verify(token, process.env.JWT_SECRET);
+  const isExpired = isTokenExpired(admin_token);
+
+  if (isExpired) {
+    throw new BadRequestError(`The link for changing the passord has already expired.`);
+  }
+
+  const verify = jwt.verify(admin_token, process.env.JWT_SECRET);
 
   if (!verify) {
     throw new BadRequestError(`You do not have the appropriate credentials to change a password.`);

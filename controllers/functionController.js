@@ -37,10 +37,26 @@ const getLexile = (gradeLevel) => {
   return lexile[gradeLevel];
 };
 
+const isTokenExpired = (token) => {
+  if (!token) {
+    return true;
+  }
+
+  const decodedToken = jwt.decode(token);
+
+  if (!decodedToken) {
+    return true;
+  }
+
+  const currentTime = Date.now() / 1000;
+  return currentTime > decodedToken.exp;
+};
+
 module.exports = {
   hashPassword,
   isMatchedPassword,
   createSignUpToken,
   createLogInToken,
   getLexile,
+  isTokenExpired,
 };

@@ -14,7 +14,25 @@ const { sendVerificationEmail } = require("../mail/verificationMail");
 const verifyUser = async (req, res) => {
   const { token } = req.body;
 
+  if (!token) {
+    throw new BadRequestError(`You do not have the appropriate credentials to change a password.`);
+  }
+
+  const isExpired = fns.isTokenExpired(token);
+
+  if (isExpired) {
+    throw new BadRequestError(`The link for changing the passord has already expired.`);
+  }
+
   const verify = jwt.verify(token, process.env.JWT_SECRET);
+
+  if (!verify) {
+    throw new BadRequestError(`You do not have the appropriate credentials to change a password.`);
+  }
+
+  if (!verify?.id || !verify?.username || !verify?.email || !verify?.role) {
+    throw new BadRequestError(`You do not have the appropriate credentials to change a password.`);
+  }
 
   const user = await User.verifyUser(verify.id);
 
