@@ -55,7 +55,7 @@ const logInUser = async (req, res) => {
       throw new NotFoundError(`There is no user with the given email.`);
     }
 
-    const { user_id, username, email, password } = findEmail;
+    const { user_id, name, surname, username, email, password, is_verified } = findEmail;
 
     const isMatch = await fns.isMatchedPassword(password, candidatePassword);
 
@@ -63,42 +63,36 @@ const logInUser = async (req, res) => {
       throw new BadRequestError(`The email and password does not match.`);
     }
 
-    const user = await User.getUser(findEmail.user_id);
-
-    if (!user) {
-      throw new BadRequestError(`Could not get your data. Try again later.`);
-    }
-
-    if (!user.is_verified) {
+    if (!is_verified) {
       const token = fns.createSignUpToken(user_id, username, email, "user");
 
       const primary = {
-        userId: user.user_id,
-        name: user.name,
-        surname: user.surname,
-        username: user.username,
+        userId: user_id,
+        name: name,
+        surname: surname,
+        username: username,
         token: `Bearer ${token}`,
-        email: user.email,
+        email: email,
         role: "user",
-        isVerified: user.is_verified,
+        isVerified: is_verified,
       };
 
       res.status(StatusCodes.OK).json({ primary });
 
-      const mail = await sendVerificationEmail(email, `${user.name} ${user.surname}`, token);
+      const mail = await sendVerificationEmail(email, `${name} ${surname}`, token);
       return;
     } else {
       const token = fns.createLogInToken(user_id, username, email, "user");
 
       const primary = {
-        userId: user.user_id,
-        name: user.name,
-        surname: user.surname,
-        username: user.username,
+        userId: user_id,
+        name: name,
+        surname: surname,
+        username: username,
         token: `Bearer ${token}`,
-        email: user.email,
+        email: email,
         role: "user",
-        isVerified: user.is_verified,
+        isVerified: is_verified,
       };
 
       res.status(StatusCodes.OK).json({ primary });
@@ -112,7 +106,7 @@ const logInUser = async (req, res) => {
       throw new NotFoundError(`There is no user with the given username.`);
     }
 
-    const { user_id, username, email, password } = findUser;
+    const { user_id, name, surname, username, email, password, is_verified } = findUser;
 
     const isMatch = await fns.isMatchedPassword(password, candidatePassword);
 
@@ -120,42 +114,36 @@ const logInUser = async (req, res) => {
       throw new BadRequestError(`The username and password does not match.`);
     }
 
-    const user = await User.getUser(findUser.user_id);
-
-    if (!user) {
-      throw new BadRequestError(`Could not get your data. Try again later.`);
-    }
-
-    if (!user.is_verified) {
+    if (!is_verified) {
       const token = fns.createSignUpToken(user_id, username, email, "user");
 
       const primary = {
-        userId: user.user_id,
-        name: user.name,
-        surname: user.surname,
-        username: user.username,
+        userId: user_id,
+        name: name,
+        surname: surname,
+        username: username,
         token: `Bearer ${token}`,
-        email: user.email,
+        email: email,
         role: "user",
-        isVerified: user.is_verified,
+        isVerified: is_verified,
       };
 
       res.status(StatusCodes.OK).json({ primary });
 
-      const mail = await sendVerificationEmail(email, `${user.name} ${user.surname}`, token);
+      const mail = await sendVerificationEmail(email, `${name} ${surname}`, token);
       return;
     } else {
       const token = fns.createLogInToken(user_id, username, email, "user");
 
       const primary = {
-        userId: user.user_id,
-        name: user.name,
-        surname: user.surname,
-        username: user.username,
+        userId: user_id,
+        name: name,
+        surname: surname,
+        username: username,
         token: `Bearer ${token}`,
-        email: user.email,
+        email: email,
         role: "user",
-        isVerified: user.is_verified,
+        isVerified: is_verified,
       };
 
       res.status(StatusCodes.OK).json({ primary });

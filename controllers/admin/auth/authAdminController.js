@@ -3,11 +3,33 @@ const { NotFoundError, BadRequestError } = require("../../../errors");
 const Admin = require("../../../models/users/Admin");
 const fns = require("../../functionController");
 const validator = require("validator");
+const jwt = require("jsonwebtoken");
+const { sendVerificationEmail } = require("../mail/verificationMail");
 
 const verifyAdmin = async (req, res) => {
-  const { id } = req.user;
+  const { token } = req.body;
 
-  const admin = await Admin.verifyAdmin(id);
+  if (!token) {
+    throw new BadRequestError(`You do not have the appropriate credentials to change a password.`);
+  }
+
+  const isExpired = fns.isTokenExpired(token);
+
+  if (isExpired) {
+    throw new BadRequestError(`The link for changing the passord has already expired.`);
+  }
+
+  const verify = jwt.verify(token, process.env.JWT_SECRET);
+
+  if (!verify) {
+    throw new BadRequestError(`You do not have the appropriate credentials to change a password.`);
+  }
+
+  if (!verify?.id || !verify?.username || !verify?.email || !verify?.role) {
+    throw new BadRequestError(`You do not have the appropriate credentials to change a password.`);
+  }
+
+  const admin = await Admin.verifyAdmin(verify.id);
 
   if (!admin) {
     throw new BadRequestError(`Error in verifying your account. Try again later.`);
@@ -22,13 +44,13 @@ const logInAdmin = async (req, res) => {
   const { candidateIdentifier, candidatePassword } = loginData;
 
   if (validator.isEmail(candidateIdentifier)) {
-    const user = await Admin.findWithEmail(candidateIdentifier);
+    const admin = await Admin.findWithEmail(candidateIdentifier);
 
-    if (!user) {
+    if (!admin) {
       throw new NotFoundError(`There is no user with the given email.`);
     }
 
-    const { admin_id, username, email, password } = user;
+    const { admin_id, name, surname, username, email, password, is_verified } = admin;
 
     const isMatch = await fns.isMatchedPassword(password, candidatePassword);
 
@@ -36,29 +58,50 @@ const logInAdmin = async (req, res) => {
       throw new BadRequestError(`The email and password does not match.`);
     }
 
-    const token = fns.createLogInToken(admin_id, username, email, "admin");
+    if (!is_verified) {
+      const token = fns.createSignUpToken(admin_id, username, email, "admin");
 
-    const primary = {
-      adminId: user.admin_id,
-      name: user.name,
-      surname: user.surname,
-      username: user.username,
-      token: `Admin Bearer ${token}`,
-      role: "admin",
-      email: user.email,
-    };
+      const primary = {
+        adminId: admin_id,
+        name: name,
+        surname: surname,
+        username: username,
+        token: `Admin Bearer ${token}`,
+        email: email,
+        role: "admin",
+        isVerified: is_verified,
+      };
 
-    res.status(StatusCodes.OK).json({ primary });
+      res.status(StatusCodes.OK).json({ primary });
 
-    return;
+      const mail = await sendVerificationEmail(email, `${name} ${surname}`, token);
+      return;
+    } else {
+      const token = fns.createLogInToken(admin_id, username, email, "admin");
+
+      const primary = {
+        adminId: admin_id,
+        name: name,
+        surname: surname,
+        username: username,
+        token: `Admin Bearer ${token}`,
+        email: email,
+        role: "admin",
+        isVerified: is_verified,
+      };
+
+      res.status(StatusCodes.OK).json({ primary });
+
+      return;
+    }
   } else {
-    const user = await Admin.findWithUsername(candidateIdentifier);
+    const admin = await Admin.findWithUsername(candidateIdentifier);
 
-    if (!user) {
+    if (!admin) {
       throw new NotFoundError(`There is no user with the given username.`);
     }
 
-    const { admin_id, username, email, password } = user;
+    const { admin_id, name, surname, username, email, password, is_verified } = admin;
 
     const isMatch = await fns.isMatchedPassword(password, candidatePassword);
 
@@ -66,21 +109,42 @@ const logInAdmin = async (req, res) => {
       throw new BadRequestError(`The username and password does not match.`);
     }
 
-    const token = fns.createLogInToken(admin_id, username, email, "admin");
+    if (!is_verified) {
+      const token = fns.createSignUpToken(admin_id, username, email, "admin");
 
-    const primary = {
-      adminId: user.admin_id,
-      name: user.name,
-      surname: user.surname,
-      username: user.username,
-      token: `Admin Bearer ${token}`,
-      role: "admin",
-      email: user.email,
-    };
+      const primary = {
+        adminId: admin_id,
+        name: name,
+        surname: surname,
+        username: username,
+        token: `Admin Bearer ${token}`,
+        email: email,
+        role: "admin",
+        isVerified: is_verified,
+      };
 
-    res.status(StatusCodes.OK).json({ primary });
+      res.status(StatusCodes.OK).json({ primary });
 
-    return;
+      const mail = await sendVerificationEmail(email, `${name} ${surname}`, token);
+      return;
+    } else {
+      const token = fns.createLogInToken(admin_id, username, email, "admin");
+
+      const primary = {
+        adminId: admin_id,
+        name: name,
+        surname: surname,
+        username: username,
+        token: `Admin Bearer ${token}`,
+        email: email,
+        role: "admin",
+        isVerified: is_verified,
+      };
+
+      res.status(StatusCodes.OK).json({ primary });
+
+      return;
+    }
   }
 };
 
