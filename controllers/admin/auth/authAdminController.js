@@ -1,7 +1,7 @@
 const { StatusCodes } = require("http-status-codes");
-const { NotFoundError, BadRequestError } = require("../../errors");
-const Admin = require("../../models/users/Admin");
-const fns = require("../functionController");
+const { NotFoundError, BadRequestError } = require("../../../errors");
+const Admin = require("../../../models/users/Admin");
+const fns = require("../../functionController");
 const validator = require("validator");
 
 const verifyAdmin = async (req, res) => {

@@ -9,7 +9,7 @@ const sendPasswordResetEmail = async (sendTo, toName, token) => {
     to: sendTo,
     subject: "Password Reset",
     text: "Click the link to reset your account's password.",
-    html: `Hello ${toName},
+    html: `Hello Admin ${toName},
 
         <br /><br />
 
@@ -21,7 +21,7 @@ const sendPasswordResetEmail = async (sendTo, toName, token) => {
 
         <br /><br />
 
-        <a href="${url}/reset/${token}">Reset Readefine Password</a> 
+        <a href="${url}/renew/${token}">Reset Readefine Password</a> 
 
         <br /><br />
 

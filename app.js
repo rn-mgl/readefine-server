@@ -22,7 +22,7 @@ const warmerRouter = require("./routers/global/warmerRouter");
 const wordsRouter = require("./routers/client/words/wordsRouter");
 const { userRouter, userSessionRouter, userLexileRouter } = require("./routers/client/users"); // user
 const { readStoryRouter, storyContentRouter, storyRouter } = require("./routers/client/story"); // story
-const { authAdminRouter, authClientRouter, passwordResetRouter } = require("./routers/auth"); // auth
+const { authClientRouter, passwordResetRouter } = require("./routers/client/auth"); // auth
 const { userActivitiesRouter } = require("./routers/client/activities");
 const { rewardRouter, userAchievementRouter } = require("./routers/client/achievement"); // achievement
 const archivesRouter = require("./routers/client/archives/archivesRouter"); //archives
@@ -45,6 +45,7 @@ const {
 ///////////////////////////////////////// admin routers /////////////////////////////////////
 const adminDashboardRouter = require("./routers/admin/dashboard/dashboardRouter");
 const adminWordsRouter = require("./routers/admin/words/wordsRouter");
+const { authAdminRouter, adminPasswordResetRouter } = require("./routers/admin/auth"); // auth
 const { adminActivitiesRouter } = require("./routers/admin/activities/");
 const {
   adminUserRouter,
@@ -108,7 +109,6 @@ app.use("/warmer", warmerRouter);
 ///////////////////////// client router application /////////////////////////
 
 // auth router application
-app.use("/auth_admin", authAdminRouter);
 app.use("/auth_client", authClientRouter);
 app.use("/auth_client_password_reset", passwordResetRouter);
 
@@ -156,6 +156,10 @@ app.use("/activities", clientAuthMiddleware, userActivitiesRouter);
 //////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////// admin router application /////////////////////////
+
+// auth router application
+app.use("/auth_admin", authAdminRouter);
+app.use("/auth_admin_password_reset", adminPasswordResetRouter);
 
 // dashboard router application
 app.use("/admin_dashboard", adminAuthMiddleware, adminDashboardRouter);

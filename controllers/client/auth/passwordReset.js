@@ -1,8 +1,8 @@
 const { StatusCodes } = require("http-status-codes");
-const { BadRequestError, NotFoundError } = require("../../errors");
-const { sendPasswordResetEmail } = require("../client/mail/passwordResetMail");
-const User = require("../../models/users/User");
-const { createSignUpToken, hashPassword } = require("../functionController");
+const { BadRequestError, NotFoundError } = require("../../../errors");
+const { sendPasswordResetEmail } = require("../mail/passwordResetMail");
+const User = require("../../../models/users/User");
+const { createSignUpToken, hashPassword } = require("../../functionController");
 const jwt = require("jsonwebtoken");
 
 const sendPasswordReset = async (req, res) => {
@@ -12,13 +12,19 @@ const sendPasswordReset = async (req, res) => {
     throw new BadRequestError(`No email or username entered. You could not proceed.`);
   }
 
-  const user = await User.findWithEmail(candidateEmail);
+  const userEmail = await User.findWithEmail(candidateEmail);
 
-  if (!user) {
+  if (!userEmail) {
     throw new NotFoundError(`Sorry, there is no user found with the given email and username.`);
   }
 
-  const { user_id, name, surname, email, username } = user;
+  const userName = await User.findWithUsername(candidateUsername);
+
+  if (!userName) {
+    throw new NotFoundError(`Sorry, there is no user found with the given email and username.`);
+  }
+
+  const { user_id, name, surname, email, username } = userEmail;
 
   if (username !== candidateUsername) {
     throw new BadRequestError(`The email you entered does not use the username you entered.`);
@@ -43,12 +49,23 @@ const changePassword = async (req, res) => {
     throw new BadRequestError(`You are not authorized to change this user's password.`);
   }
 
+  const verify = jwt.verify(token, process.env.JWT_SECRET);
+
+  if (!verify) {
+    throw new BadRequestError(`You do not have the appropriate credentials to change a password.`);
+  }
+
+  if (!verify?.id || !verify?.username || !verify?.email || !verify?.role) {
+    throw new BadRequestError(`You do not have the appropriate credentials to change a password.`);
+  }
+
+  const { id, username, email, role } = verify;
+
   if (newPassword !== retypedPassword) {
     throw new BadRequestError(`The new and retyped passwords do not match. Try again.`);
   }
 
   const hashedPassword = await hashPassword(newPassword);
-  const { id } = jwt.verify(token, process.env.JWT_SECRET);
 
   const user = await User.changePassword(id, hashedPassword);
 

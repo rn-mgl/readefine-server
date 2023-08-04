@@ -1,15 +1,15 @@
 const { StatusCodes } = require("http-status-codes");
-const { NotFoundError, BadRequestError } = require("../../errors");
+const { NotFoundError, BadRequestError } = require("../../../errors");
 
-const User = require("../../models/users/User");
-const UserLexile = require("../../models/users/UserLexile");
-const UserAchievement = require("../../models/achievements/UserAchievement");
+const User = require("../../../models/users/User");
+const UserLexile = require("../../../models/users/UserLexile");
+const UserAchievement = require("../../../models/achievements/UserAchievement");
 
-const fns = require("../functionController");
+const fns = require("../../functionController");
 const validator = require("validator");
 const jwt = require("jsonwebtoken");
 
-const { sendVerificationEmail } = require("../client/mail/verificationMail");
+const { sendVerificationEmail } = require("../mail/verificationMail");
 
 const verifyUser = async (req, res) => {
   const { token } = req.body;
