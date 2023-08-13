@@ -157,6 +157,10 @@ const signUpUser = async (req, res) => {
   const { userData } = req.body;
   const { name, surname, username, gradeLevel, email, password } = userData;
 
+  if (!name || !surname || !username || !gradeLevel || !email || !password) {
+    throw new BadRequestError(`Fill all information before signing up.`);
+  }
+
   const uniqueEmail = await User.findWithEmail(email);
 
   if (uniqueEmail) {
