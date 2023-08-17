@@ -60,13 +60,6 @@ const updateUserAchievements = async (req, res) => {
 
   const { id } = req.user;
 
-  const TYPES = {
-    sessions: type === "user_session" && specifics === "days_online",
-    lexile: type === "user_lexile" && specifics === "lexile_growth",
-    readCount: type === "read_story" && specifics === "book_count",
-    testCount: type === "answered_tests" && specifics === "book_count",
-  };
-
   // increment points
   const data = await UserAchievement.incrementUserAchievementPoints(id, toAdd, type, specifics);
 
