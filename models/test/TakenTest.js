@@ -48,6 +48,7 @@ class TakenTest {
                     ON tq.question_id = aq.question_id
 
                     WHERE tt.taken_by = '${taken_by}'
+                    AND aq.answered_by = '${taken_by}'
                     AND tt.test_id = '${testId}'`;
       const [data, _] = await db.execute(sql);
       return data;

@@ -43,16 +43,4 @@ const getTakenTestsOfUser = async (req, res) => {
   res.status(StatusCodes.OK).json(takenTest);
 };
 
-const getTakenTest = async (req, res) => {
-  const { taken_id } = req.params;
-
-  const takenTest = await TakenTest.getTakenTest(taken_id);
-
-  if (!takenTest) {
-    throw new BadRequestError(`Error in getting taken test. Try again later.`);
-  }
-
-  res.status(StatusCodes.OK).json(takenTest);
-};
-
-module.exports = { takeTest, getAllTakenTests, getTakenTest, getTakenTestsOfUser };
+module.exports = { takeTest, getAllTakenTests, getTakenTestsOfUser };
