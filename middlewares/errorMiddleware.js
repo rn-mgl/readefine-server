@@ -8,7 +8,12 @@ const errorMiddleware = (err, req, res, next) => {
     msg: err.message || `Sorry, we have some technical problems. Please wait for a while.`,
   };
 
-  if (err.errno === 1062) {
+  if (err?.status === 504) {
+    customError.statusCode = StatusCodes.GATEWAY_TIMEOUT;
+    customError.msg = `The server is warming up, please wait and refresh the page.`;
+  }
+
+  if (err?.errno === 1062) {
     customError.statusCode = StatusCodes.BAD_REQUEST;
     customError.msg = `Input for ${err.sqlMessage.split(" ")[2]} already exists`;
   }
