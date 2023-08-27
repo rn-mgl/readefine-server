@@ -8,6 +8,11 @@ const errorMiddleware = (err, req, res, next) => {
     msg: err.message || `Sorry, we have some technical problems. Please wait for a while.`,
   };
 
+  if (err?.status === 502) {
+    customError.statusCode = StatusCodes.GATEWAY_TIMEOUT;
+    customError.msg = `The server is experiencing a bad gateway error. Please try again later.`;
+  }
+
   if (err?.status === 504) {
     customError.statusCode = StatusCodes.GATEWAY_TIMEOUT;
     customError.msg = `The server is warming up, please wait and refresh the page.`;
