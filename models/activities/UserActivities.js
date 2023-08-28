@@ -76,7 +76,7 @@ class UserActivities {
 
       const sqlAchievement = `SELECT ua.user_achievement_id, ua.user_id, ua.points,
 
-                              a.achievement_id, a.achievement_name, a.achievement_type, a.specifics, a.task, a.goal,
+                              a.achievement_id, a.achievement_name, a.achievement_type, a.task, a.goal,
 
                               r.reward_id, r.reward_name, r.reward_type, r.reward, r.description,
 

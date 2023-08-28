@@ -78,13 +78,12 @@ class UserAchievement {
     }
   }
 
-  static async incrementUserAchievementPoints(user_id, toAdd, type, specifics) {
+  static async incrementUserAchievementPoints(user_id, toAdd, type) {
     try {
       const sql = `UPDATE user_achievement AS ua
                   INNER JOIN achievement AS a ON ua.achievement_id = a.achievement_id
                   SET ua.points = ua.points + ${toAdd}
                   WHERE a.achievement_type = '${type}'
-                  AND a.specifics = '${specifics}'
                   AND ua.user_id = '${user_id}';`;
 
       const [data, _] = await db.execute(sql);
@@ -94,7 +93,7 @@ class UserAchievement {
     }
   }
 
-  static async checkUserAchievementPoints(user_id, type, specifics) {
+  static async checkUserAchievementPoints(user_id, type) {
     try {
       const sql = `SELECT * FROM user_achievement AS ua
                   INNER JOIN achievement AS a ON ua.achievement_id = a.achievement_id
@@ -102,7 +101,6 @@ class UserAchievement {
                   WHERE ua.points >= a.goal
                   AND ua.is_seen = '0'
                   AND a.achievement_type = '${type}'
-                  AND a.specifics = '${specifics}'
                   AND ua.user_id = '${user_id}';`;
       const [data, _] = await db.query(sql);
       return data;
@@ -122,7 +120,7 @@ class UserAchievement {
     }
   }
 
-  static async getUserPoints(user_id, type, specifics) {
+  static async getUserPoints(user_id, type) {
     try {
       const sql = `SELECT COALESCE(MAX(points), 0) as points
                   FROM user_achievement AS ua
@@ -131,8 +129,7 @@ class UserAchievement {
                   ON ua.achievement_id = a.achievement_id
                   
                   WHERE ua.user_id = '${user_id}'
-                  AND a.achievement_type = '${type}'
-                  AND a.specifics = '${specifics}';`;
+                  AND a.achievement_type = '${type}';`;
 
       const [data, _] = await db.execute(sql);
 

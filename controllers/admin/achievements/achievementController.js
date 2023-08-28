@@ -7,9 +7,9 @@ const UserAchievement = require("../../../models/achievements/UserAchievement");
 const createAchievement = async (req, res) => {
   const { id } = req.user;
   const { achievement } = req.body;
-  const { name, type, task, specifics, goal, reward } = achievement;
+  const { name, type, task, goal, reward } = achievement;
 
-  const newAchievement = new Achievement(name, type, task, specifics, goal, reward.id, id);
+  const newAchievement = new Achievement(name, type, task, goal, reward.id, id);
 
   const data = await newAchievement.createAchievement();
 
@@ -26,7 +26,7 @@ const createAchievement = async (req, res) => {
   }
 
   users?.map(async (user) => {
-    const points = await UserAchievement.getUserPoints(user.user_id, type, specifics);
+    const points = await UserAchievement.getUserPoints(user.user_id, type);
 
     if (!points && points !== 0) {
       throw new BadRequestError(`There was a problem in getting the previous points.`);
@@ -50,7 +50,7 @@ const updateAchievement = async (req, res) => {
   const { id } = req.user;
   const { achievement_id } = req.params;
   const { achievement } = req.body;
-  const { achievement_name, achievement_type, task, specifics, goal, reward_id } = achievement;
+  const { achievement_name, achievement_type, task, goal, reward_id } = achievement;
 
   const ifExist = await Achievement.getAchievement(achievement_id);
 
@@ -63,7 +63,7 @@ const updateAchievement = async (req, res) => {
     achievement_name,
     achievement_type,
     task,
-    specifics,
+
     goal,
     reward_id,
     id

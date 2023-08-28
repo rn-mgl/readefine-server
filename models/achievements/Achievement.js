@@ -1,11 +1,10 @@
 const db = require("../../db/connection");
 
 class Achievement {
-  constructor(achievement_name, achievement_type, task, specifics, goal, reward_id, added_by) {
+  constructor(achievement_name, achievement_type, task, goal, reward_id, added_by) {
     this.achievement_name = achievement_name;
     this.achievement_type = achievement_type;
     this.task = task;
-    this.specifics = specifics;
     this.goal = goal;
     this.reward_id = reward_id;
     this.added_by = added_by;
@@ -18,7 +17,6 @@ class Achievement {
         achievement_name: this.achievement_name,
         achievement_type: this.achievement_type,
         task: this.task,
-        specifics: this.specifics,
         goal: this.goal,
         reward_id: this.reward_id,
         added_by: this.added_by,
@@ -36,7 +34,6 @@ class Achievement {
     achievement_name,
     achievement_type,
     task,
-    specifics,
     goal,
     reward_id,
     added_by
@@ -48,7 +45,6 @@ class Achievement {
         achievement_name,
         achievement_type,
         task,
-        specifics,
         goal,
         reward_id,
         added_by,

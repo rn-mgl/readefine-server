@@ -56,19 +56,19 @@ const getUserAchievement = async (req, res) => {
 };
 
 const updateUserAchievements = async (req, res) => {
-  const { type, specifics, toAdd } = req.body;
+  const { type, toAdd } = req.body;
 
   const { id } = req.user;
 
   // increment points
-  const data = await UserAchievement.incrementUserAchievementPoints(id, toAdd, type, specifics);
+  const data = await UserAchievement.incrementUserAchievementPoints(id, toAdd, type);
 
   if (!data) {
     throw new BadRequestError(`There was a problem in updating your achievement.`);
   }
 
   // check if an achievement is accomplished
-  const check = await UserAchievement.checkUserAchievementPoints(id, type, specifics);
+  const check = await UserAchievement.checkUserAchievementPoints(id, type);
 
   if (!check) {
     throw new BadRequestError(`There was a problem in checking your achievement.`);
