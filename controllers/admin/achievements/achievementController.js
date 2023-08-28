@@ -26,7 +26,17 @@ const createAchievement = async (req, res) => {
   }
 
   users?.map(async (user) => {
-    const assignAchievement = await UserAchievement.assignAchievement(data.insertId, user.user_id);
+    const points = await UserAchievement.getUserPoints(user.user_id, type, specifics);
+
+    if (!points && points !== 0) {
+      throw new BadRequestError(`There was a problem in getting the previous points.`);
+    }
+
+    const assignAchievement = await UserAchievement.assignAchievement(
+      data.insertId,
+      user.user_id,
+      points
+    );
 
     if (!assignAchievement) {
       throw new BadRequestError(`There was a problem in assigning the achievement to the users.`);

@@ -122,10 +122,30 @@ class UserAchievement {
     }
   }
 
-  static async assignAchievement(achievement_id, user_id) {
+  static async getUserPoints(user_id, type, specifics) {
+    try {
+      const sql = `SELECT COALESCE(MAX(points), 0) as points
+                  FROM user_achievement AS ua
+                  
+                  INNER JOIN achievement AS a
+                  ON ua.achievement_id = a.achievement_id
+                  
+                  WHERE ua.user_id = '${user_id}'
+                  AND a.achievement_type = '${type}'
+                  AND a.specifics = '${specifics}';`;
+
+      const [data, _] = await db.execute(sql);
+
+      return data[0].points;
+    } catch (error) {
+      console.log(error + "--- get user points ---");
+    }
+  }
+
+  static async assignAchievement(achievement_id, user_id, points) {
     try {
       const sql = `INSERT INTO user_achievement SET ?;`;
-      const achievementValues = { achievement_id, user_id };
+      const achievementValues = { achievement_id, user_id, points };
 
       const [data, _] = await db.query(sql, achievementValues);
       return data;
