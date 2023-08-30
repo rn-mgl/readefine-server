@@ -57,7 +57,7 @@ class Test {
     const dateTo = dateRangeFilter.to ? dateRangeFilter.to : new Date();
     try {
       const sql = `SELECT t.test_id, t.story_id, t.date_added, t.added_by, 
-                   s.story_id, s.book_cover, s.title, s.author, s.lexile, s.genre, s.added_by, s.date_added, 
+                   s.story_id, s.book_cover, s.audio, s.title, s.author, s.lexile, s.genre, s.added_by, s.date_added, 
                    tt.score,
 
                     CASE 

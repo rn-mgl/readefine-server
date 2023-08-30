@@ -8,7 +8,7 @@ const uploadFile = async (req, res) => {
   const name = file.name;
 
   const data = await cloudinary.uploader.upload(tempFilePath, {
-    resource_type: "image",
+    resource_type: "auto",
     public_id: name,
     unique_filename: true,
   });

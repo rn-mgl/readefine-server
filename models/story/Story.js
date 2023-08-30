@@ -1,11 +1,11 @@
 const db = require("../../db/connection");
 
 class Story {
-  constructor(title, author, book_cover, lexile, genre, added_by) {
+  constructor(title, author, book_cover, audio, lexile, genre, added_by) {
     this.title = title;
     this.author = author;
     this.book_cover = book_cover;
-    this.lexile = lexile;
+    (this.audio = audio), (this.lexile = lexile);
     this.genre = genre;
     this.added_by = added_by;
   }
@@ -17,6 +17,7 @@ class Story {
         title: this.title,
         author: this.author,
         book_cover: this.book_cover,
+        audio: this.audio,
         lexile: this.lexile,
         genre: this.genre,
         added_by: this.added_by,
@@ -28,11 +29,11 @@ class Story {
     }
   }
 
-  static async updateStory(story_id, title, author, book_cover, lexile, genre, added_by) {
+  static async updateStory(story_id, title, author, book_cover, audio, lexile, genre, added_by) {
     try {
       const sql = `UPDATE story SET ?
                     WHERE story_id = '${story_id}';`;
-      const storyValues = { title, author, book_cover, lexile, genre, added_by };
+      const storyValues = { title, author, book_cover, audio, lexile, genre, added_by };
       const [data, _] = await db.query(sql, storyValues);
       return data;
     } catch (error) {
@@ -57,7 +58,7 @@ class Story {
     const dateFrom = dateRangeFilter.from ? dateRangeFilter.from : "19990101T123000.000Z";
     const dateTo = dateRangeFilter.to ? dateRangeFilter.to : new Date();
     try {
-      const sql = `SELECT s.added_by, s.author, s.book_cover, 
+      const sql = `SELECT s.added_by, s.author, s.book_cover, s.audio,
                   s.date_added, s.genre, s.lexile, s.story_id, t.test_id, s.title,
 
                   CASE 
@@ -92,7 +93,7 @@ class Story {
     const lexileTo = lexileRangeFilter.to ? lexileRangeFilter.to : 1400;
 
     try {
-      const sql = `SELECT s.added_by, s.author, s.book_cover, 
+      const sql = `SELECT s.added_by, s.author, s.book_cover, s.audio,
                   s.date_added, s.genre, s.lexile, s.story_id, t.test_id, s.title, rs.read_by,
 
                   CASE

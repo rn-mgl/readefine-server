@@ -5,10 +5,10 @@ const StoryContent = require("../../../models/story/StoryContent");
 
 const createStory = async (req, res) => {
   const { storyFilter, pages } = req.body;
-  const { title, author, lexile, genre, file } = storyFilter;
+  const { title, author, lexile, genre, file, audio } = storyFilter;
   const { id } = req.user;
 
-  const story = new Story(title, author, file.src, lexile, genre, id);
+  const story = new Story(title, author, file.src, audio.src, lexile, genre, id);
 
   const data = await story.createStory();
 
@@ -40,7 +40,7 @@ const createStory = async (req, res) => {
 
 const updateStory = async (req, res) => {
   const { story, pages, toDelete } = req.body;
-  const { title, author, lexile, genre, file, book_cover } = story;
+  const { title, author, lexile, genre, book_cover, audio } = story;
   const { story_id } = req.params;
   const { id } = req.user;
 
@@ -50,9 +50,16 @@ const updateStory = async (req, res) => {
     throw new NotFoundError(`The story you are trying to update does not exist.`);
   }
 
-  const bookCover = file?.src ? file?.src : book_cover ? book_cover : null;
-
-  const data = await Story.updateStory(story_id, title, author, bookCover, lexile, genre, id);
+  const data = await Story.updateStory(
+    story_id,
+    title,
+    author,
+    book_cover,
+    audio,
+    lexile,
+    genre,
+    id
+  );
 
   if (!data) {
     throw new BadRequestError(`There was a problem in updating the story ${title}.`);
