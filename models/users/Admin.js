@@ -1,12 +1,13 @@
 const db = require("../../db/connection");
 
 class Admin {
-  constructor(name, surname, username, email, password) {
+  constructor(name, surname, username, email, password, image) {
     this.name = name;
     this.surname = surname;
     this.username = username;
     this.email = email;
     this.password = password;
+    this.image = image;
   }
 
   async createAdmin() {
@@ -18,6 +19,7 @@ class Admin {
         username: this.username,
         email: this.email,
         password: this.password,
+        image: this.image,
       };
       const [data, _] = await db.query(sql, userValues);
       return data;

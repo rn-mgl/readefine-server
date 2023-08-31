@@ -1,13 +1,14 @@
 const db = require("../../db/connection");
 
 class User {
-  constructor(name, surname, username, grade_level, email, password) {
+  constructor(name, surname, username, grade_level, email, password, image) {
     this.name = name;
     this.surname = surname;
     this.username = username;
     this.grade_level = grade_level;
     this.email = email;
     this.password = password;
+    this.image = image;
   }
 
   async createUser() {
@@ -20,6 +21,7 @@ class User {
         grade_level: this.grade_level,
         email: this.email,
         password: this.password,
+        image: this.image,
       };
       const [data, _] = await db.query(sql, userValues);
       return data;
@@ -64,10 +66,17 @@ class User {
     }
   }
 
-  static async getAllUsers(searchFilter, sortFilter, dateRangeFilter, lexileRangeFilter) {
+  static async getAllUsers(
+    searchFilter,
+    sortFilter,
+    dateRangeFilter,
+    lexileRangeFilter
+  ) {
     const lexileFrom = lexileRangeFilter.from ? lexileRangeFilter.from : 0;
     const lexileTo = lexileRangeFilter.to ? lexileRangeFilter.to : 1400;
-    const dateFrom = dateRangeFilter.from ? dateRangeFilter.from : "19990101T123000.000Z";
+    const dateFrom = dateRangeFilter.from
+      ? dateRangeFilter.from
+      : "19990101T123000.000Z";
     const dateTo = dateRangeFilter.to ? dateRangeFilter.to : new Date();
     //dont touch plss
     try {
