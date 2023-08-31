@@ -11,6 +11,7 @@ const uploadFile = async (req, res) => {
     resource_type: "auto",
     public_id: name,
     unique_filename: true,
+    folder: "readefine-uploads",
   });
 
   if (!data) {

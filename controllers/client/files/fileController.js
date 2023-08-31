@@ -11,10 +11,13 @@ const uploadFile = async (req, res) => {
     resource_type: "image",
     public_id: name,
     unique_filename: true,
+    folder: "readefine-uploads",
   });
 
   if (!data) {
-    throw new BadRequestError(`Error in uploading image ${name}. Try again later.`);
+    throw new BadRequestError(
+      `Error in uploading image ${name}. Try again later.`
+    );
   }
 
   res.status(StatusCodes.OK).json({ url: data.secure_url });

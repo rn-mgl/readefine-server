@@ -48,18 +48,31 @@ const addWord = async (req, res) => {
       }
     }
 
-    const newDefinition = new WordDefinition(createWord.insertId, definition, example, id);
+    const newDefinition = new WordDefinition(
+      createWord.insertId,
+      definition,
+      example,
+      id
+    );
     const createDefinition = await newDefinition.addDefinition();
 
     if (!createDefinition) {
-      throw new BadRequestError(`There was a problem in creating the definition.`);
+      throw new BadRequestError(
+        `There was a problem in creating the definition.`
+      );
     }
 
-    const newPartOfSpeech = new WordPartOfSpeech(createDefinition.insertId, m.partOfSpeech, id);
+    const newPartOfSpeech = new WordPartOfSpeech(
+      createDefinition.insertId,
+      m.partOfSpeech,
+      id
+    );
     const createPartOfSpeech = await newPartOfSpeech.addPartOfSpeech();
 
     if (!createPartOfSpeech) {
-      throw new BadRequestError(`There was a problem in creating the part of speech.`);
+      throw new BadRequestError(
+        `There was a problem in creating the part of speech.`
+      );
     }
   });
 
