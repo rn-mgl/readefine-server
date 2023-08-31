@@ -3,6 +3,7 @@ const { BadRequestError, NotFoundError } = require("../../../errors");
 const Words = require("../../../models/words/Words");
 const WordDefinition = require("../../../models/words/WordDefinition");
 const WordPartOfSpeech = require("../../../models/words/WordPartOfSpeech");
+const StoryContent = require("../../../models/story/StoryContent");
 
 const addWord = async (req, res) => {
   const { id } = req.user;
@@ -80,13 +81,23 @@ const addWord = async (req, res) => {
 };
 
 const getAllWords = async (req, res) => {
-  const words = await Words.getAllWords();
+  const image = await StoryContent.getImage();
 
-  if (!words) {
+  if (!image) {
     throw new BadRequestError(`There was a problem in getting all the words.`);
   }
 
-  res.status(StatusCodes.OK).json(words);
+  image.forEach(async (i) => {
+    if (i.image && !i.image.includes("/readefine-uploads/")) {
+      const splitted = i.image.split("/");
+      splitted.splice(7, 0, "readefine-uploads");
+      const newUrl = splitted.join("/");
+      const update = await StoryContent.updateUrl(newUrl, i.content_id);
+      console.log(update);
+    }
+  });
+
+  res.status(StatusCodes.OK).json(image);
 };
 
 const getRandomWord = async (req, res) => {
