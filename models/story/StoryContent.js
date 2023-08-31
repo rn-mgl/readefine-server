@@ -80,28 +80,6 @@ class StoryContent {
       console.log(error + "--- get story ---");
     }
   }
-
-  static async getImage() {
-    try {
-      const sql = `SELECT image, content_id FROM story_content`;
-      const [data, _] = await db.execute(sql);
-      return data;
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  static async updateUrl(url, id) {
-    try {
-      const sql = `UPDATE story_content SET ? 
-                  WHERE content_id = '${id}';`;
-      const vals = { image: url };
-      const [data, _] = await db.query(sql, vals);
-      return data;
-    } catch (error) {
-      console.log(error);
-    }
-  }
 }
 
 module.exports = StoryContent;
