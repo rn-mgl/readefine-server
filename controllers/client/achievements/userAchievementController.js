@@ -76,9 +76,7 @@ const updateUserAchievements = async (req, res) => {
 
   // see those achievements for it to not be repeated
   check?.map(async (achievement) => {
-    const seeAchievement = await UserAchievement.seeUserAchievements(
-      achievement.user_achievement_id
-    );
+    const seeAchievement = await UserAchievement.seeUserAchievements(achievement.user_achievement_id);
 
     if (!seeAchievement) {
       throw new BadRequestError(`There was a problem in viewing your achievements.`);

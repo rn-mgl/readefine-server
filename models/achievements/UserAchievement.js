@@ -21,13 +21,7 @@ class UserAchievement {
     }
   }
 
-  static async getAllUserAchievements(
-    searchFilter,
-    goalRangeFilter,
-    sortFilter,
-    typeFilter,
-    user_id
-  ) {
+  static async getAllUserAchievements(searchFilter, goalRangeFilter, sortFilter, typeFilter, user_id) {
     const goalFrom = goalRangeFilter.from ? goalRangeFilter.from : 0;
     const goalTo = goalRangeFilter.to ? goalRangeFilter.to : 1400;
     try {
