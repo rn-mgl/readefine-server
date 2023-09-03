@@ -1,6 +1,7 @@
 const cloudinary = require("cloudinary").v2;
 const { StatusCodes } = require("http-status-codes");
 const { BadRequestError } = require("../../../errors");
+const fs = require("fs");
 
 const uploadFile = async (req, res) => {
   const file = req.files.file;
@@ -18,6 +19,7 @@ const uploadFile = async (req, res) => {
     throw new BadRequestError(`There was a problem uploading image ${name}.`);
   }
 
+  fs.unlinkSync(file.tempFilePath);
   res.status(StatusCodes.OK).json({ url: data.secure_url });
 };
 
