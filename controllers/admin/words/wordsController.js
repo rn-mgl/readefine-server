@@ -49,31 +49,18 @@ const addWord = async (req, res) => {
       }
     }
 
-    const newDefinition = new WordDefinition(
-      createWord.insertId,
-      definition,
-      example,
-      id
-    );
+    const newDefinition = new WordDefinition(createWord.insertId, definition, example, id);
     const createDefinition = await newDefinition.addDefinition();
 
     if (!createDefinition) {
-      throw new BadRequestError(
-        `There was a problem in creating the definition.`
-      );
+      throw new BadRequestError(`There was a problem in creating the definition.`);
     }
 
-    const newPartOfSpeech = new WordPartOfSpeech(
-      createDefinition.insertId,
-      m.partOfSpeech,
-      id
-    );
+    const newPartOfSpeech = new WordPartOfSpeech(createDefinition.insertId, m.partOfSpeech, id);
     const createPartOfSpeech = await newPartOfSpeech.addPartOfSpeech();
 
     if (!createPartOfSpeech) {
-      throw new BadRequestError(
-        `There was a problem in creating the part of speech.`
-      );
+      throw new BadRequestError(`There was a problem in creating the part of speech.`);
     }
   });
 
@@ -81,23 +68,13 @@ const addWord = async (req, res) => {
 };
 
 const getAllWords = async (req, res) => {
-  const image = await StoryContent.getImage();
+  const word = await Words.getAllWords();
 
-  if (!image) {
+  if (!word) {
     throw new BadRequestError(`There was a problem in getting all the words.`);
   }
 
-  image.forEach(async (i) => {
-    if (i.image && !i.image.includes("/readefine-uploads/")) {
-      const splitted = i.image.split("/");
-      splitted.splice(7, 0, "readefine-uploads");
-      const newUrl = splitted.join("/");
-      const update = await StoryContent.updateUrl(newUrl, i.content_id);
-      console.log(update);
-    }
-  });
-
-  res.status(StatusCodes.OK).json(image);
+  res.status(StatusCodes.OK).json(word);
 };
 
 const getRandomWord = async (req, res) => {
