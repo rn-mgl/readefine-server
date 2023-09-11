@@ -44,17 +44,9 @@ class Test {
     }
   }
 
-  static async getAllUserTests(
-    userId,
-    searchFilter,
-    lexileRangeFilter,
-    sortFilter,
-    dateRangeFilter
-  ) {
+  static async getAllUserTests(userId, searchFilter, lexileRangeFilter, sortFilter) {
     const lexileFrom = lexileRangeFilter.from ? lexileRangeFilter.from : 0;
     const lexileTo = lexileRangeFilter.to ? lexileRangeFilter.to : 1400;
-    const dateFrom = dateRangeFilter.from ? dateRangeFilter.from : "19990101T123000.000Z";
-    const dateTo = dateRangeFilter.to ? dateRangeFilter.to : new Date();
     try {
       const sql = `SELECT t.test_id, t.story_id, t.date_added, t.added_by, 
                    s.story_id, s.book_cover, s.audio, s.title, s.author, s.lexile, s.genre, s.added_by, s.date_added, 
@@ -75,15 +67,11 @@ class Test {
                    
                    WHERE 
                       s.${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
-                  AND 
+                   AND 
                       s.lexile >= '${lexileFrom}' 
-                  AND 
+                   AND 
                       s.lexile <= '${lexileTo}'
-                  AND 
-                      CAST(s.date_added AS DATE) >= '${dateFrom}' 
-                  AND 
-                      CAST(s.date_added AS DATE) <= '${dateTo}'
-                  ORDER BY ${sortFilter.toSort} ${sortFilter.sortMode};`;
+                   ORDER BY ${sortFilter.toSort} ${sortFilter.sortMode};`;
       const [data, _] = await db.execute(sql);
       return data;
     } catch (error) {
