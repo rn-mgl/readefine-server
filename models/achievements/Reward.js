@@ -62,7 +62,7 @@ class Reward {
     const dateTo = dateRangeFilter.to ? dateRangeFilter.to : new Date();
     try {
       const sql = `SELECT * FROM reward
-                  WHERE reward_name LIKE '%${searchFilter}%'
+                  WHERE ${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
                   AND
                       reward_type LIKE '%${typeFilter}%'
                   AND 
@@ -99,7 +99,7 @@ class Reward {
                       WHERE ua.user_id = '${user_id}'
 
                       AND 
-                        r.reward_name LIKE '%${searchFilter}%'
+                        r.${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
 
                       AND
                         r.reward_type LIKE '%${typeFilter}%'
@@ -120,7 +120,7 @@ class Reward {
                         a.goal <= ua.points
 
                       AND 
-                        r.reward_name LIKE '%${searchFilter}%'
+                        r.${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
 
                       AND
                         r.reward_type LIKE '%${typeFilter}%'

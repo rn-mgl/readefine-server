@@ -18,19 +18,13 @@ const getAllUserRewards = async (req, res) => {
   const { id } = req.user;
   const { searchFilter, sortFilter, showFilter, typeFilter } = req.query;
 
-  const userAchievement = await Reward.getAllUserRewards(
-    id,
-    searchFilter,
-    sortFilter,
-    showFilter,
-    typeFilter
-  );
+  const userRewards = await Reward.getAllUserRewards(id, searchFilter, sortFilter, showFilter, typeFilter);
 
-  if (!userAchievement) {
+  if (!userRewards) {
     throw new BadRequestError(`There was a problem in getting all your rewards.`);
   }
 
-  res.status(StatusCodes.OK).json(userAchievement);
+  res.status(StatusCodes.OK).json(userRewards);
 };
 
 module.exports = { getAllUserRewards, getUserReward };

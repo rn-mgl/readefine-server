@@ -28,14 +28,7 @@ const updateReward = async (req, res) => {
     throw new NotFoundError(`The reward you are trying to update does not exist.`);
   }
 
-  const data = await Reward.updateReward(
-    reward_id,
-    reward_name,
-    reward_type,
-    description,
-    reward,
-    id
-  );
+  const data = await Reward.updateReward(reward_id, reward_name, reward_type, description, reward, id);
 
   if (!data) {
     throw new BadRequestError(`There was a problem in updating the reward ${reward_name}.`);
