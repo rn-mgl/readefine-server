@@ -57,14 +57,14 @@ class TakenTest {
     }
   }
 
-  static async getTakenTestsOfUser(user_id) {
+  static async getTakenTestsOfUser(user_id, month) {
     try {
       const sql = `SELECT * FROM taken_test AS tt
                   INNER JOIN test AS t ON tt.test_id = t.test_id
                   INNER JOIN story AS s ON t.story_id = s.story_id
                   WHERE tt.taken_by = '${user_id}'
                     AND
-                  MONTH(tt.date_taken) = MONTH(CURDATE())
+                  MONTH(tt.date_taken) = ${month}
                     AND
                   YEAR(tt.date_taken) = YEAR(CURDATE())`;
       const [data, _] = await db.execute(sql);

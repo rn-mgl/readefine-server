@@ -25,14 +25,14 @@ class ReadStory {
     }
   }
 
-  static async getReadStories(user_id) {
+  static async getReadStories(user_id, month) {
     try {
       const sql = `SELECT * FROM read_story AS rs
                   INNER JOIN users AS u ON rs.read_by = u.user_id
                   INNER JOIN story AS s ON rs.story_id = s.story_id
                   WHERE rs.read_by = '${user_id}'
                   AND
-                    MONTH(rs.date_read) = MONTH(CURDATE())
+                    MONTH(rs.date_read) = '${month}'
                   AND
                     YEAR(rs.date_read) = YEAR(CURDATE())
                   ORDER BY rs.date_read;`;

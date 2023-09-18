@@ -17,7 +17,7 @@ class UserLexile {
     }
   }
 
-  static async getLexileProgress(user_id) {
+  static async getLexileProgress(user_id, month) {
     try {
       const sql = `SELECT * FROM user_lexile AS ul
                         INNER JOIN users AS u ON ul.user_id = u.user_id
@@ -27,11 +27,12 @@ class UserLexile {
                           DATE(ul.date_added) IN (
                           SELECT DISTINCT DATE(date_added)
                           FROM user_lexile AS sub_ul
-                          WHERE u.user_id = sub_ul.user_id
-                          ORDER BY date_added DESC
+                          INNER JOIN users AS sub_u ON sub_ul.user_id = sub_u.user_id
+                          WHERE sub_u.user_id = sub_ul.user_id
+                          ORDER BY sub_ul.date_added DESC
                         )
                         AND
-                          MONTH(ul.date_added) = MONTH(CURDATE())
+                          MONTH(ul.date_added) = "${month}"
                         AND
                           YEAR(ul.date_added) = YEAR(CURDATE())
                         ORDER BY date_added ASC;`;

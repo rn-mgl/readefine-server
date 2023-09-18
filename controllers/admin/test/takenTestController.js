@@ -32,9 +32,9 @@ const getAllTakenTests = async (req, res) => {
 };
 
 const getTakenTestsOfUser = async (req, res) => {
-  const { userId } = req.query;
+  const { userId, quizMonth } = req.query;
 
-  const takenTest = await TakenTest.getTakenTestsOfUser(userId);
+  const takenTest = await TakenTest.getTakenTestsOfUser(userId, quizMonth);
 
   if (!takenTest) {
     throw new BadRequestError(`Error in getting all taken tests. Try again later.`);

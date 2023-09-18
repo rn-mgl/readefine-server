@@ -26,7 +26,7 @@ const createReadStory = async (req, res) => {
 };
 
 const getReadStories = async (req, res) => {
-  const { userId } = req.query;
+  const { userId, readMonth } = req.query;
 
   const ifExist = await User.getUser(userId);
 
@@ -34,7 +34,7 @@ const getReadStories = async (req, res) => {
     throw new NotFoundError(`The user you are trying view does not exist.`);
   }
 
-  const data = await ReadStory.getReadStories(userId);
+  const data = await ReadStory.getReadStories(userId, readMonth);
 
   if (!data) {
     throw new BadRequestError(`There was a problem in getting the read stories.`);
