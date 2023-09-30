@@ -4,6 +4,7 @@ class Words {
   constructor(word, pronunciation, added_by) {
     this.word = word;
     this.pronunciation = pronunciation;
+    this.added_by = added_by;
   }
 
   async addWord() {
@@ -12,6 +13,7 @@ class Words {
       const wordValues = {
         word: this.word,
         pronunciation: this.pronunciation,
+        added_by: this.added_by,
       };
       const [data, _] = await db.query(sql, wordValues);
       return data;

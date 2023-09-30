@@ -29,15 +29,7 @@ class Achievement {
     }
   }
 
-  static async updateAchievement(
-    achievement_id,
-    achievement_name,
-    achievement_type,
-    task,
-    goal,
-    reward_id,
-    added_by
-  ) {
+  static async updateAchievement(achievement_id, achievement_name, achievement_type, task, goal, reward_id, added_by) {
     try {
       const sql = `UPDATE achievement SET ?
                     WHERE achievement_id = '${achievement_id}';`;
@@ -69,13 +61,7 @@ class Achievement {
     }
   }
 
-  static async getAllAchievements(
-    searchFilter,
-    goalRangeFilter,
-    sortFilter,
-    dateRangeFilter,
-    typeFilter
-  ) {
+  static async getAllAchievements(searchFilter, goalRangeFilter, sortFilter, dateRangeFilter, typeFilter) {
     const goalFrom = goalRangeFilter.from ? goalRangeFilter.from : 0;
     const goalTo = goalRangeFilter.to ? goalRangeFilter.to : 1400;
     const dateFrom = dateRangeFilter.from ? dateRangeFilter.from : "19990101T123000.000Z";
