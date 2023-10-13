@@ -180,8 +180,6 @@ const signUpAdmin = async (req, res) => {
   res.status(StatusCodes.OK).json({ data, token });
 
   const mail = await sendVerificationEmail(email, `${name} ${surname}`, token);
-
-  console.log(mail);
 };
 
 module.exports = { logInAdmin, signUpAdmin, verifyAdmin };
