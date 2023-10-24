@@ -22,7 +22,7 @@ const sendVerificationEmail = async (sendTo, toName, token) => {
 
         <br /><br />
 
-        <a href="${url}/confirm/${token}">
+        <a href="${url}/validate/${token}">
           <h4>Verify My Readefine Head Account</h4>
         </a> 
 

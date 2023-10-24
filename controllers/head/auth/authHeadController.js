@@ -4,6 +4,7 @@ const Head = require("../../../models/users/Head");
 const fns = require("../../functionController");
 const validator = require("validator");
 const { sendVerificationEmail } = require("../mail/verificationMail");
+const jwt = require("jsonwebtoken");
 
 const verifyHead = async (req, res) => {
   const { token } = req.body;
@@ -28,13 +29,13 @@ const verifyHead = async (req, res) => {
     throw new BadRequestError(`You do not have the appropriate credentials to verify your account.`);
   }
 
-  const admin = await Admin.verifyAdmin(verify.id);
+  const head = await Head.verifyHead(verify.id);
 
-  if (!admin) {
+  if (!head) {
     throw new BadRequestError(`Error in verifying your account. Try again later.`);
   }
 
-  res.status(StatusCodes.OK).json(admin);
+  res.status(StatusCodes.OK).json(head);
 };
 
 const logInHead = async (req, res) => {
@@ -74,7 +75,7 @@ const logInHead = async (req, res) => {
   };
 
   if (!is_verified) {
-    const token = fns.createSignUpToken(user_id, username, email, "user");
+    const token = fns.createSignUpToken(head_id, username, email, "user");
 
     primary.token = `Head Bearer ${token}`;
 
@@ -94,8 +95,6 @@ const logInHead = async (req, res) => {
 
 const signUpHead = async (req, res) => {
   const { userData } = req.body;
-
-  console.log(userData);
 
   const { name, surname, username, email, password, image } = userData;
 

@@ -20,13 +20,21 @@ const warmerRouter = require("./routers/global/warmerRouter");
 ///////////////////////////////////////// client routers /////////////////////////////////////////////////////
 const wordsRouter = require("./routers/client/words/wordsRouter");
 const { userRouter, userSessionRouter, userLexileRouter } = require("./routers/client/users"); // user
+
 const { readStoryRouter, storyContentRouter, storyRouter } = require("./routers/client/story"); // story
+
 const { authClientRouter, passwordResetRouter } = require("./routers/client/auth"); // auth
-const { userActivitiesRouter } = require("./routers/client/activities");
+
+const { userActivitiesRouter } = require("./routers/client/activities"); // activites
+
 const { rewardRouter, userAchievementRouter } = require("./routers/client/achievement"); // achievement
+
 const archivesRouter = require("./routers/client/archives/archivesRouter"); //archives
+
 const { testRouter, takenTestRouter, testQuestionRouter, testAnswerRouter } = require("./routers/client/test"); // test
+
 const { riddlesRouter, minigameDashboardRouter } = require("./routers/client/minigames"); // minigames
+
 const {
   answeredDangleRouter,
   answeredDecipherRouter,
@@ -38,9 +46,13 @@ const {
 
 ///////////////////////////////////////// admin routers /////////////////////////////////////
 const adminDashboardRouter = require("./routers/admin/dashboard/dashboardRouter");
+
 const adminWordsRouter = require("./routers/admin/words/wordsRouter");
+
 const { authAdminRouter, adminPasswordResetRouter } = require("./routers/admin/auth"); // auth
-const { adminActivitiesRouter } = require("./routers/admin/activities/");
+
+const { adminActivitiesRouter } = require("./routers/admin/activities/"); // activities
+
 const {
   adminUserRouter,
   adminRouter,
@@ -48,19 +60,24 @@ const {
   adminUserLexileRouter,
   adminSessionRouter,
 } = require("./routers/admin/users"); // user
+
 const {
   adminAchievementRouter,
   adminRewardRouter,
   adminUserAchievementRouter,
 } = require("./routers/admin/achievement"); // achievement
+
 const { adminReadStoryRouter, adminStoryContentRouter, adminStoryRouter } = require("./routers/admin/story"); // story
+
 const {
   adminTestRouter,
   adminTakenTestRouter,
   adminTestQuestionRouter,
   adminTestAnswerRouter,
 } = require("./routers/admin/test"); // test
+
 const { adminRiddlesRouter } = require("./routers/admin/minigames"); // minigames
+
 const {
   adminAnsweredDangleRouter,
   adminAnsweredDecipherRouter,
@@ -72,13 +89,18 @@ const {
 
 ///////////////////////////////////////// head routers /////////////////////////////////////
 
-const { authHeadRouter, headPasswordResetRouter } = require("./routers/head/auth");
+const headDashboardRouter = require("./routers/head/dashboard/dashboardRouter");
+
+const { authHeadRouter, headPasswordResetRouter } = require("./routers/head/auth"); // auth
+
+const { headRouter, headSessionRouter, headAdminRouter } = require("./routers/head/users"); // users
 
 //////////////////////////////////////////////////////////////////////////////
 
 // middlewares
 const clientAuthMiddleware = require("./middlewares/clientAuthMiddleware");
 const adminAuthMiddleware = require("./middlewares/adminAuthMiddleware");
+const headAuthMiddleware = require("./middlewares/headAuthMiddleware");
 const errorMiddleware = require("./middlewares/errorMiddleware");
 const notFoundMiddleware = require("./middlewares/notFoundMiddleware");
 
@@ -171,7 +193,6 @@ app.use("/admin_story_content", adminAuthMiddleware, adminStoryContentRouter);
 app.use("/admin_read_story", adminAuthMiddleware, adminReadStoryRouter);
 
 // achievement router application
-
 app.use("/admin_achievement", adminAuthMiddleware, adminAchievementRouter);
 app.use("/admin_user_achievement", adminAuthMiddleware, adminUserAchievementRouter);
 app.use("/admin_reward", adminAuthMiddleware, adminRewardRouter);
@@ -207,6 +228,16 @@ app.use("/admin_activities", adminAuthMiddleware, adminActivitiesRouter);
 // auth router application
 app.use("/auth_head", authHeadRouter);
 app.use("/auth_head_password_reset", authHeadRouter);
+
+// session router application
+app.use("/head_session", headAuthMiddleware, headSessionRouter);
+
+// users router application
+app.use("/head", headAuthMiddleware, headRouter);
+app.use("/head_admin", headAuthMiddleware, headAdminRouter);
+
+// dashboard router application
+app.use("/head_dashboard", headAuthMiddleware, headDashboardRouter);
 
 //////////////////////////////////////////////////////////////////////////////
 

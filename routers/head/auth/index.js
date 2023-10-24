@@ -1,4 +1,4 @@
 const authHeadRouter = require("./authHeadRouter");
-const headPasswordResetRouter = require("./passwordReset");
+const headPasswordResetRouter = require("./passwordResetRouter");
 
 module.exports = { authHeadRouter, headPasswordResetRouter };

@@ -25,7 +25,41 @@ class Head {
       const [data, _] = await db.query(sql, headValues);
       return data;
     } catch (error) {
-      console.log(error + "--- create admin ---");
+      console.log(error + "--- create head ---");
+    }
+  }
+
+  static async verifyHead(head_id) {
+    try {
+      const sql = `UPDATE head SET ?
+                  WHERE head_id = '${head_id}';`;
+      const verifyValues = { is_verified: true };
+
+      const [data, _] = await db.query(sql, verifyValues);
+      return data;
+    } catch (error) {
+      console.log(error + "--- verify head ---");
+    }
+  }
+
+  static async getAllHeads() {
+    try {
+      const sql = "SELECT * FROM head;";
+      const [data, _] = await db.execute(sql);
+      return data;
+    } catch (error) {
+      console.log(error + "--- get all heads ---");
+    }
+  }
+
+  static async getHead(head_id) {
+    try {
+      const sql = `SELECT * FROM head
+                  WHERE head_id = '${head_id}';`;
+      const [data, _] = await db.execute(sql);
+      return data[0];
+    } catch (error) {
+      console.log(error + "--- get head ---");
     }
   }
 
