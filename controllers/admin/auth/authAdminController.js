@@ -94,38 +94,4 @@ const logInAdmin = async (req, res) => {
   }
 };
 
-const signUpAdmin = async (req, res) => {
-  const { userData } = req.body;
-
-  const { name, surname, username, email, password, image } = userData;
-
-  const uniqueEmail = await Admin.findWithEmail(email);
-
-  if (uniqueEmail) {
-    throw new BadRequestError(`The email ${email} is already an admin in Readefine.`);
-  }
-
-  const uniqueUsername = await Admin.findWithUsername(email);
-
-  if (uniqueUsername) {
-    throw new BadRequestError(`The username ${username} has already been taken.`);
-  }
-
-  const hashedPassword = await fns.hashPassword(password);
-
-  const admin = new Admin(name, surname, username, email, hashedPassword, image);
-
-  const data = await admin.createAdmin();
-
-  if (!data) {
-    throw new BadRequestError(`Error in signing up. Try again later.`);
-  }
-
-  const token = fns.createSignUpToken(data.insertId, username, email, "admin");
-
-  res.status(StatusCodes.OK).json({ data, token });
-
-  const mail = await sendVerificationEmail(email, `${name} ${surname}`, token);
-};
-
-module.exports = { logInAdmin, signUpAdmin, verifyAdmin };
+module.exports = { logInAdmin, verifyAdmin };

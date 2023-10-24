@@ -110,6 +110,18 @@ class Admin {
       console.log(error + " --- update admin password ---");
     }
   }
+
+  static async deleteAdmin(admin_id) {
+    try {
+      const sql = `DELETE FROM admin
+                  WHERE admin_id = '${admin_id}'`;
+
+      const [data, _] = await db.execute(sql);
+      return data;
+    } catch (error) {
+      console.log(error + " --- delete admin ---");
+    }
+  }
 }
 
 module.exports = Admin;
