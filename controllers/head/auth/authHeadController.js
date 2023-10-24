@@ -1,12 +1,11 @@
 const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../../../errors");
-const Admin = require("../../../models/users/Admin");
+const Head = require("../../../models/users/Head");
 const fns = require("../../functionController");
 const validator = require("validator");
-const jwt = require("jsonwebtoken");
 const { sendVerificationEmail } = require("../mail/verificationMail");
 
-const verifyAdmin = async (req, res) => {
+const verifyHead = async (req, res) => {
   const { token } = req.body;
 
   if (!token) {
@@ -16,7 +15,7 @@ const verifyAdmin = async (req, res) => {
   const isExpired = fns.isTokenExpired(token);
 
   if (isExpired) {
-    throw new BadRequestError(`The link for verifying your account has already expired.`);
+    throw new BadRequestError(`The link for changing the passord has already expired.`);
   }
 
   const verify = jwt.verify(token, process.env.JWT_SECRET);
@@ -38,24 +37,24 @@ const verifyAdmin = async (req, res) => {
   res.status(StatusCodes.OK).json(admin);
 };
 
-const logInAdmin = async (req, res) => {
+const logInHead = async (req, res) => {
   const { loginData } = req.body;
 
   const { candidateIdentifier, candidatePassword } = loginData;
 
-  let admin = null;
+  let head = null;
 
   if (validator.isEmail(candidateIdentifier)) {
-    admin = await Admin.findWithEmail(candidateIdentifier);
+    head = await Head.findWithEmail(candidateIdentifier);
   } else {
-    admin = await Admin.findWithUsername(candidateIdentifier);
+    head = await Head.findWithUsername(candidateIdentifier);
   }
 
-  if (!admin) {
-    throw new NotFoundError(`There is no admin with the given identifier.`);
+  if (!head) {
+    throw new NotFoundError(`There is no user with the given email.`);
   }
 
-  const { admin_id, name, surname, username, email, password, is_verified } = admin;
+  const { head_id, name, surname, username, email, password, is_verified } = head;
 
   const isMatch = await fns.isMatchedPassword(password, candidatePassword);
 
@@ -64,68 +63,69 @@ const logInAdmin = async (req, res) => {
   }
 
   const primary = {
-    adminId: admin_id,
+    headId: head_id,
     name: name,
     surname: surname,
     username: username,
     token: null,
     email: email,
-    role: "admin",
+    role: "head",
     isVerified: is_verified,
   };
 
   if (!is_verified) {
-    const token = fns.createSignUpToken(admin_id, username, email, "admin");
+    const token = fns.createSignUpToken(user_id, username, email, "user");
 
-    primary.token = `Admin Bearer ${token}`;
+    primary.token = `Head Bearer ${token}`;
 
     res.status(StatusCodes.OK).json({ primary });
 
     const mail = await sendVerificationEmail(email, `${name} ${surname}`, token);
     return;
   } else {
-    const token = fns.createLogInToken(admin_id, username, email, "admin");
+    const token = fns.createLogInToken(head_id, username, email, "head");
 
-    primary.token = `Admin Bearer ${token}`;
+    primary.token = `Head Bearer ${token}`;
 
     res.status(StatusCodes.OK).json({ primary });
-
     return;
   }
 };
 
-const signUpAdmin = async (req, res) => {
+const signUpHead = async (req, res) => {
   const { userData } = req.body;
+
+  console.log(userData);
 
   const { name, surname, username, email, password, image } = userData;
 
-  const uniqueUsername = await Admin.findWithUsername(email);
+  const takenUsername = await Head.findWithUsername(email);
 
-  if (uniqueUsername) {
+  if (takenUsername) {
     throw new BadRequestError(`The username ${username} has already been taken.`);
   }
 
-  const uniqueEmail = await Admin.findWithEmail(email);
+  const takenEmail = await Head.findWithEmail(email);
 
-  if (uniqueEmail) {
+  if (takenEmail) {
     throw new BadRequestError(`The email ${email} is already used in Readefine.`);
   }
 
   const hashedPassword = await fns.hashPassword(password);
 
-  const admin = new Admin(name, surname, username, email, hashedPassword, image);
+  const head = new Head(name, surname, username, email, hashedPassword, image);
 
-  const data = await admin.createAdmin();
+  const data = await head.createHead();
 
   if (!data) {
     throw new BadRequestError(`Error in signing up. Try again later.`);
   }
 
-  const token = fns.createSignUpToken(data.insertId, username, email, "admin");
+  const token = fns.createSignUpToken(data.insertId, username, email, "head");
 
   res.status(StatusCodes.OK).json({ data, token });
 
   const mail = await sendVerificationEmail(email, `${name} ${surname}`, token);
 };
 
-module.exports = { logInAdmin, signUpAdmin, verifyAdmin };
+module.exports = { logInHead, signUpHead, verifyHead };

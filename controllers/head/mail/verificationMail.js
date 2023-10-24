@@ -1,7 +1,7 @@
 const sendgrid = require("@sendgrid/mail");
 const { BadRequestError } = require("../../../errors");
 
-const url = "http://192.168.1.121:3000";
+const url = "https://readefine.vercel.app";
 
 const sendVerificationEmail = async (sendTo, toName, token) => {
   const message = {
@@ -9,7 +9,7 @@ const sendVerificationEmail = async (sendTo, toName, token) => {
     to: sendTo,
     subject: "Account Verification",
     text: "Click the link to verify your account.",
-    html: `<h1> Hello Admin <i>${toName}</i></h1>
+    html: `<h1> Hello Head <i>${toName}</i></h1>
 
         <br /><br />
 
@@ -23,7 +23,7 @@ const sendVerificationEmail = async (sendTo, toName, token) => {
         <br /><br />
 
         <a href="${url}/confirm/${token}">
-          <h4>Verify My Readefine Admin Account</h4>
+          <h4>Verify My Readefine Head Account</h4>
         </a> 
 
         <br /><br />

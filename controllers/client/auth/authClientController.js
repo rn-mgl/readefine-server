@@ -15,7 +15,7 @@ const verifyUser = async (req, res) => {
   const { token } = req.body;
 
   if (!token) {
-    throw new BadRequestError(`You do not have the appropriate credentials to change a password.`);
+    throw new BadRequestError(`You do not have the appropriate credentials to verify your account.`);
   }
 
   const isExpired = fns.isTokenExpired(token);
@@ -48,108 +48,53 @@ const logInUser = async (req, res) => {
 
   const { candidateIdentifier, candidatePassword } = loginData;
 
+  let user = null;
   if (validator.isEmail(candidateIdentifier)) {
-    const findEmail = await User.findWithEmail(candidateIdentifier);
-
-    if (!findEmail) {
-      throw new NotFoundError(`There is no user with the given email.`);
-    }
-
-    const { user_id, name, surname, username, email, password, is_verified } = findEmail;
-
-    const isMatch = await fns.isMatchedPassword(password, candidatePassword);
-
-    if (!isMatch) {
-      throw new BadRequestError(`The email and password does not match.`);
-    }
-
-    if (!is_verified) {
-      const token = fns.createSignUpToken(user_id, username, email, "user");
-
-      const primary = {
-        userId: user_id,
-        name: name,
-        surname: surname,
-        username: username,
-        token: `Bearer ${token}`,
-        email: email,
-        role: "user",
-        isVerified: is_verified,
-      };
-
-      res.status(StatusCodes.OK).json({ primary });
-
-      const mail = await sendVerificationEmail(email, `${name} ${surname}`, token);
-      return;
-    } else {
-      const token = fns.createLogInToken(user_id, username, email, "user");
-
-      const primary = {
-        userId: user_id,
-        name: name,
-        surname: surname,
-        username: username,
-        token: `Bearer ${token}`,
-        email: email,
-        role: "user",
-        isVerified: is_verified,
-      };
-
-      res.status(StatusCodes.OK).json({ primary });
-
-      return;
-    }
+    user = await User.findWithEmail(candidateIdentifier);
   } else {
-    const findUser = await User.findWithUsername(candidateIdentifier);
+    user = await User.findWithUsername(candidateIdentifier);
+  }
 
-    if (!findUser) {
-      throw new NotFoundError(`There is no user with the given username.`);
-    }
+  if (!user) {
+    throw new NotFoundError(`There is no user with the given identifier.`);
+  }
 
-    const { user_id, name, surname, username, email, password, is_verified } = findUser;
+  const { user_id, name, surname, username, email, password, is_verified } = user;
 
-    const isMatch = await fns.isMatchedPassword(password, candidatePassword);
+  const isMatch = await fns.isMatchedPassword(password, candidatePassword);
 
-    if (!isMatch) {
-      throw new BadRequestError(`The username and password does not match.`);
-    }
+  if (!isMatch) {
+    throw new BadRequestError(`The email and password does not match.`);
+  }
 
-    if (!is_verified) {
-      const token = fns.createSignUpToken(user_id, username, email, "user");
+  const primary = {
+    userId: user_id,
+    name: name,
+    surname: surname,
+    username: username,
+    email: email,
+    token: null,
+    role: "user",
+    isVerified: is_verified,
+  };
 
-      const primary = {
-        userId: user_id,
-        name: name,
-        surname: surname,
-        username: username,
-        token: `Bearer ${token}`,
-        email: email,
-        role: "user",
-        isVerified: is_verified,
-      };
+  if (!is_verified) {
+    const token = fns.createSignUpToken(user_id, username, email, "user");
 
-      res.status(StatusCodes.OK).json({ primary });
+    primary.token = `Bearer ${token}`;
 
-      const mail = await sendVerificationEmail(email, `${name} ${surname}`, token);
-      return;
-    } else {
-      const token = fns.createLogInToken(user_id, username, email, "user");
+    res.status(StatusCodes.OK).json({ primary });
 
-      const primary = {
-        userId: user_id,
-        name: name,
-        surname: surname,
-        username: username,
-        token: `Bearer ${token}`,
-        email: email,
-        role: "user",
-        isVerified: is_verified,
-      };
+    const mail = await sendVerificationEmail(email, `${name} ${surname}`, token);
+    return;
+  } else {
+    const token = fns.createLogInToken(user_id, username, email, "user");
 
-      res.status(StatusCodes.OK).json({ primary });
+    primary.token = `Bearer ${token}`;
 
-      return;
-    }
+    res.status(StatusCodes.OK).json({ primary });
+
+    return;
   }
 };
 
@@ -161,15 +106,15 @@ const signUpUser = async (req, res) => {
     throw new BadRequestError(`Fill all information before signing up.`);
   }
 
-  const uniqueEmail = await User.findWithEmail(email);
+  const takenEmail = await User.findWithEmail(email);
 
-  if (uniqueEmail) {
+  if (takenEmail) {
     throw new BadRequestError(`The email ${email} is already used in Readefine.`);
   }
 
-  const uniqueUserName = await User.findWithUsername(username);
+  const takenUserName = await User.findWithUsername(username);
 
-  if (uniqueUserName) {
+  if (takenUserName) {
     throw new BadRequestError(`The username ${username} has already been taken.`);
   }
 
