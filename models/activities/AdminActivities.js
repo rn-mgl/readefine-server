@@ -1,7 +1,41 @@
 const db = require("../../db/connection");
 
 class AdminActivities {
-  constructor() {}
+  constructor(admin_id, resource_type, resource_name, activity_type) {
+    this.admin_id = admin_id;
+    this.resource_type = resource_type;
+    this.resource_name = resource_name;
+    this.activity_type = activity_type;
+  }
+
+  async createAdminActivity() {
+    try {
+      const sql = `INSERT INTO admin_activity SET ?;`;
+      const insertValues = {
+        admin_id: this.admin_id,
+        resource_type: this.resource_type,
+        resource_name: this.resource_name,
+        activity_type: this.activity_type,
+      };
+
+      const [data, _] = await db.query(sql, insertValues);
+      return data;
+    } catch (error) {
+      console.log(error + "--- create admin activity ---");
+    }
+  }
+
+  static async getAllAdminActivity(activity_type) {
+    try {
+      const sql = `SELECT * FROM admin_activity
+                  WHERE activity_type = '${activity_type}';`;
+
+      const [data, _] = await db.execute(sql);
+      return data;
+    } catch (error) {
+      console.log(error + "--- get all admin activities ---");
+    }
+  }
 
   static async getAllAdminActivities(admin_id) {
     try {

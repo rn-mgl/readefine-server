@@ -66,17 +66,10 @@ class User {
     }
   }
 
-  static async getAllUsers(
-    searchFilter,
-    sortFilter,
-    dateRangeFilter,
-    lexileRangeFilter
-  ) {
+  static async getAllUsers(searchFilter, sortFilter, dateRangeFilter, lexileRangeFilter) {
     const lexileFrom = lexileRangeFilter.from ? lexileRangeFilter.from : 0;
     const lexileTo = lexileRangeFilter.to ? lexileRangeFilter.to : 1400;
-    const dateFrom = dateRangeFilter.from
-      ? dateRangeFilter.from
-      : "19990101T123000.000Z";
+    const dateFrom = dateRangeFilter.from ? dateRangeFilter.from : "19990101T123000.000Z";
     const dateTo = dateRangeFilter.to ? dateRangeFilter.to : new Date();
     //dont touch plss
     try {

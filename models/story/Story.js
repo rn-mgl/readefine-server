@@ -5,7 +5,8 @@ class Story {
     this.title = title;
     this.author = author;
     this.book_cover = book_cover;
-    (this.audio = audio), (this.lexile = lexile);
+    this.audio = audio;
+    this.lexile = lexile;
     this.genre = genre;
     this.added_by = added_by;
   }
@@ -29,16 +30,7 @@ class Story {
     }
   }
 
-  static async updateStory(
-    story_id,
-    title,
-    author,
-    book_cover,
-    audio,
-    lexile,
-    genre,
-    added_by
-  ) {
+  static async updateStory(story_id, title, author, book_cover, audio, lexile, genre, added_by) {
     try {
       const sql = `UPDATE story SET ?
                     WHERE story_id = '${story_id}';`;
@@ -69,17 +61,10 @@ class Story {
     }
   }
 
-  static async getAllStories(
-    searchFilter,
-    lexileRangeFilter,
-    sortFilter,
-    dateRangeFilter
-  ) {
+  static async getAllStories(searchFilter, lexileRangeFilter, sortFilter, dateRangeFilter) {
     const lexileFrom = lexileRangeFilter.from ? lexileRangeFilter.from : 0;
     const lexileTo = lexileRangeFilter.to ? lexileRangeFilter.to : 1400;
-    const dateFrom = dateRangeFilter.from
-      ? dateRangeFilter.from
-      : "19990101T123000.000Z";
+    const dateFrom = dateRangeFilter.from ? dateRangeFilter.from : "19990101T123000.000Z";
     const dateTo = dateRangeFilter.to ? dateRangeFilter.to : new Date();
     try {
       const sql = `SELECT s.added_by, s.author, s.book_cover, s.audio,
@@ -112,12 +97,7 @@ class Story {
     }
   }
 
-  static async getAllUserStories(
-    userId,
-    searchFilter,
-    lexileRangeFilter,
-    sortFilter
-  ) {
+  static async getAllUserStories(userId, searchFilter, lexileRangeFilter, sortFilter) {
     const lexileFrom = lexileRangeFilter.from ? lexileRangeFilter.from : 0;
     const lexileTo = lexileRangeFilter.to ? lexileRangeFilter.to : 1400;
 

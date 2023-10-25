@@ -3,6 +3,21 @@ const { BadRequestError, UnauthorizedError } = require("../../../errors");
 const AdminActivities = require("../../../models/activities/AdminActivities");
 const Admin = require("../../../models/users/Admin");
 
+const createAdminActivity = async (req, res) => {
+  const { resourceType, resourceName, activityType } = req.body;
+  const { id } = req.user;
+
+  const adminActivity = new AdminActivities(id, resourceType, resourceName, activityType);
+
+  const data = await adminActivity.createAdminActivity();
+
+  if (!data) {
+    throw new BadRequestError(`Error in recording admin activity. Try again later.`);
+  }
+
+  res.status(StatusCodes.OK).json(data);
+};
+
 const getAllAdminActivities = async (req, res) => {
   const { admin_id } = req.params;
   const { id } = req.user;
@@ -26,4 +41,4 @@ const getAllAdminActivities = async (req, res) => {
   res.status(StatusCodes.OK).json(data);
 };
 
-module.exports = { getAllAdminActivities };
+module.exports = { getAllAdminActivities, createAdminActivity };
