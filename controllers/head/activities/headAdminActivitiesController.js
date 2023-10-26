@@ -3,14 +3,14 @@ const AdminActivities = require("../../../models/activities/AdminActivities");
 const { BadRequestError } = require("../../../errors");
 
 const getAllAdminActivity = async (req, res) => {
-  const { searchFilter, sortFilter, resourceTypeFilter, dateRangeFilter, activityType } = req.query;
+  const { searchFilter, sortFilter, resourceTypeFilter, dateRangeFilter, activityTypeFilter } = req.query;
 
   const adminActivities = await AdminActivities.getAllAdminActivity(
     searchFilter,
     sortFilter,
     resourceTypeFilter,
     dateRangeFilter,
-    activityType
+    activityTypeFilter
   );
 
   if (!adminActivities) {

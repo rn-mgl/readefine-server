@@ -25,7 +25,7 @@ class AdminActivities {
     }
   }
 
-  static async getAllAdminActivity(searchFilter, sortFilter, resourceTypeFilter, dateRangeFilter, activityType) {
+  static async getAllAdminActivity(searchFilter, sortFilter, resourceTypeFilter, dateRangeFilter, activityTypeFilter) {
     try {
       const sql = `SELECT * FROM admin_activity AS aa
                   INNER JOIN admin AS a
@@ -35,7 +35,7 @@ class AdminActivities {
                   AND 
                     resource_type LIKE '%${resourceTypeFilter}%'
                   AND 
-                    activity_type = '${activityType}'
+                    activity_type LIKE'%${activityTypeFilter}%'
                   AND 
                     CAST(date_logged as DATE) >= '${dateRangeFilter.from}'
                   AND 

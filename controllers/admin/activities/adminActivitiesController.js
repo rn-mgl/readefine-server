@@ -4,10 +4,10 @@ const AdminActivities = require("../../../models/activities/AdminActivities");
 const Admin = require("../../../models/users/Admin");
 
 const createAdminActivity = async (req, res) => {
-  const { resourceType, resourceName, activityType } = req.body;
+  const { resourceType, resourceName, activityTypeFilter } = req.body;
   const { id } = req.user;
 
-  const adminActivity = new AdminActivities(id, resourceType, resourceName, activityType);
+  const adminActivity = new AdminActivities(id, resourceType, resourceName, activityTypeFilter);
 
   const data = await adminActivity.createAdminActivity();
 
@@ -41,4 +41,22 @@ const getAllAdminActivities = async (req, res) => {
   res.status(StatusCodes.OK).json(data);
 };
 
-module.exports = { getAllAdminActivities, createAdminActivity };
+const getAllAdminActivity = async (req, res) => {
+  const { searchFilter, sortFilter, resourceTypeFilter, dateRangeFilter, activityTypeFilter } = req.query;
+
+  const adminActivities = await AdminActivities.getAllAdminActivity(
+    searchFilter,
+    sortFilter,
+    resourceTypeFilter,
+    dateRangeFilter,
+    activityTypeFilter
+  );
+
+  if (!adminActivities) {
+    throw new BadRequestError(`Error in getting all admin activities. Try again later.`);
+  }
+
+  res.status(StatusCodes.OK).json(adminActivities);
+};
+
+module.exports = { getAllAdminActivities, createAdminActivity, getAllAdminActivity };

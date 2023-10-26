@@ -11,7 +11,8 @@ class Dashboard {
                           (SELECT COUNT(question_id) FROM test_question) AS questionCount,
                           (SELECT COUNT(achievement_id) FROM achievement) AS achievementCount,
                           (SELECT COUNT(reward_id) FROM reward) AS rewardCount,
-                          (SELECT COUNT(riddle_id) FROM riddles) AS riddleCount`;
+                          (SELECT COUNT(riddle_id) FROM riddles) AS riddleCount,
+                          (SELECT COUNT(activity_id) FROM admin_activity) AS activityCount`;
 
       const [data, _] = await db.execute(sql);
       return data[0];
@@ -38,7 +39,11 @@ class Dashboard {
                             WHERE r.reward_id = (SELECT MAX(reward_id) FROM reward)) AS rewardName,
                           
                           (SELECT a.achievement_name FROM achievement AS a
-                            WHERE a.achievement_id = (SELECT MAX(achievement_id) FROM achievement)) AS achievementName;`;
+                            WHERE a.achievement_id = (SELECT MAX(achievement_id) FROM achievement)) AS achievementName,
+                            
+                          (SELECT CONCAT(a.name, " ", a.surname) FROM admin_activity AS aa
+                            INNER JOIN admin AS a ON aa.admin_id = a.admin_id
+                            WHERE aa.activity_id = (SELECT MAX(activity_id) FROM admin_activity)) AS lastActivityBy;`;
       const [data, _] = await db.execute(sql);
       return data[0];
     } catch (error) {
