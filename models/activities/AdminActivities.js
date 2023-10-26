@@ -25,10 +25,14 @@ class AdminActivities {
     }
   }
 
-  static async getAllAdminActivity(activity_type) {
+  static async getAllAdminActivity(resource_type, activity_type) {
     try {
-      const sql = `SELECT * FROM admin_activity
-                  WHERE activity_type = '${activity_type}';`;
+      const sql = `SELECT * FROM admin_activity AS aa
+                  INNER JOIN admin AS a
+                  ON aa.admin_id = a.admin_id
+                  WHERE aa.resource_type LIKE '%${resource_type}%'
+                  AND aa.activity_type = '${activity_type}'
+                  ORDER BY aa.date_logged DESC;`;
 
       const [data, _] = await db.execute(sql);
       return data;

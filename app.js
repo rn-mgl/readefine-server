@@ -95,6 +95,8 @@ const { authHeadRouter, headPasswordResetRouter } = require("./routers/head/auth
 
 const { headRouter, headSessionRouter, headAdminRouter } = require("./routers/head/users"); // users
 
+const { headAdminActivitiesRouter } = require("./routers/head/activities/");
+
 //////////////////////////////////////////////////////////////////////////////
 
 // middlewares
@@ -238,6 +240,9 @@ app.use("/head_admin", headAuthMiddleware, headAdminRouter);
 
 // dashboard router application
 app.use("/head_dashboard", headAuthMiddleware, headDashboardRouter);
+
+//activities router application
+app.use("/head_admin_activities", headAuthMiddleware, headAdminActivitiesRouter);
 
 //////////////////////////////////////////////////////////////////////////////
 
