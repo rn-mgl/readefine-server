@@ -3,29 +3,13 @@ const Dashboard = require("../../../models/dashboard/Dashboard");
 const { StatusCodes } = require("http-status-codes");
 
 const getDashboardData = async (req, res) => {
-  const { query } = req.query;
+  const data = await Dashboard.getHeadUpdates();
 
-  if (query === "counts") {
-    const data = await Dashboard.getCounts();
-
-    if (!data) {
-      throw new BadRequestError(`There was a problem in getting the latest counts.`);
-    }
-
-    res.status(StatusCodes.OK).json(data);
-    return;
+  if (!data) {
+    throw new BadRequestError(`There was a problem in getting the latest updates.`);
   }
 
-  if (query === "updates") {
-    const data = await Dashboard.getUpdates();
-
-    if (!data) {
-      throw new BadRequestError(`There was a problem in getting the latest updates.`);
-    }
-
-    res.status(StatusCodes.OK).json(data);
-    return;
-  }
+  res.status(StatusCodes.OK).json(data);
 };
 
 module.exports = { getDashboardData };

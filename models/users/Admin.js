@@ -62,9 +62,13 @@ class Admin {
     }
   }
 
-  static async getAllAdmins() {
+  static async getAllAdmins(searchFilter, sortFilter, dateRangeFilter) {
     try {
-      const sql = "SELECT * FROM admin;";
+      const sql = `SELECT * FROM admin
+                  WHERE ${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
+                  AND CAST(date_joined AS DATE) >= '${dateRangeFilter.from}'
+                  AND CAST(date_joined AS DATE) <= '${dateRangeFilter.to}'
+                  ORDER BY ${sortFilter.toSort} ${sortFilter.sortMode};`;
       const [data, _] = await db.execute(sql);
       return data;
     } catch (error) {

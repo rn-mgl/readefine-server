@@ -5,7 +5,8 @@ const fns = require("../../functionController");
 const { sendVerificationEmail } = require("../../admin/mail/verificationMail");
 
 const getAllAdmins = async (req, res) => {
-  const admin = await Admin.getAllAdmins();
+  const { searchFilter, sortFilter, dateRangeFilter } = req.query;
+  const admin = await Admin.getAllAdmins(searchFilter, sortFilter, dateRangeFilter);
 
   if (!admin) {
     throw new BadRequestError(`There was a problem in getting all the admins.`);

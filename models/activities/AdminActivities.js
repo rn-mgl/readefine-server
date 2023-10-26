@@ -25,14 +25,22 @@ class AdminActivities {
     }
   }
 
-  static async getAllAdminActivity(resource_type, activity_type) {
+  static async getAllAdminActivity(searchFilter, sortFilter, resourceTypeFilter, dateRangeFilter, activityType) {
     try {
       const sql = `SELECT * FROM admin_activity AS aa
                   INNER JOIN admin AS a
                   ON aa.admin_id = a.admin_id
-                  WHERE aa.resource_type LIKE '%${resource_type}%'
-                  AND aa.activity_type = '${activity_type}'
-                  ORDER BY aa.date_logged DESC;`;
+                  WHERE 
+                    ${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
+                  AND 
+                    resource_type LIKE '%${resourceTypeFilter}%'
+                  AND 
+                    activity_type = '${activityType}'
+                  AND 
+                    CAST(date_logged as DATE) >= '${dateRangeFilter.from}'
+                  AND 
+                    CAST(date_logged as DATE) <= '${dateRangeFilter.to}'
+                  ORDER BY ${sortFilter.toSort} ${sortFilter.sortMode};`;
 
       const [data, _] = await db.execute(sql);
       return data;

@@ -6,7 +6,7 @@ const getDashboardData = async (req, res) => {
   const { query } = req.query;
 
   if (query === "counts") {
-    const data = await Dashboard.getCounts();
+    const data = await Dashboard.getAdminCounts();
 
     if (!data) {
       throw new BadRequestError(`There was a problem in getting the latest counts.`);
@@ -17,7 +17,7 @@ const getDashboardData = async (req, res) => {
   }
 
   if (query === "updates") {
-    const data = await Dashboard.getUpdates();
+    const data = await Dashboard.getAdminUpdates();
 
     if (!data) {
       throw new BadRequestError(`There was a problem in getting the latest updates.`);

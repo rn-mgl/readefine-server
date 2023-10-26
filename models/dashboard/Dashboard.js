@@ -3,7 +3,7 @@ const db = require("../../db/connection");
 class Dashboard {
   constructor() {}
 
-  static async getCounts() {
+  static async getAdminCounts() {
     try {
       const sql = `SELECT (SELECT COUNT(user_id) FROM users) AS userCount,
                           (SELECT COUNT(story_id) FROM story) AS storyCount,
@@ -20,7 +20,7 @@ class Dashboard {
     }
   }
 
-  static async getUpdates() {
+  static async getAdminUpdates() {
     try {
       const sql = `SELECT (SELECT s.title 
                             FROM story AS s 
@@ -62,6 +62,42 @@ class Dashboard {
       return data[0];
     } catch (error) {
       console.log(error + " --- get counts ---");
+    }
+  }
+
+  static async getHeadUpdates() {
+    try {
+      const sql = `SELECT (
+                    SELECT CONCAT(admin.name, " ", admin.surname) FROM admin
+                    WHERE admin.admin_id = (SELECT MAX(admin_id) FROM admin)) AS lastAdmin,
+
+                    (SELECT resource_name FROM admin_activity
+                    WHERE activity_type = 'C' 
+                    AND activity_id = (SELECT MAX(activity_id) FROM 
+                                      admin_activity WHERE activity_type = 'C')) 
+                    AS lastCreate,
+
+                    (SELECT resource_name FROM admin_activity
+                    WHERE activity_type = 'R'
+                    AND activity_id = (SELECT MAX(activity_id) FROM 
+                                      admin_activity WHERE activity_type = 'R')) 
+                     AS lastRead,
+
+                    (SELECT resource_name FROM admin_activity
+                    WHERE activity_type = 'U' 
+                    AND activity_id = (SELECT MAX(activity_id) FROM 
+                                      admin_activity WHERE activity_type = 'U')) 
+                    AS lastUpdate,
+
+                    (SELECT resource_name FROM admin_activity
+                    WHERE activity_type = 'D' 
+                    AND activity_id = (SELECT MAX(activity_id) FROM 
+                                      admin_activity WHERE activity_type = 'D')) 
+                    AS lastDelete;`;
+      const [data, _] = await db.execute(sql);
+      return data[0];
+    } catch (error) {
+      console.log(error + "--- get head updates ---");
     }
   }
 }
