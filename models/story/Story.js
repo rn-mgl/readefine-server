@@ -97,9 +97,9 @@ class Story {
     }
   }
 
-  static async getAllUserStories(userId, searchFilter, lexileRangeFilter, sortFilter) {
-    const lexileFrom = lexileRangeFilter.from ? lexileRangeFilter.from : 0;
-    const lexileTo = lexileRangeFilter.to ? lexileRangeFilter.to : 1400;
+  static async getAllUserStories(userId, searchFilter, sortFilter, userLexile) {
+    const lexileFrom = parseInt(userLexile) - 100;
+    const lexileTo = parseInt(userLexile) + 50;
 
     try {
       const sql = `SELECT s.added_by, s.author, s.book_cover, s.audio,

@@ -44,9 +44,10 @@ class Test {
     }
   }
 
-  static async getAllUserTests(userId, searchFilter, lexileRangeFilter, sortFilter) {
-    const lexileFrom = lexileRangeFilter.from ? lexileRangeFilter.from : 0;
-    const lexileTo = lexileRangeFilter.to ? lexileRangeFilter.to : 1400;
+  static async getAllUserTests(userId, searchFilter, sortFilter, userLexile) {
+    const lexileFrom = parseInt(userLexile) - 100;
+    const lexileTo = parseInt(userLexile) + 50;
+
     try {
       const sql = `SELECT t.test_id, t.story_id, t.date_added, t.added_by, 
                    s.story_id, s.book_cover, s.audio, s.title, s.author, s.lexile, s.genre, s.added_by, s.date_added, 

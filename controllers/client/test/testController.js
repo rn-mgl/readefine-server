@@ -4,8 +4,8 @@ const Test = require("../../../models/test/Test");
 
 const getAllUserTests = async (req, res) => {
   const { id } = req.user;
-  const { searchFilter, lexileRangeFilter, sortFilter } = req.query;
-  const test = await Test.getAllUserTests(id, searchFilter, lexileRangeFilter, sortFilter);
+  const { searchFilter, sortFilter, userLexile } = req.query;
+  const test = await Test.getAllUserTests(id, searchFilter, sortFilter, userLexile);
 
   if (!test) {
     throw new BadRequestError(`There was a problem in getting all tests.`);
