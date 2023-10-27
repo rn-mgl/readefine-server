@@ -18,8 +18,9 @@ const createAdminActivity = async (req, res) => {
   res.status(StatusCodes.OK).json(data);
 };
 
-const getAllAdminActivities = async (req, res) => {
+const getSingleAdminActivity = async (req, res) => {
   const { admin_id } = req.params;
+  const { activityTypeFilter } = req.query;
   const { id } = req.user;
 
   const ifExist = await Admin.getAdmin(admin_id);
@@ -32,7 +33,7 @@ const getAllAdminActivities = async (req, res) => {
     throw new UnauthorizedError(`You can only view your own information.`);
   }
 
-  const data = await AdminActivities.getAllAdminActivities(admin_id);
+  const data = await AdminActivities.getSingleAdminActivity(admin_id, activityTypeFilter);
 
   if (!data) {
     throw new BadRequestError(`There was a problem in getting all your activities.`);
@@ -59,4 +60,4 @@ const getAllAdminActivity = async (req, res) => {
   res.status(StatusCodes.OK).json(adminActivities);
 };
 
-module.exports = { getAllAdminActivities, createAdminActivity, getAllAdminActivity };
+module.exports = { createAdminActivity, getAllAdminActivity, getSingleAdminActivity };

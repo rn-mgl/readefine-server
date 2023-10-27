@@ -12,9 +12,9 @@ const createSession = async (req, res) => {
     throw new NotFoundError(`The admin does not exist.`);
   }
 
-  const userSession = new AdminSession(adminId, type);
+  const adminSession = new AdminSession(adminId, type);
 
-  const newSession = await userSession.createSession();
+  const newSession = await adminSession.createSession();
 
   if (!newSession) {
     throw new BadRequestError(`There was a problem in updating your session records.`);
@@ -23,4 +23,22 @@ const createSession = async (req, res) => {
   res.status(StatusCodes.OK).json(newSession);
 };
 
-module.exports = { createSession };
+const getAdminSessions = async (req, res) => {
+  const { admin_id } = req.params;
+
+  const admin = await Admin.getAdmin(admin_id);
+
+  if (!admin) {
+    throw new NotFoundError(`The admin does not exist.`);
+  }
+
+  const adminSession = await AdminSession.getAdminSessions(admin.admin_id);
+
+  if (!adminSession) {
+    throw new BadRequestError(`There was a problem in updating your session records.`);
+  }
+
+  res.status(StatusCodes.OK).json(adminSession);
+};
+
+module.exports = { createSession, getAdminSessions };

@@ -20,7 +20,10 @@ class AdminSession {
 
   static async getAdminSessions(admin_id) {
     try {
-      const sql = `SELECT * FROM admin_session WHERE admin_id = '${admin_id}';`;
+      const sql = `SELECT * FROM admin_session AS a_s
+                  INNER JOIN admin AS a 
+                  ON a_s.admin_id = a.admin_id
+                    AND a.admin_id = '${admin_id}';`;
 
       const [data, _] = await db.execute(sql);
       return data;
