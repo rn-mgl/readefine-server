@@ -99,7 +99,7 @@ class Head {
     }
   }
 
-  static async updateHead(head_id, name, surname, username, image) {
+  static async updateHead(head_id, image, name, surname, username) {
     try {
       const sql = `UPDATE head SET ? WHERE head_id = '${head_id}';`;
       const userValues = { name, surname, username, image };

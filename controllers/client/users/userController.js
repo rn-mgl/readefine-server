@@ -65,7 +65,7 @@ const updateUser = async (req, res) => {
       throw new BadRequestError(`The username is already taken.`);
     }
 
-    const data = await User.updateUser(user_id, name, surname, username, image);
+    const data = await User.updateUser(user_id, image, name, surname, username);
 
     if (!data) {
       throw new BadRequestError(`Error in updating your profile. Try again later.`);

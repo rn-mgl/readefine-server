@@ -142,7 +142,7 @@ class User {
     }
   }
 
-  static async updateUser(user_id, name, surname, username, image) {
+  static async updateUser(user_id, image, name, surname, username) {
     try {
       const sql = `UPDATE users SET ? WHERE user_id = '${user_id}';`;
       const userValues = { name, surname, username, image };
