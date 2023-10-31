@@ -90,7 +90,7 @@ class Head {
   static async changePassword(head_id, password) {
     try {
       const sql = `UPDATE head SET ?
-                  WHERE head_id = '${user_id}';`;
+                  WHERE head_id = '${head_id}';`;
       const userValues = { password };
       const [data, _] = await db.query(sql, userValues);
       return data;
@@ -99,7 +99,7 @@ class Head {
     }
   }
 
-  static async updateUser(head_id, name, surname, username, image) {
+  static async updateHead(head_id, name, surname, username, image) {
     try {
       const sql = `UPDATE head SET ? WHERE head_id = '${head_id}';`;
       const userValues = { name, surname, username, image };

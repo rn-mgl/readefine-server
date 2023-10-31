@@ -1,7 +1,7 @@
 const { StatusCodes } = require("http-status-codes");
 const { BadRequestError, NotFoundError } = require("../../../errors");
 const { sendPasswordResetEmail } = require("../mail/passwordResetMail");
-const Admin = require("../../../models/users/Admin");
+const Head = require("../../../models/users/Head");
 const { createSignUpToken, hashPassword, isTokenExpired } = require("../../functionController");
 const jwt = require("jsonwebtoken");
 
@@ -12,25 +12,25 @@ const sendPasswordReset = async (req, res) => {
     throw new BadRequestError(`No email or username entered. You could not proceed.`);
   }
 
-  const adminEmail = await Admin.findWithEmail(candidateEmail);
+  const headEmail = await Head.findWithEmail(candidateEmail);
 
-  if (!adminEmail) {
-    throw new NotFoundError(`Sorry, there is no admin found with the given email and username.`);
+  if (!headEmail) {
+    throw new NotFoundError(`Sorry, there is no head found with the given email and username.`);
   }
 
-  const adminUsername = await Admin.findWithUsername(candidateUsername);
+  const headUsername = await Head.findWithUsername(candidateUsername);
 
-  if (!adminUsername) {
-    throw new NotFoundError(`Sorry, there is no admin found with the given email and username.`);
+  if (!headUsername) {
+    throw new NotFoundError(`Sorry, there is no head found with the given email and username.`);
   }
 
-  const { admin_id, name, surname, email, username } = adminEmail;
+  const { head_id, name, surname, email, username } = headEmail;
 
   if (username !== candidateUsername) {
     throw new BadRequestError(`The email you entered does not use the username you entered.`);
   }
 
-  const token = createSignUpToken(admin_id, username, email, "admin");
+  const token = createSignUpToken(head_id, username, email, "head");
 
   const mail = await sendPasswordResetEmail(email, `${name} ${surname}`, token);
 
@@ -43,19 +43,19 @@ const sendPasswordReset = async (req, res) => {
 
 const changePassword = async (req, res) => {
   const { newPassword, retypedPassword } = req.body;
-  const { admin_token } = req.params;
+  const { head_token } = req.params;
 
-  if (!admin_token) {
+  if (!head_token) {
     throw new BadRequestError(`You are not authorized to change this user's password.`);
   }
 
-  const isExpired = isTokenExpired(admin_token);
+  const isExpired = isTokenExpired(head_token);
 
   if (isExpired) {
     throw new BadRequestError(`The link for changing the passord has already expired.`);
   }
 
-  const verify = jwt.verify(admin_token, process.env.JWT_SECRET);
+  const verify = jwt.verify(head_token, process.env.JWT_SECRET);
 
   if (!verify) {
     throw new BadRequestError(`You do not have the appropriate credentials to change a password.`);
@@ -73,7 +73,7 @@ const changePassword = async (req, res) => {
 
   const hashedPassword = await hashPassword(newPassword);
 
-  const user = await Admin.changePassword(id, hashedPassword);
+  const user = await Head.changePassword(id, hashedPassword);
 
   if (!user) {
     throw new BadRequestError(`Error in changing password. Try again later.`);

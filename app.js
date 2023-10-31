@@ -229,7 +229,7 @@ app.use("/admin_activities", adminAuthMiddleware, adminActivitiesRouter);
 
 // auth router application
 app.use("/auth_head", authHeadRouter);
-app.use("/auth_head_password_reset", authHeadRouter);
+app.use("/auth_head_password_reset", headPasswordResetRouter);
 
 // session router application
 app.use("/head_session", headAuthMiddleware, headSessionRouter);
