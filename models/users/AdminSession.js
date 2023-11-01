@@ -23,7 +23,8 @@ class AdminSession {
       const sql = `SELECT * FROM admin_session AS a_s
                   INNER JOIN admin AS a 
                   ON a_s.admin_id = a.admin_id
-                    AND a.admin_id = '${admin_id}';`;
+                    AND a.admin_id = '${admin_id}'
+                  ORDER BY a_s.date_logged DESC;`;
 
       const [data, _] = await db.execute(sql);
       return data;
