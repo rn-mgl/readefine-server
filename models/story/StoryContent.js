@@ -1,13 +1,12 @@
 const db = require("../../db/connection");
 
 class StoryContent {
-  constructor(story_id, page, header, content, image, added_by) {
+  constructor(story_id, page, header, content, image) {
     this.story_id = story_id;
     this.page = page;
     this.header = header;
     this.content = content;
     this.image = image;
-    this.added_by = added_by;
   }
 
   async createContent() {
@@ -19,7 +18,6 @@ class StoryContent {
         header: this.header,
         content: this.content,
         image: this.image,
-        added_by: this.added_by,
       };
       const [data, _] = await db.query(sql, contentValues);
       return data;
@@ -28,18 +26,11 @@ class StoryContent {
     }
   }
 
-  static async updateContent(
-    content_id,
-    page,
-    header,
-    content,
-    image,
-    added_by
-  ) {
+  static async updateContent(content_id, page, header, content, image) {
     try {
       const sql = `UPDATE story_content SET ?
                     WHERE content_id = '${content_id}';`;
-      const contentValues = { page, header, content, image, added_by };
+      const contentValues = { page, header, content, image };
       const [data, _] = await db.query(sql, contentValues);
       return data;
     } catch (error) {

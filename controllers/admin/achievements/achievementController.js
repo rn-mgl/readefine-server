@@ -5,11 +5,10 @@ const User = require("../../../models/users/User");
 const UserAchievement = require("../../../models/achievements/UserAchievement");
 
 const createAchievement = async (req, res) => {
-  const { id } = req.user;
   const { achievement } = req.body;
   const { name, type, task, goal, reward } = achievement;
 
-  const newAchievement = new Achievement(name, type, task, goal, reward.id, id);
+  const newAchievement = new Achievement(name, type, task, goal, reward.id);
 
   const data = await newAchievement.createAchievement();
 
@@ -20,9 +19,7 @@ const createAchievement = async (req, res) => {
   const users = await User.getAllRawUsers();
 
   if (!users) {
-    throw new BadRequestError(
-      `There was a problem in getting the users for assigning the achievement.`
-    );
+    throw new BadRequestError(`There was a problem in getting the users for assigning the achievement.`);
   }
 
   users?.map(async (user) => {
@@ -32,11 +29,7 @@ const createAchievement = async (req, res) => {
       throw new BadRequestError(`There was a problem in getting the previous points.`);
     }
 
-    const assignAchievement = await UserAchievement.assignAchievement(
-      data.insertId,
-      user.user_id,
-      points
-    );
+    const assignAchievement = await UserAchievement.assignAchievement(data.insertId, user.user_id, points);
 
     if (!assignAchievement) {
       throw new BadRequestError(`There was a problem in assigning the achievement to the users.`);
@@ -47,7 +40,6 @@ const createAchievement = async (req, res) => {
 };
 
 const updateAchievement = async (req, res) => {
-  const { id } = req.user;
   const { achievement_id } = req.params;
   const { achievement } = req.body;
   const { achievement_name, achievement_type, task, goal, reward_id } = achievement;
@@ -63,16 +55,12 @@ const updateAchievement = async (req, res) => {
     achievement_name,
     achievement_type,
     task,
-
     goal,
-    reward_id,
-    id
+    reward_id
   );
 
   if (!data) {
-    throw new BadRequestError(
-      `There was a problem in updating the achievement ${achievement_name}.`
-    );
+    throw new BadRequestError(`There was a problem in updating the achievement ${achievement_name}.`);
   }
 
   res.status(StatusCodes.OK).json(data);

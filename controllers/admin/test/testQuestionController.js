@@ -4,7 +4,6 @@ const TestQuestion = require("../../../models/test/TestQuestion");
 const Test = require("../../../models/test/Test");
 
 const createQuestion = async (req, res) => {
-  const { id } = req.user;
   const { test_id, question } = req.body;
 
   const ifExist = await Test.getTest(test_id);
@@ -13,7 +12,7 @@ const createQuestion = async (req, res) => {
     throw new NotFoundError(`The test you are trying to add a question to does not exist.`);
   }
 
-  const testQuestion = new TestQuestion(test_id, question, id);
+  const testQuestion = new TestQuestion(test_id, question);
 
   const data = await testQuestion.createQuestion();
 
@@ -26,7 +25,6 @@ const createQuestion = async (req, res) => {
 
 const updateQuestion = async (req, res) => {
   const { question_id } = req.params;
-  const { id } = req.user;
   const { question } = req.body;
 
   const ifExist = await TestQuestion.getQuestion(question_id);
@@ -35,7 +33,7 @@ const updateQuestion = async (req, res) => {
     throw new NotFoundError(`The test question you are updating does not exist.`);
   }
 
-  const testQuestion = await TestQuestion.updateQuestion(question_id, question, id);
+  const testQuestion = await TestQuestion.updateQuestion(question_id, question);
 
   if (!testQuestion) {
     throw new BadRequestError(`There was a problem in updating the test question.`);

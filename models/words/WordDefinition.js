@@ -1,11 +1,10 @@
 const db = require("../../db/connection");
 
 class WordDefinition {
-  constructor(word_id, definition, example, added_by) {
+  constructor(word_id, definition, example) {
     this.word_id = word_id;
     this.definition = definition;
     this.example = example;
-    this.added_by = added_by;
   }
 
   async addDefinition() {
@@ -15,7 +14,6 @@ class WordDefinition {
         word_id: this.word_id,
         definition: this.definition,
         example: this.example,
-        added_by: this.added_by,
       };
       const [data, _] = await db.query(sql, definitionValues);
       return data;

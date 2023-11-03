@@ -1,15 +1,14 @@
 const db = require("../../db/connection");
 
 class Test {
-  constructor(story_id, added_by) {
+  constructor(story_id) {
     this.story_id = story_id;
-    this.added_by = added_by;
   }
 
   async createTest() {
     try {
       const sql = `INSERT INTO test SET ?;`;
-      const testValues = { story_id: this.story_id, added_by: this.added_by };
+      const testValues = { story_id: this.story_id };
       const [data, _] = await db.query(sql, testValues);
       return data;
     } catch (error) {
@@ -49,8 +48,8 @@ class Test {
     const lexileTo = parseInt(userLexile) + 50;
 
     try {
-      const sql = `SELECT t.test_id, t.story_id, t.date_added, t.added_by, 
-                   s.story_id, s.book_cover, s.audio, s.title, s.author, s.lexile, s.genre, s.added_by, s.date_added, 
+      const sql = `SELECT t.test_id, t.story_id, t.date_added,
+                   s.story_id, s.book_cover, s.audio, s.title, s.author, s.lexile, s.genre, s.date_added, 
                    tt.score,
 
                     CASE 

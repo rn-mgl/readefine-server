@@ -3,10 +3,9 @@ const { NotFoundError, BadRequestError } = require("../../../errors");
 const Riddles = require("../../../models/minigames/Riddles");
 
 const createRiddle = async (req, res) => {
-  const { id } = req.user;
   const { riddle, answer } = req.body;
 
-  const riddles = new Riddles(riddle, answer, id);
+  const riddles = new Riddles(riddle, answer);
 
   const data = await riddles.createRiddle();
 
@@ -18,7 +17,6 @@ const createRiddle = async (req, res) => {
 };
 
 const updateRiddle = async (req, res) => {
-  const { id } = req.user;
   const { riddle_id } = req.params;
   const { riddle, answer } = req.body;
 
@@ -28,7 +26,7 @@ const updateRiddle = async (req, res) => {
     throw new NotFoundError(`The riddle you are trying to update does not exist.`);
   }
 
-  const riddles = await Riddles.updateRiddle(riddle_id, riddle, answer, id);
+  const riddles = await Riddles.updateRiddle(riddle_id, riddle, answer);
 
   if (!riddles) {
     throw new BadRequestError(`There was a problem in updating the riddle ${answer}.`);

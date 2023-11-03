@@ -1,10 +1,9 @@
 const db = require("../../db/connection");
 
 class TestQuestion {
-  constructor(test_id, question, added_by) {
+  constructor(test_id, question) {
     this.test_id = test_id;
     this.question = question;
-    this.added_by = added_by;
   }
 
   async createQuestion() {
@@ -13,7 +12,6 @@ class TestQuestion {
       const questionValues = {
         test_id: this.test_id,
         question: this.question,
-        added_by: this.added_by,
       };
       const [data, _] = await db.query(sql, questionValues);
       return data;
@@ -22,11 +20,11 @@ class TestQuestion {
     }
   }
 
-  static async updateQuestion(question_id, question, added_by) {
+  static async updateQuestion(question_id, question) {
     try {
       const sql = `UPDATE test_question SET ?
                     WHERE question_id = '${question_id}';`;
-      const questionValues = { question, added_by };
+      const questionValues = { question };
       const [data, _] = await db.query(sql, questionValues);
       return data;
     } catch (error) {

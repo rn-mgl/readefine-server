@@ -1,12 +1,11 @@
 const db = require("../../db/connection");
 
 class Reward {
-  constructor(reward_name, reward_type, reward, description, added_by) {
+  constructor(reward_name, reward_type, reward, description) {
     this.reward_name = reward_name;
     this.reward_type = reward_type;
     this.reward = reward;
     this.description = description;
-    this.added_by = added_by;
   }
 
   async createReward() {
@@ -17,7 +16,6 @@ class Reward {
         reward_type: this.reward_type,
         reward: this.reward,
         description: this.description,
-        added_by: this.added_by,
       };
 
       const [data, _] = await db.query(sql, rewardValues);
@@ -27,7 +25,7 @@ class Reward {
     }
   }
 
-  static async updateReward(reward_id, reward_name, reward_type, description, reward, added_by) {
+  static async updateReward(reward_id, reward_name, reward_type, description, reward) {
     try {
       const sql = `UPDATE reward SET ?
                     WHERE reward_id = '${reward_id}';`;
@@ -35,7 +33,6 @@ class Reward {
         reward_name,
         reward_type,
         reward,
-        added_by,
         description,
       };
 
@@ -83,7 +80,7 @@ class Reward {
   static async getAllUserRewards(user_id, searchFilter, sortFilter, showFilter, typeFilter) {
     try {
       const sqlAll = `SELECT ua.user_achievement_id, r.reward_id, r.reward_name, 
-                          r.reward_type, r.reward, r.description, r.added_by, r.date_added,
+                          r.reward_type, r.reward, r.description, r.date_added,
 
                       CASE
                         WHEN ua.points >= a.goal THEN 1 ELSE 0

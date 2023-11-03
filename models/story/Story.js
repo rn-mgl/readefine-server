@@ -1,14 +1,13 @@
 const db = require("../../db/connection");
 
 class Story {
-  constructor(title, author, book_cover, audio, lexile, genre, added_by) {
+  constructor(title, author, book_cover, audio, lexile, genre) {
     this.title = title;
     this.author = author;
     this.book_cover = book_cover;
     this.audio = audio;
     this.lexile = lexile;
     this.genre = genre;
-    this.added_by = added_by;
   }
 
   async createStory() {
@@ -21,7 +20,6 @@ class Story {
         audio: this.audio,
         lexile: this.lexile,
         genre: this.genre,
-        added_by: this.added_by,
       };
       const [data, _] = await db.query(sql, storyValues);
       return data;
@@ -30,7 +28,7 @@ class Story {
     }
   }
 
-  static async updateStory(story_id, title, author, book_cover, audio, lexile, genre, added_by) {
+  static async updateStory(story_id, title, author, book_cover, audio, lexile, genre) {
     try {
       const sql = `UPDATE story SET ?
                     WHERE story_id = '${story_id}';`;
@@ -41,7 +39,6 @@ class Story {
         audio,
         lexile,
         genre,
-        added_by,
       };
       const [data, _] = await db.query(sql, storyValues);
       return data;
@@ -67,7 +64,7 @@ class Story {
     const dateFrom = dateRangeFilter.from ? dateRangeFilter.from : "19990101T123000.000Z";
     const dateTo = dateRangeFilter.to ? dateRangeFilter.to : new Date();
     try {
-      const sql = `SELECT s.added_by, s.author, s.book_cover, s.audio,
+      const sql = `SELECT s.author, s.book_cover, s.audio,
                   s.date_added, s.genre, s.lexile, s.story_id, t.test_id, s.title,
 
                   CASE 
@@ -102,7 +99,7 @@ class Story {
     const lexileTo = parseInt(userLexile) + 50;
 
     try {
-      const sql = `SELECT s.added_by, s.author, s.book_cover, s.audio,
+      const sql = `SELECT s.author, s.book_cover, s.audio,
                   s.date_added, s.genre, s.lexile, s.story_id, t.test_id, s.title, rs.read_by,
 
                   CASE

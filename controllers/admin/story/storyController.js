@@ -6,9 +6,8 @@ const StoryContent = require("../../../models/story/StoryContent");
 const createStory = async (req, res) => {
   const { storyFilter, pages } = req.body;
   const { title, author, lexile, genre, bookCover, bookAudio } = storyFilter;
-  const { id } = req.user;
 
-  const story = new Story(title, author, bookCover, bookAudio, lexile, genre, id);
+  const story = new Story(title, author, bookCover, bookAudio, lexile, genre);
 
   const data = await story.createStory();
 
@@ -22,8 +21,7 @@ const createStory = async (req, res) => {
       page.pageNumber,
       page.pageHeader,
       page.pageContent,
-      page.pageImage,
-      id
+      page.pageImage
     );
 
     const newPage = await pageContent.createContent();
@@ -40,7 +38,6 @@ const updateStory = async (req, res) => {
   const { story, pages, toDelete } = req.body;
   const { title, author, lexile, genre, bookCover, bookAudio } = story;
   const { story_id } = req.params;
-  const { id } = req.user;
 
   const ifExist = await Story.getStory(story_id);
 
@@ -48,7 +45,7 @@ const updateStory = async (req, res) => {
     throw new NotFoundError(`The story you are trying to update does not exist.`);
   }
 
-  const data = await Story.updateStory(story_id, title, author, bookCover, bookAudio, lexile, genre, id);
+  const data = await Story.updateStory(story_id, title, author, bookCover, bookAudio, lexile, genre);
 
   if (!data) {
     throw new BadRequestError(`There was a problem in updating the story ${title}.`);
@@ -66,7 +63,7 @@ const updateStory = async (req, res) => {
     const { content_id, header, content, pageImage } = page;
 
     if (!content_id) {
-      const newPage = new StoryContent(story_id, page.page, header, content, pageImage, id);
+      const newPage = new StoryContent(story_id, page.page, header, content, pageImage);
 
       const addPage = await newPage.createContent();
 
@@ -80,7 +77,7 @@ const updateStory = async (req, res) => {
         throw new NotFoundError(`The story content you are trying to update does not exist.`);
       }
 
-      const editPage = await StoryContent.updateContent(content_id, page.page, header, content, pageImage, id);
+      const editPage = await StoryContent.updateContent(content_id, page.page, header, content, pageImage);
 
       if (!editPage) {
         throw new BadRequestError(`Error in editing page content. Try again later.`);

@@ -6,7 +6,6 @@ const WordPartOfSpeech = require("../../../models/words/WordPartOfSpeech");
 const StoryContent = require("../../../models/story/StoryContent");
 
 const addWord = async (req, res) => {
-  const { id } = req.user;
   const { data } = req.body;
   const { word, phonetics, meanings } = data;
 
@@ -29,7 +28,7 @@ const addWord = async (req, res) => {
 
   phonetic = phonetic ? phonetic : "---";
 
-  const newWord = new Words(word, phonetic, id);
+  const newWord = new Words(word, phonetic);
   const createWord = await newWord.addWord();
 
   if (!createWord) {
@@ -49,14 +48,14 @@ const addWord = async (req, res) => {
       }
     }
 
-    const newDefinition = new WordDefinition(createWord.insertId, definition, example, id);
+    const newDefinition = new WordDefinition(createWord.insertId, definition, example);
     const createDefinition = await newDefinition.addDefinition();
 
     if (!createDefinition) {
       throw new BadRequestError(`There was a problem in creating the definition.`);
     }
 
-    const newPartOfSpeech = new WordPartOfSpeech(createDefinition.insertId, m.partOfSpeech, id);
+    const newPartOfSpeech = new WordPartOfSpeech(createDefinition.insertId, m.partOfSpeech);
     const createPartOfSpeech = await newPartOfSpeech.addPartOfSpeech();
 
     if (!createPartOfSpeech) {

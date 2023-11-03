@@ -1,13 +1,12 @@
 const db = require("../../db/connection");
 
 class Achievement {
-  constructor(achievement_name, achievement_type, task, goal, reward_id, added_by) {
+  constructor(achievement_name, achievement_type, task, goal, reward_id) {
     this.achievement_name = achievement_name;
     this.achievement_type = achievement_type;
     this.task = task;
     this.goal = goal;
     this.reward_id = reward_id;
-    this.added_by = added_by;
   }
 
   async createAchievement() {
@@ -19,7 +18,6 @@ class Achievement {
         task: this.task,
         goal: this.goal,
         reward_id: this.reward_id,
-        added_by: this.added_by,
       };
 
       const [data, _] = await db.query(sql, achievementValues);
@@ -29,7 +27,7 @@ class Achievement {
     }
   }
 
-  static async updateAchievement(achievement_id, achievement_name, achievement_type, task, goal, reward_id, added_by) {
+  static async updateAchievement(achievement_id, achievement_name, achievement_type, task, goal, reward_id) {
     try {
       const sql = `UPDATE achievement SET ?
                     WHERE achievement_id = '${achievement_id}';`;
@@ -39,7 +37,6 @@ class Achievement {
         task,
         goal,
         reward_id,
-        added_by,
       };
 
       const [data, _] = await db.query(sql, achievementValues);

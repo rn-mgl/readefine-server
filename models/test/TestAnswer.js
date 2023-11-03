@@ -1,14 +1,13 @@
 const db = require("../../db/connection");
 
 class TestAnswer {
-  constructor(question_id, answer, choice_1, choice_2, choice_3, choice_4, added_by) {
+  constructor(question_id, answer, choice_1, choice_2, choice_3, choice_4) {
     this.question_id = question_id;
     this.answer = answer;
     this.choice_1 = choice_1;
     this.choice_2 = choice_2;
     this.choice_3 = choice_3;
     this.choice_4 = choice_4;
-    this.added_by = added_by;
   }
 
   async createAnswer() {
@@ -21,7 +20,6 @@ class TestAnswer {
         choice_2: this.choice_2,
         choice_3: this.choice_3,
         choice_4: this.choice_4,
-        added_by: this.added_by,
       };
 
       const [data, _] = await db.query(sql, answerValues);
@@ -31,7 +29,7 @@ class TestAnswer {
     }
   }
 
-  static async updateAnswer(answer_id, answer, choice_1, choice_2, choice_3, choice_4, added_by) {
+  static async updateAnswer(answer_id, answer, choice_1, choice_2, choice_3, choice_4) {
     try {
       const sql = `UPDATE test_answer SET ?
                     WHERE answer_id = '${answer_id}';`;
@@ -41,7 +39,6 @@ class TestAnswer {
         choice_2,
         choice_3,
         choice_4,
-        added_by,
       };
 
       const [data, _] = await db.query(sql, answerValues);

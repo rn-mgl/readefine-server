@@ -4,18 +4,9 @@ const TestAnswer = require("../../../models/test/TestAnswer");
 const Test = require("../../../models/test/Test");
 
 const createAnswer = async (req, res) => {
-  const { id } = req.user;
   const { question_id, answer, choice_1, choice_2, choice_3, choice_4 } = req.body;
 
-  const testAnswer = new TestAnswer(
-    question_id,
-    answer,
-    choice_1,
-    choice_2,
-    choice_3,
-    choice_4,
-    id
-  );
+  const testAnswer = new TestAnswer(question_id, answer, choice_1, choice_2, choice_3, choice_4);
 
   const data = await testAnswer.createAnswer();
 
@@ -28,7 +19,6 @@ const createAnswer = async (req, res) => {
 
 const updateAnswer = async (req, res) => {
   const { answer_id } = req.params;
-  const { id } = req.user;
   const { answer, choice_1, choice_2, choice_3, choice_4 } = req.body;
 
   const ifExist = await TestAnswer.getAnswer(answer_id);
@@ -37,15 +27,7 @@ const updateAnswer = async (req, res) => {
     throw new NotFoundError(`The answer you are trying to update does not exist.`);
   }
 
-  const testAnswer = await TestAnswer.updateAnswer(
-    answer_id,
-    answer,
-    choice_1,
-    choice_2,
-    choice_3,
-    choice_4,
-    id
-  );
+  const testAnswer = await TestAnswer.updateAnswer(answer_id, answer, choice_1, choice_2, choice_3, choice_4);
 
   if (!testAnswer) {
     throw new BadRequestError(`There was a problem in trying to update the answer.`);

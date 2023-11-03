@@ -7,7 +7,6 @@ const Story = require("../../../models/story/Story");
 
 const createTest = async (req, res) => {
   const { storyId, pages } = req.body;
-  const { id } = req.user;
 
   const ifExist = await Story.getStory(storyId);
 
@@ -15,7 +14,7 @@ const createTest = async (req, res) => {
     throw new NotFoundError(`The story you are trying to add a test to does not exist.`);
   }
 
-  const test = new Test(storyId, id);
+  const test = new Test(storyId);
 
   const data = await test.createTest();
 
@@ -24,7 +23,7 @@ const createTest = async (req, res) => {
   }
 
   pages.map(async (page, index) => {
-    const questionContent = new TestQuestion(data.insertId, page.testQuestion, id);
+    const questionContent = new TestQuestion(data.insertId, page.testQuestion);
 
     const newQuestion = await questionContent.createQuestion();
 
@@ -42,8 +41,7 @@ const createTest = async (req, res) => {
       page.choice1,
       page.choice2,
       page.choice3,
-      page.choice4,
-      id
+      page.choice4
     );
 
     const newAnswer = await answerContent.createAnswer();
@@ -98,7 +96,6 @@ const deleteTest = async (req, res) => {
 
 const updateTest = async (req, res) => {
   const { questions, testId } = req.body;
-  const { id } = req.user;
 
   const ifExist = await Test.getTest(testId);
 
@@ -113,7 +110,7 @@ const updateTest = async (req, res) => {
       throw new NotFoundError(`The test question you are trying to update does not exist.`);
     }
 
-    const question = await TestQuestion.updateQuestion(q.question_id, q.question, id);
+    const question = await TestQuestion.updateQuestion(q.question_id, q.question);
 
     if (!question) {
       throw new BadRequestError(`There was a problem in updating the test question.`);
@@ -135,8 +132,7 @@ const updateTest = async (req, res) => {
       q.choice_1,
       q.choice_2,
       q.choice_3,
-      q.choice_4,
-      id
+      q.choice_4
     );
 
     if (!newAnswer) {

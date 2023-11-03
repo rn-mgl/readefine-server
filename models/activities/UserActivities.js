@@ -27,7 +27,7 @@ class UserActivities {
                           WHERE answered_by = '${user_id}'
                           ORDER BY aq.date_answered DESC;`;
 
-      const sqlReadStory = `SELECT s.added_by, s.author, s.book_cover, 
+      const sqlReadStory = `SELECT s.author, s.book_cover, 
                             s.date_added, s.genre, s.lexile, s.story_id, t.test_id, s.title, rs.read_by, rs.date_read,
 
                             CASE
@@ -54,8 +54,8 @@ class UserActivities {
                             WHERE rs.read_by = '${user_id}'
                             ORDER BY rs.date_read DESC;`;
 
-      const sqlTakenTest = `SELECT t.test_id, t.story_id, t.date_added, t.added_by, 
-                            s.story_id, s.book_cover, s.title, s.author, s.lexile, s.genre, s.added_by, s.date_added, 
+      const sqlTakenTest = `SELECT t.test_id, t.story_id, t.date_added, 
+                            s.story_id, s.book_cover, s.title, s.author, s.lexile, s.genre, s.date_added, 
                             tt.score, tt.date_taken,
 
                             CASE 

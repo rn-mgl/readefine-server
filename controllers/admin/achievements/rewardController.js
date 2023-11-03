@@ -3,10 +3,9 @@ const { BadRequestError, NotFoundError } = require("../../../errors");
 const Reward = require("../../../models/achievements/Reward");
 
 const createReward = async (req, res) => {
-  const { id } = req.user;
   const { name, type, reward, description } = req.body;
 
-  const newReward = new Reward(name, type, reward, description, id);
+  const newReward = new Reward(name, type, reward, description);
 
   const data = await newReward.createReward();
 
@@ -18,7 +17,6 @@ const createReward = async (req, res) => {
 };
 
 const updateReward = async (req, res) => {
-  const { id } = req.user;
   const { reward_id } = req.params;
   const { reward_name, reward_type, description, reward } = req.body;
 
@@ -28,7 +26,7 @@ const updateReward = async (req, res) => {
     throw new NotFoundError(`The reward you are trying to update does not exist.`);
   }
 
-  const data = await Reward.updateReward(reward_id, reward_name, reward_type, description, reward, id);
+  const data = await Reward.updateReward(reward_id, reward_name, reward_type, description, reward);
 
   if (!data) {
     throw new BadRequestError(`There was a problem in updating the reward ${reward_name}.`);

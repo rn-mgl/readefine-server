@@ -1,10 +1,9 @@
 const db = require("../../db/connection");
 
 class WordPartOfSpeech {
-  constructor(definition_id, part_of_speech, added_by) {
+  constructor(definition_id, part_of_speech) {
     this.definition_id = definition_id;
     this.part_of_speech = part_of_speech;
-    this.added_by = added_by;
   }
 
   async addPartOfSpeech() {
@@ -13,7 +12,6 @@ class WordPartOfSpeech {
       const partOfSpeechValues = {
         definition_id: this.definition_id,
         part_of_speech: this.part_of_speech,
-        added_by: this.added_by,
       };
       const [data, _] = await db.query(sql, partOfSpeechValues);
       return data;
