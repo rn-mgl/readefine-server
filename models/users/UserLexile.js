@@ -8,9 +8,9 @@ class UserLexile {
 
   async createLexile() {
     try {
-      const sql = `INSERT INTO user_lexile SET ?;`;
-      const lexileValues = { user_id: this.user_id, lexile: this.lexile };
-      const [data, _] = await db.query(sql, lexileValues);
+      const sql = `INSERT INTO user_lexile (user_id, lexile) VALUES (?, ?);`;
+      const lexileValues = [this.user_id, this.lexile];
+      const [data, _] = await db.execute(sql, lexileValues);
       return data;
     } catch (error) {
       console.log(error + "--- create lexile ---");
@@ -22,7 +22,7 @@ class UserLexile {
       const sql = `SELECT * FROM user_lexile AS ul
                         INNER JOIN users AS u ON ul.user_id = u.user_id
                         WHERE 
-                          u.user_id = '${user_id}'
+                          u.user_id = ?
                         AND 
                           DATE(ul.date_added) IN (
                           SELECT DISTINCT DATE(date_added)
@@ -32,11 +32,13 @@ class UserLexile {
                           ORDER BY sub_ul.date_added DESC
                         )
                         AND
-                          MONTH(ul.date_added) = "${month}"
+                          MONTH(ul.date_added) = ?
                         AND
                           YEAR(ul.date_added) = YEAR(CURDATE())
                         ORDER BY date_added ASC;`;
-      const [data, _] = await db.execute(sql);
+      const lexileValues = [user_id, month];
+
+      const [data, _] = await db.execute(sql, lexileValues);
       return data;
     } catch (error) {
       console.log(error + "--- get user ---");
@@ -50,7 +52,9 @@ class UserLexile {
                     SELECT MAX(lexile_id) FROM user_lexile
                     WHERE user_id = '${user_id}'
                    );`;
-      const [data, _] = await db.execute(sql);
+      const lexileValues = [user_id];
+
+      const [data, _] = await db.execute(sql, lexileValues);
       return data[0];
     } catch (error) {
       console.log(error + "--- get latest lexile ---");

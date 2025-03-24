@@ -8,10 +8,10 @@ class UserSession {
 
   async createSession() {
     try {
-      const sql = "INSERT INTO user_session SET ?;";
-      const sessionsValues = { user_id: this.user_id, type: this.type };
+      const sql = "INSERT INTO user_session (user_id, type) VALUES (?, ?);";
+      const sessionsValues = [this.user_id, this.type];
 
-      const [data, _] = await db.query(sql, sessionsValues);
+      const [data, _] = await db.execute(sql, sessionsValues);
       return data;
     } catch (error) {
       console.log(error + "--- user session ---");
@@ -20,9 +20,10 @@ class UserSession {
 
   static async getUserSessions(user_id) {
     try {
-      const sql = `SELECT * FROM user_session WHERE user_id = '${user_id}';`;
+      const sql = `SELECT * FROM user_session WHERE user_id = ?;`;
+      const sessionsValues = [user_id];
 
-      const [data, _] = await db.execute(sql);
+      const [data, _] = await db.execute(sql, sessionsValues);
       return data;
     } catch (error) {
       console.log(error + "--- get user sessions ---");

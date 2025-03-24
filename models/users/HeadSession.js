@@ -8,8 +8,8 @@ class HeadSession {
 
   async createSession() {
     try {
-      const sql = "INSERT INTO head_session SET ?;";
-      const sessionsValues = { head_id: this.head_id, type: this.type };
+      const sql = "INSERT INTO head_session (head_id, type) VALUES (?, ?);";
+      const sessionsValues = [this.head_id, this.type];
 
       const [data, _] = await db.query(sql, sessionsValues);
       return data;
@@ -20,9 +20,10 @@ class HeadSession {
 
   static async getAdminSessions(head_id) {
     try {
-      const sql = `SELECT * FROM head_session WHERE head_id = '${head_id}';`;
+      const sql = `SELECT * FROM head_session WHERE head_id = ?;`;
+      const sessionsValues = [head_id];
 
-      const [data, _] = await db.execute(sql);
+      const [data, _] = await db.execute(sql, sessionsValues);
       return data;
     } catch (error) {
       console.log(error + "--- get head sessions ---");
