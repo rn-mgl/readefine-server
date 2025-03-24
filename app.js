@@ -20,21 +20,43 @@ const warmerRouter = require("./routers/global/warmerRouter");
 
 ///////////////////////////////////////// client routers /////////////////////////////////////////////////////
 const wordsRouter = require("./routers/client/words/wordsRouter");
-const { userRouter, userSessionRouter, userLexileRouter } = require("./routers/client/users"); // user
+const {
+  userRouter,
+  userSessionRouter,
+  userLexileRouter,
+} = require("./routers/client/users"); // user
 
-const { readStoryRouter, storyContentRouter, storyRouter } = require("./routers/client/story"); // story
+const {
+  readStoryRouter,
+  storyContentRouter,
+  storyRouter,
+} = require("./routers/client/story"); // story
 
-const { authClientRouter, passwordResetRouter } = require("./routers/client/auth"); // auth
+const {
+  authClientRouter,
+  passwordResetRouter,
+} = require("./routers/client/auth"); // auth
 
 const { userActivitiesRouter } = require("./routers/client/activities"); // activites
 
-const { rewardRouter, userAchievementRouter } = require("./routers/client/achievement"); // achievement
+const {
+  rewardRouter,
+  userAchievementRouter,
+} = require("./routers/client/achievement"); // achievement
 
 const archivesRouter = require("./routers/client/archives/archivesRouter"); //archives
 
-const { testRouter, takenTestRouter, testQuestionRouter, testAnswerRouter } = require("./routers/client/test"); // test
+const {
+  testRouter,
+  takenTestRouter,
+  testQuestionRouter,
+  testAnswerRouter,
+} = require("./routers/client/test"); // test
 
-const { riddlesRouter, minigameDashboardRouter } = require("./routers/client/minigames"); // minigames
+const {
+  riddlesRouter,
+  minigameDashboardRouter,
+} = require("./routers/client/minigames"); // minigames
 
 const {
   answeredDangleRouter,
@@ -50,7 +72,10 @@ const adminDashboardRouter = require("./routers/admin/dashboard/dashboardRouter"
 
 const adminWordsRouter = require("./routers/admin/words/wordsRouter");
 
-const { authAdminRouter, adminPasswordResetRouter } = require("./routers/admin/auth"); // auth
+const {
+  authAdminRouter,
+  adminPasswordResetRouter,
+} = require("./routers/admin/auth"); // auth
 
 const { adminActivitiesRouter } = require("./routers/admin/activities/"); // activities
 
@@ -68,7 +93,11 @@ const {
   adminUserAchievementRouter,
 } = require("./routers/admin/achievement"); // achievement
 
-const { adminReadStoryRouter, adminStoryContentRouter, adminStoryRouter } = require("./routers/admin/story"); // story
+const {
+  adminReadStoryRouter,
+  adminStoryContentRouter,
+  adminStoryRouter,
+} = require("./routers/admin/story"); // story
 
 const {
   adminTestRouter,
@@ -92,9 +121,16 @@ const {
 
 const headDashboardRouter = require("./routers/head/dashboard/dashboardRouter");
 
-const { authHeadRouter, headPasswordResetRouter } = require("./routers/head/auth"); // auth
+const {
+  authHeadRouter,
+  headPasswordResetRouter,
+} = require("./routers/head/auth"); // auth
 
-const { headRouter, headSessionRouter, headAdminRouter } = require("./routers/head/users"); // users
+const {
+  headRouter,
+  headSessionRouter,
+  headAdminRouter,
+} = require("./routers/head/users"); // users
 
 const { headAdminActivitiesRouter } = require("./routers/head/activities/");
 
@@ -199,7 +235,11 @@ app.use("/admin_read_story", adminAuthMiddleware, adminReadStoryRouter);
 
 // achievement router application
 app.use("/admin_achievement", adminAuthMiddleware, adminAchievementRouter);
-app.use("/admin_user_achievement", adminAuthMiddleware, adminUserAchievementRouter);
+app.use(
+  "/admin_user_achievement",
+  adminAuthMiddleware,
+  adminUserAchievementRouter
+);
 app.use("/admin_reward", adminAuthMiddleware, adminRewardRouter);
 
 // test router application
@@ -212,10 +252,26 @@ app.use("/admin_test_answer", adminAuthMiddleware, adminTestAnswerRouter);
 app.use("/admin_riddles", adminAuthMiddleware, adminRiddlesRouter);
 
 // answers router application
-app.use("/admin_answered_dangle", adminAuthMiddleware, adminAnsweredDangleRouter);
-app.use("/admin_answered_decipher", adminAuthMiddleware, adminAnsweredDecipherRouter);
-app.use("/admin_answered_questions", adminAuthMiddleware, adminAnsweredQuestionsRouter);
-app.use("/admin_answered_riddles", adminAuthMiddleware, adminAnsweredRiddlesRouter);
+app.use(
+  "/admin_answered_dangle",
+  adminAuthMiddleware,
+  adminAnsweredDangleRouter
+);
+app.use(
+  "/admin_answered_decipher",
+  adminAuthMiddleware,
+  adminAnsweredDecipherRouter
+);
+app.use(
+  "/admin_answered_questions",
+  adminAuthMiddleware,
+  adminAnsweredQuestionsRouter
+);
+app.use(
+  "/admin_answered_riddles",
+  adminAuthMiddleware,
+  adminAnsweredRiddlesRouter
+);
 
 // words
 app.use("/admin_words", adminAuthMiddleware, adminWordsRouter);
@@ -245,7 +301,11 @@ app.use("/head_admin", headAuthMiddleware, headAdminRouter);
 app.use("/head_dashboard", headAuthMiddleware, headDashboardRouter);
 
 //activities router application
-app.use("/head_admin_activities", headAuthMiddleware, headAdminActivitiesRouter);
+app.use(
+  "/head_admin_activities",
+  headAuthMiddleware,
+  headAdminActivitiesRouter
+);
 
 //////////////////////////////////////////////////////////////////////////////
 

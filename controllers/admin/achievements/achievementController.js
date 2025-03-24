@@ -13,26 +13,38 @@ const createAchievement = async (req, res) => {
   const data = await newAchievement.createAchievement();
 
   if (!data) {
-    throw new BadRequestError(`There was a problem in creating the achievement ${name}.`);
+    throw new BadRequestError(
+      `There was a problem in creating the achievement ${name}.`
+    );
   }
 
   const users = await User.getAllRawUsers();
 
   if (!users) {
-    throw new BadRequestError(`There was a problem in getting the users for assigning the achievement.`);
+    throw new BadRequestError(
+      `There was a problem in getting the users for assigning the achievement.`
+    );
   }
 
   users?.map(async (user) => {
     const points = await UserAchievement.getUserPoints(user.user_id, type);
 
     if (!points && points !== 0) {
-      throw new BadRequestError(`There was a problem in getting the previous points.`);
+      throw new BadRequestError(
+        `There was a problem in getting the previous points.`
+      );
     }
 
-    const assignAchievement = await UserAchievement.assignAchievement(data.insertId, user.user_id, points);
+    const assignAchievement = await UserAchievement.assignAchievement(
+      data.insertId,
+      user.user_id,
+      points
+    );
 
     if (!assignAchievement) {
-      throw new BadRequestError(`There was a problem in assigning the achievement to the users.`);
+      throw new BadRequestError(
+        `There was a problem in assigning the achievement to the users.`
+      );
     }
   });
 
@@ -42,12 +54,17 @@ const createAchievement = async (req, res) => {
 const updateAchievement = async (req, res) => {
   const { achievement_id } = req.params;
   const { achievement } = req.body;
-  const { achievement_name, achievement_type, task, goal, reward_id } = achievement;
+  const { achievement_name, achievement_type, task, goal, reward_id } =
+    achievement;
+
+  console.log(achievement);
 
   const ifExist = await Achievement.getAchievement(achievement_id);
 
   if (!ifExist) {
-    throw new BadRequestError(`The achievement you are trying to update does not exist.`);
+    throw new BadRequestError(
+      `The achievement you are trying to update does not exist.`
+    );
   }
 
   const data = await Achievement.updateAchievement(
@@ -60,7 +77,9 @@ const updateAchievement = async (req, res) => {
   );
 
   if (!data) {
-    throw new BadRequestError(`There was a problem in updating the achievement ${achievement_name}.`);
+    throw new BadRequestError(
+      `There was a problem in updating the achievement ${achievement_name}.`
+    );
   }
 
   res.status(StatusCodes.OK).json(data);
@@ -72,20 +91,30 @@ const deleteAchievement = async (req, res) => {
   const ifExist = await Achievement.getAchievement(achievement_id);
 
   if (!ifExist) {
-    throw new BadRequestError(`The achievement you are trying to delete does not exist.`);
+    throw new BadRequestError(
+      `The achievement you are trying to delete does not exist.`
+    );
   }
 
   const achievement = await Achievement.deleteAchievement(achievement_id);
 
   if (!achievement) {
-    throw new BadRequestError(`There was a problem in deleting the achievement.`);
+    throw new BadRequestError(
+      `There was a problem in deleting the achievement.`
+    );
   }
 
   res.status(StatusCodes.OK).json(achievement);
 };
 
 const getAllAchievements = async (req, res) => {
-  const { searchFilter, goalRangeFilter, sortFilter, dateRangeFilter, typeFilter } = req.query;
+  const {
+    searchFilter,
+    goalRangeFilter,
+    sortFilter,
+    dateRangeFilter,
+    typeFilter,
+  } = req.query;
 
   const achievement = await Achievement.getAllAchievements(
     searchFilter,
@@ -96,7 +125,9 @@ const getAllAchievements = async (req, res) => {
   );
 
   if (!achievement) {
-    throw new BadRequestError(`There was a problem in getting the achievements.`);
+    throw new BadRequestError(
+      `There was a problem in getting the achievements.`
+    );
   }
 
   res.status(StatusCodes.OK).json(achievement);
@@ -108,7 +139,9 @@ const getAchievement = async (req, res) => {
   const achievement = await Achievement.getAchievement(achievement_id);
 
   if (!achievement) {
-    throw new BadRequestError(`The achievement you want to view does not exist.`);
+    throw new BadRequestError(
+      `The achievement you want to view does not exist.`
+    );
   }
 
   res.status(StatusCodes.OK).json(achievement);
