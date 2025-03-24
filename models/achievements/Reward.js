@@ -10,33 +10,43 @@ class Reward {
 
   async createReward() {
     try {
-      const sql = "INSERT INTO reward SET ?;";
-      const rewardValues = {
-        reward_name: this.reward_name,
-        reward_type: this.reward_type,
-        reward: this.reward,
-        description: this.description,
-      };
+      const sql =
+        "INSERT INTO reward (reward_name, reward_type, reward, description) VALUES (?, ?, ?, ?);";
+      const rewardValues = [
+        this.reward_name,
+        this.reward_type,
+        this.reward,
+        this.description,
+      ];
 
-      const [data, _] = await db.query(sql, rewardValues);
+      const [data, _] = await db.execute(sql, rewardValues);
       return data;
     } catch (error) {
       console.log(error + "--- create reward ---");
     }
   }
 
-  static async updateReward(reward_id, reward_name, reward_type, description, reward) {
+  static async updateReward(
+    reward_id,
+    reward_name,
+    reward_type,
+    description,
+    reward
+  ) {
     try {
-      const sql = `UPDATE reward SET ?
-                    WHERE reward_id = '${reward_id}';`;
-      const rewardValues = {
+      const sql = `UPDATE reward SET reward_name = ?, reward_type = ?, reward = ?, description = ?
+                    WHERE reward_id = ?;`;
+      const rewardValues = [
         reward_name,
         reward_type,
         reward,
         description,
-      };
+        reward_id,
+      ];
 
-      const [data, _] = await db.query(sql, rewardValues);
+      console.log("update");
+
+      const [data, _] = await db.execute(sql, rewardValues);
       return data;
     } catch (error) {
       console.log(error + "--- update reward ---");
@@ -46,30 +56,45 @@ class Reward {
   static async deleteReward(reward_id) {
     try {
       const sql = `DELETE FROM reward
-                    WHERE reward_id = '${reward_id}';`;
-      const [data, _] = await db.execute(sql);
+                    WHERE reward_id = ?;`;
+      const rewardValues = [reward_id];
+      const [data, _] = await db.execute(sql, rewardValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete reward ---");
     }
   }
 
-  static async getAllRewards(searchFilter, sortFilter, dateRangeFilter, typeFilter) {
-    const dateFrom = dateRangeFilter.from ? dateRangeFilter.from : "19990101T123000.000Z";
+  static async getAllRewards(
+    searchFilter,
+    sortFilter,
+    dateRangeFilter,
+    typeFilter
+  ) {
+    const dateFrom = dateRangeFilter.from
+      ? dateRangeFilter.from
+      : "19990101T123000.000Z";
     const dateTo = dateRangeFilter.to ? dateRangeFilter.to : new Date();
 
     try {
       const sql = `SELECT * FROM reward
-                  WHERE ${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
+                  WHERE ${searchFilter.toSearch} LIKE ?
                   AND
-                      reward_type LIKE '%${typeFilter}%'
+                      reward_type LIKE ?
                   AND 
-                      CAST(date_added AS DATE) >= '${dateFrom}' 
+                      CAST(date_added AS DATE) >= ? 
                   AND 
-                      CAST(date_added AS DATE) <= '${dateTo}'
+                      CAST(date_added AS DATE) <= ?
                   ORDER BY ${sortFilter.toSort} ${sortFilter.sortMode};`;
 
-      const [data, _] = await db.execute(sql);
+      const rewardValues = [
+        `%${searchFilter.searchKey}%`,
+        `%${typeFilter}%`,
+        dateFrom,
+        dateTo,
+      ];
+
+      const [data, _] = await db.execute(sql, rewardValues);
 
       return data;
     } catch (error) {
@@ -77,7 +102,13 @@ class Reward {
     }
   }
 
-  static async getAllUserRewards(user_id, searchFilter, sortFilter, showFilter, typeFilter) {
+  static async getAllUserRewards(
+    user_id,
+    searchFilter,
+    sortFilter,
+    showFilter,
+    typeFilter
+  ) {
     try {
       const sqlAll = `SELECT ua.user_achievement_id, r.reward_id, r.reward_name, 
                           r.reward_type, r.reward, r.description, r.date_added,
@@ -94,13 +125,13 @@ class Reward {
                       INNER JOIN reward AS r 
                       ON r.reward_id = a.reward_id
 
-                      WHERE ua.user_id = '${user_id}'
+                      WHERE ua.user_id = ?
 
                       AND 
-                        r.${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
+                        r.${searchFilter.toSearch} LIKE ?
 
                       AND
-                        r.reward_type LIKE '%${typeFilter}%'
+                        r.reward_type LIKE ?
                         
                       ORDER BY ${sortFilter.toSort} ${sortFilter.sortMode}`;
 
@@ -112,21 +143,27 @@ class Reward {
                       INNER JOIN reward AS r 
                       ON r.reward_id = a.reward_id
 
-                      WHERE ua.user_id = '${user_id}'
+                      WHERE ua.user_id = ?
 
                       AND 
                         a.goal <= ua.points
 
                       AND 
-                        r.${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
+                        r.${searchFilter.toSearch} LIKE ?
 
                       AND
-                        r.reward_type LIKE '%${typeFilter}%'
+                        r.reward_type LIKE ?
 
                       ORDER BY ${sortFilter.toSort} ${sortFilter.sortMode};`;
 
-      const toQuery = showFilter.toShow === "all" ? sqlAll : sqlUser;
-      const [data, _] = await db.execute(toQuery);
+      const rewardValues = [
+        user_id,
+        `%${searchFilter.searchKey}%`,
+        `%${typeFilter}%`,
+      ];
+
+      const toexecute = showFilter.toShow === "all" ? sqlAll : sqlUser;
+      const [data, _] = await db.execute(toexecute, rewardValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all user rewards ---");
@@ -136,8 +173,9 @@ class Reward {
   static async getReward(reward_id) {
     try {
       const sql = `SELECT * FROM reward
-                    WHERE reward_id = '${reward_id}';`;
-      const [data, _] = await db.execute(sql);
+                    WHERE reward_id = ?;`;
+      const rewardValues = [reward_id];
+      const [data, _] = await db.execute(sql, rewardValues);
       return data[0];
     } catch (error) {
       console.log(error + "--- select reward ---");
@@ -149,8 +187,10 @@ class Reward {
       const sql = `SELECT * FROM reward AS r
                     INNER JOIN achievement AS a ON r.reward_id = a.reward_id
                     INNER JOIN user_achievement AS ua ON a.achievement_id = ua.achievement_id
-                    WHERE r.reward_id = '${reward_id}';`;
-      const [data, _] = await db.execute(sql);
+                    WHERE r.reward_id = ?;`;
+      const rewardValues = [reward_id];
+
+      const [data, _] = await db.execute(sql, rewardValues);
       return data[0];
     } catch (error) {
       console.log(error + "--- select reward ---");
