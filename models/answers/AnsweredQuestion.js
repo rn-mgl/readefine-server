@@ -10,13 +10,14 @@ class AnsweredQuestion {
 
   async createAnswer() {
     try {
-      const sql = "INSERT INTO answered_question SET ?;";
-      const answerValues = {
-        question_id: this.question_id,
-        answered_by: this.answered_by,
-        answer: this.answer,
-        taken_id: this.taken_id,
-      };
+      const sql =
+        "INSERT INTO answered_question (question_id, answered_by, answer, taken_id) VALUES (?, ?, ?, ?);";
+      const answerValues = [
+        this.question_id,
+        this.answered_by,
+        this.answer,
+        this.taken_id,
+      ];
       const [data, _] = await db.query(sql, answerValues);
       return data;
     } catch (error) {
@@ -29,8 +30,9 @@ class AnsweredQuestion {
       const sql = `SELECT * FROM answered_question AS aq
                     INNER JOIN test_question AS tq
                     ON aq.question_id = tq.question_id
-                    WHERE aq.answered_by = '${answered_by}';`;
-      const [data, _] = await db.execute(sql);
+                    WHERE aq.answered_by = ?;`;
+      const answerValues = [answered_by];
+      const [data, _] = await db.execute(sql, answerValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all answered question ---");
@@ -42,9 +44,11 @@ class AnsweredQuestion {
       const sql = `SELECT * FROM answered_question AS aq
                     INNER JOIN test_question AS tq
                     ON aq.question_id = tq.question_id
-                    WHERE aq.answer_id = '${answer_id}'
+                    WHERE aq.answer_id = ?
                     GROUP BY tq.test_id;`;
-      const [data, _] = await db.execute(sql);
+      const answerValues = [answer_id];
+
+      const [data, _] = await db.execute(sql, answerValues);
       return data[0];
     } catch (error) {
       console.log(error + "--- get answered question ---");

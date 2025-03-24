@@ -8,20 +8,24 @@ class UserAchievement {
 
   async receiveAchievement() {
     try {
-      const sql = "INSERT INTO user_achievement SET ?;";
-      const achievementValues = {
-        achievement_id: this.achievement_id,
-        user_id: this.user_id,
-      };
+      const sql =
+        "INSERT INTO user_achievement (achievement_id, user_id) VALUES (?, ?);";
+      const achievementValues = [this.achievement_id, this.user_id];
 
-      const [data, _] = await db.query(sql, achievementValues);
+      const [data, _] = await db.execute(sql, achievementValues);
       return data;
     } catch (error) {
       console.log(error + "--- create achievement ---");
     }
   }
 
-  static async getAllUserAchievements(searchFilter, goalRangeFilter, sortFilter, typeFilter, user_id) {
+  static async getAllUserAchievements(
+    searchFilter,
+    goalRangeFilter,
+    sortFilter,
+    typeFilter,
+    user_id
+  ) {
     const goalFrom = goalRangeFilter.from ? goalRangeFilter.from : 0;
     const goalTo = goalRangeFilter.to ? goalRangeFilter.to : 1400;
     try {
@@ -33,18 +37,26 @@ class UserAchievement {
                   INNER JOIN reward AS r 
                   ON a.reward_id = r.reward_id
                   
-                  WHERE ${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
+                  WHERE ${searchFilter.toSearch} LIKE ?
                   AND
-                      a.achievement_type LIKE '%${typeFilter}%'
+                      a.achievement_type LIKE ?
                   AND 
-                      goal >= '${goalFrom}' 
+                      goal >= ?
                   AND 
-                      goal <= '${goalTo}'
+                      goal <= ?
                   AND 
-                      ua.user_id = '${user_id}' 
+                      ua.user_id = ?
                   ORDER BY ${sortFilter.toSort} ${sortFilter.sortMode};`;
 
-      const [data, _] = await db.execute(sql);
+      const userAchievementValues = [
+        `%${searchFilter.searchKey}%`,
+        `%${typeFilter}%`,
+        goalFrom,
+        goalTo,
+        user_id,
+      ];
+
+      const [data, _] = await db.execute(sql, userAchievementValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all user achievements ---");
@@ -64,8 +76,10 @@ class UserAchievement {
   static async getAchievement(user_achievement_id) {
     try {
       const sql = `SELECT * user_achievement
-                    WHERE user_achievement_id = '${user_achievement_id}';`;
-      const [data, _] = await db.execute(sql);
+                    WHERE user_achievement_id = ?;`;
+
+      const userAchievementValues = [user_achievement_id];
+      const [data, _] = await db.execute(sql, userAchievementValues);
       return data[0];
     } catch (error) {
       console.log(error + "--- get achievement ---");
@@ -76,11 +90,13 @@ class UserAchievement {
     try {
       const sql = `UPDATE user_achievement AS ua
                   INNER JOIN achievement AS a ON ua.achievement_id = a.achievement_id
-                  SET ua.points = ua.points + ${toAdd}
-                  WHERE a.achievement_type = '${type}'
-                  AND ua.user_id = '${user_id}';`;
+                  SET ua.points = ua.points + ?
+                  WHERE a.achievement_type = ?
+                  AND ua.user_id = ?;`;
 
-      const [data, _] = await db.execute(sql);
+      const userAchievementValues = [toAdd, type, user_id];
+
+      const [data, _] = await db.execute(sql, userAchievementValues);
       return data;
     } catch (error) {
       console.log(error + "--- increment points ---");
@@ -94,9 +110,12 @@ class UserAchievement {
                   INNER JOIN reward AS r ON a.reward_id = r.reward_id
                   WHERE ua.points >= a.goal
                   AND ua.is_seen = '0'
-                  AND a.achievement_type = '${type}'
-                  AND ua.user_id = '${user_id}';`;
-      const [data, _] = await db.query(sql);
+                  AND a.achievement_type = ?
+                  AND ua.user_id = ?;`;
+
+      const userAchievementValues = [type, user_id];
+
+      const [data, _] = await db.execute(sql, userAchievementValues);
       return data;
     } catch (error) {
       console.log(error + "--- check session achievement ---");
@@ -106,8 +125,11 @@ class UserAchievement {
   static async assignUserAchievements(user_id) {
     try {
       const sql = `INSERT INTO user_achievement (achievement_id, user_id)
-                    SELECT achievement_id, '${user_id}' FROM achievement;`;
-      const [data, _] = await db.execute(sql);
+                    SELECT achievement_id, ? FROM achievement;`;
+
+      const userAchievementValues = [user_id];
+
+      const [data, _] = await db.execute(sql, userAchievementValues);
       return data;
     } catch (error) {
       console.log(error + "--- assign user achievements ---");
@@ -122,10 +144,12 @@ class UserAchievement {
                   INNER JOIN achievement AS a
                   ON ua.achievement_id = a.achievement_id
                   
-                  WHERE ua.user_id = '${user_id}'
-                  AND a.achievement_type = '${type}';`;
+                  WHERE ua.user_id = ?
+                  AND a.achievement_type = ?;`;
 
-      const [data, _] = await db.execute(sql);
+      const userAchievementValues = [user_id, type];
+
+      const [data, _] = await db.execute(sql, userAchievementValues);
 
       return data[0].points;
     } catch (error) {
@@ -135,10 +159,10 @@ class UserAchievement {
 
   static async assignAchievement(achievement_id, user_id, points) {
     try {
-      const sql = `INSERT INTO user_achievement SET ?;`;
-      const achievementValues = { achievement_id, user_id, points };
+      const sql = `INSERT INTO user_achievement (achievement_id, user_id, points) VALUES (?, ?, ?);`;
+      const achievementValues = [achievement_id, user_id, points];
 
-      const [data, _] = await db.query(sql, achievementValues);
+      const [data, _] = await db.execute(sql, achievementValues);
       return data;
     } catch (error) {
       console.log(error + "--- assign an achievement ---");
@@ -147,9 +171,9 @@ class UserAchievement {
 
   static async seeUserAchievements(user_achievement_id) {
     try {
-      const sql = `UPDATE user_achievement SET ?
-                  WHERE user_achievement_id = '${user_achievement_id}';`;
-      const userAchievementValues = { is_seen: 1 };
+      const sql = `UPDATE user_achievement SET is_seen = ?
+                  WHERE user_achievement_id = ?;`;
+      const userAchievementValues = [true, user_achievement_id];
       const [data, _] = await db.query(sql, userAchievementValues);
       return data;
     } catch (error) {

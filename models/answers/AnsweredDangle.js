@@ -10,14 +10,15 @@ class AnsweredDangle {
 
   async createAnswer() {
     try {
-      const sql = "INSERT INTO answered_dangle SET ?;";
-      const answerValues = {
-        word_id: this.word_id,
-        answered_by: this.answered_by,
-        answer: this.answer,
-        duration_seconds: this.duration_seconds,
-      };
-      const [data, _] = await db.query(sql, answerValues);
+      const sql =
+        "INSERT INTO answered_dangle (answered_by, word_id, answer, duration_seconds) VALUES (?, ?, ?, ?);";
+      const answerValues = [
+        this.answered_by,
+        this.word_id,
+        this.answer,
+        this.duration_seconds,
+      ];
+      const [data, _] = await db.execute(sql, answerValues);
       return data;
     } catch (error) {
       console.log(error + "--- create answer ---");
@@ -29,8 +30,9 @@ class AnsweredDangle {
       const sql = `SELECT * FROM answered_dangle AS ad
                     INNER JOIN daily_dangle AS dd
                     ON ad.dangle_id = dd.dangle_id
-                    WHERE ad.answered_by = '${answered_by}';`;
-      const [data, _] = await db.execute(sql);
+                    WHERE ad.answered_by = ?;`;
+      const answerValues = [answered_by];
+      const [data, _] = await db.execute(sql, answerValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all answered question ---");
@@ -42,8 +44,10 @@ class AnsweredDangle {
       const sql = `SELECT * FROM answered_dangle AS ad
                     INNER JOIN daily_dangle AS dd
                     ON ad.dangle_id = dd.dangle_id
-                    WHERE ad.answer_id = '${answer_id}';`;
-      const [data, _] = await db.execute(sql);
+                    WHERE ad.answer_id = ?;`;
+      const answerValues = [answer_id];
+
+      const [data, _] = await db.execute(sql, answerValues);
       return data[0];
     } catch (error) {
       console.log(error + "--- get answered question ---");

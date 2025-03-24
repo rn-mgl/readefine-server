@@ -5,9 +5,10 @@ class MinigameDashboard {
 
   static async getAllPlayCounts(answered_by) {
     try {
-      const sql = `SELECT (SELECT COUNT(answer_id) FROM answered_dangle WHERE answered_by = '${answered_by}') AS dangleCount,
-                          (SELECT COUNT(answer_id) FROM answered_decipher WHERE answered_by = '${answered_by}') AS decipherCount,
-                          (SELECT COUNT(answer_id) FROM answered_riddles WHERE answered_by = '${answered_by}') AS riddleCount`;
+      const sql = `SELECT (SELECT COUNT(answer_id) FROM answered_dangle WHERE answered_by = ?) AS dangleCount,
+                          (SELECT COUNT(answer_id) FROM answered_decipher WHERE answered_by = ?) AS decipherCount,
+                          (SELECT COUNT(answer_id) FROM answered_riddles WHERE answered_by = ?) AS riddleCount`;
+      const playCountsValues = [answered_by, answered_by, answered_by];
       const [data, _] = await db.execute(sql);
       return data[0];
     } catch (error) {

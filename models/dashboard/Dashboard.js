@@ -53,17 +53,17 @@ class Dashboard {
 
   static async getSingleUserCounts(user_id) {
     try {
-      const sql = `SELECT (SELECT COUNT(read_id) FROM read_story WHERE read_by = '${user_id}') AS readCount,
+      const sql = `SELECT (SELECT COUNT(read_id) FROM read_story WHERE read_by = ?) AS readCount,
 
-                  (SELECT COUNT(taken_id) FROM taken_test WHERE taken_by = '${user_id}') AS testCount,
+                  (SELECT COUNT(taken_id) FROM taken_test WHERE taken_by = ?) AS testCount,
 
                   (SELECT COUNT(user_achievement_id) FROM user_achievement AS ua
                     INNER JOIN achievement AS a ON ua.achievement_id = a.achievement_id
-                    WHERE user_id = '${user_id}' AND ua.points >= a.goal) AS achievementCount,
+                    WHERE user_id = ? AND ua.points >= a.goal) AS achievementCount,
 
-                  (SELECT COUNT(answer_id) FROM answered_riddles WHERE answered_by = '${user_id}') AS riddleCount`;
-
-      const [data, _] = await db.execute(sql);
+                  (SELECT COUNT(answer_id) FROM answered_riddles WHERE answered_by = ?) AS riddleCount`;
+      const dashboardValues = [user_id, user_id, user_id, user_id];
+      const [data, _] = await db.execute(sql, dashboardValues);
       return data[0];
     } catch (error) {
       console.log(error + " --- get counts ---");

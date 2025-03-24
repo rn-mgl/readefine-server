@@ -1,7 +1,7 @@
 const sendgrid = require("@sendgrid/mail");
 const { BadRequestError } = require("../../../errors");
 
-const url = "https://readefine.vercel.app";
+const url = "http://192.168.1.30";
 
 const sendVerificationEmail = async (sendTo, toName, token) => {
   const message = {
@@ -43,7 +43,9 @@ const sendVerificationEmail = async (sendTo, toName, token) => {
   const data = await sendgrid.send(message);
 
   if (!data) {
-    throw new BadRequestError(`Error in sending verification link. Try again later.`);
+    throw new BadRequestError(
+      `Error in sending verification link. Try again later.`
+    );
   }
 
   return data;

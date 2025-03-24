@@ -17,7 +17,10 @@ class ReadStory {
                     WHERE read_by = '${this.read_by}'
                     AND story_id = '${this.story_id}'
                    ) LIMIT 1`;
-      const readStoryValues = { read_by: this.read_by, story_id: this.story_id };
+      const readStoryValues = {
+        read_by: this.read_by,
+        story_id: this.story_id,
+      };
       const [data, _] = await db.execute(sql);
       return data;
     } catch (error) {
@@ -30,13 +33,14 @@ class ReadStory {
       const sql = `SELECT * FROM read_story AS rs
                   INNER JOIN users AS u ON rs.read_by = u.user_id
                   INNER JOIN story AS s ON rs.story_id = s.story_id
-                  WHERE rs.read_by = '${user_id}'
+                  WHERE rs.read_by = ?
                   AND
-                    MONTH(rs.date_read) = '${month}'
+                    MONTH(rs.date_read) = ?
                   AND
                     YEAR(rs.date_read) = YEAR(CURDATE())
                   ORDER BY rs.date_read;`;
-      const [data, _] = await db.execute(sql);
+      const readStoryValues = [user_id, month];
+      const [data, _] = await db.execute(sql, readStoryValues);
 
       return data;
     } catch (error) {

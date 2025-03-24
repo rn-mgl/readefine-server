@@ -8,9 +8,9 @@ class Riddles {
 
   async createRiddle() {
     try {
-      const sql = "INSERT INTO riddles SET ?;";
-      const riddleValues = { riddle: this.riddle, answer: this.answer };
-      const [data, _] = await db.query(sql, riddleValues);
+      const sql = "INSERT INTO riddles (riddle, answer) VALUES (?, ?);";
+      const riddleValues = [riddle, answer];
+      const [data, _] = await db.execute(sql, riddleValues);
       return data;
     } catch (error) {
       console.log(error + "--- create riddle ---");
@@ -19,10 +19,10 @@ class Riddles {
 
   static async updateRiddle(riddle_id, riddle, answer) {
     try {
-      const sql = `UPDATE riddles SET ?
-                    WHERE riddle_id = '${riddle_id}'`;
-      const riddleValues = { riddle, answer };
-      const [data, _] = await db.query(sql, riddleValues);
+      const sql = `UPDATE riddles SET riddle = ?, answer = ?
+                    WHERE riddle_id = ?`;
+      const riddleValues = [riddle, answer, riddle_id];
+      const [data, _] = await db.execute(sql, riddleValues);
       return data;
     } catch (error) {
       console.log(error + "--- update riddle ---");
@@ -32,8 +32,9 @@ class Riddles {
   static async deleteRiddle(riddle_id) {
     try {
       const sql = `DELETE FROM riddles 
-                    WHERE riddle_id = '${riddle_id}'`;
-      const [data, _] = await db.execute(sql);
+                    WHERE riddle_id = ?`;
+      const riddleValues = [deleteRiddle];
+      const [data, _] = await db.execute(sql, riddleValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete riddle ---");
@@ -41,17 +42,20 @@ class Riddles {
   }
 
   static async getAllRiddles(searchFilter, sortFilter, dateRangeFilter) {
-    const dateFrom = dateRangeFilter.from ? dateRangeFilter.from : "19990101T123000.000Z";
+    const dateFrom = dateRangeFilter.from
+      ? dateRangeFilter.from
+      : "19990101T123000.000Z";
     const dateTo = dateRangeFilter.to ? dateRangeFilter.to : new Date();
     try {
       const sql = `SELECT * FROM riddles
-                  WHERE ${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
+                  WHERE ${searchFilter.toSearch} LIKE ?
                   AND 
-                      CAST(date_added AS DATE) >= '${dateFrom}' 
+                      CAST(date_added AS DATE) >= ? 
                   AND 
-                      CAST(date_added AS DATE) <= '${dateTo}'
+                      CAST(date_added AS DATE) <= ?
                   ORDER BY ${sortFilter.toSort} ${sortFilter.sortMode};`;
-      const [data, _] = await db.execute(sql);
+      const riddleValues = [`%${searchFilter.searchKey}%`, dateFrom, dateTo];
+      const [data, _] = await db.execute(sql, riddleValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all riddles ---");
@@ -62,7 +66,9 @@ class Riddles {
     try {
       const sql = `SELECT * FROM riddles 
                     WHERE riddle_id = '${riddle_id}'`;
-      const [data, _] = await db.execute(sql);
+      const riddleValues = [riddle_id];
+
+      const [data, _] = await db.execute(sql, riddle_id);
       return data[0];
     } catch (error) {
       console.log(error + "--- get riddle ---");
