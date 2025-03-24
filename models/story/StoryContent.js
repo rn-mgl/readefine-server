@@ -56,7 +56,7 @@ class StoryContent {
       const sql = `SELECT * FROM story_content
                     WHERE story_id = ?
                     ORDER BY page;`;
-      const contentValues = [content_id];
+      const contentValues = [story_id];
       const [data, _] = await db.execute(sql, contentValues);
       return data;
     } catch (error) {

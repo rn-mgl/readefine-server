@@ -25,7 +25,7 @@ class ReadStory {
         this.story_id,
       ];
 
-      const [data, _] = await db.execute(sql);
+      const [data, _] = await db.execute(sql, readStoryValues);
       return data;
     } catch (error) {
       console.log(error + "--- create read story ---");

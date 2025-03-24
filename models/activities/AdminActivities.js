@@ -10,7 +10,7 @@ class AdminActivities {
 
   async createAdminActivity() {
     try {
-      const sql = `INSERT INTO admin_activity (admin_id, resource_type, resource_name, activity_type) SET (?, ?, ?, ?);`;
+      const sql = `INSERT INTO admin_activity (admin_id, resource_type, resource_name, activity_type) VALUES (?, ?, ?, ?);`;
       const insertValues = [
         this.admin_id,
         this.resource_type,
