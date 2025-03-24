@@ -7,36 +7,50 @@ class Test {
 
   async createTest() {
     try {
-      const sql = `INSERT INTO test SET ?;`;
-      const testValues = { story_id: this.story_id };
-      const [data, _] = await db.query(sql, testValues);
+      const sql = `INSERT INTO test (story_id) VALUES (?);`;
+      const testValues = [this.story_id];
+      const [data, _] = await db.execute(sql, testValues);
       return data;
     } catch (error) {
       console.log(error + "--- create test ---");
     }
   }
 
-  static async getAllTests(searchFilter, lexileRangeFilter, sortFilter, dateRangeFilter) {
+  static async getAllTests(
+    searchFilter,
+    lexileRangeFilter,
+    sortFilter,
+    dateRangeFilter
+  ) {
     const lexileFrom = lexileRangeFilter.from ? lexileRangeFilter.from : 0;
     const lexileTo = lexileRangeFilter.to ? lexileRangeFilter.to : 1400;
-    const dateFrom = dateRangeFilter.from ? dateRangeFilter.from : "19990101T123000.000Z";
+    const dateFrom = dateRangeFilter.from
+      ? dateRangeFilter.from
+      : "19990101T123000.000Z";
     const dateTo = dateRangeFilter.to ? dateRangeFilter.to : new Date();
     try {
       const sql = `SELECT * FROM test AS t
                    INNER JOIN story AS s ON
                    t.story_id = s.story_id
                    WHERE 
-                      s.${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
+                      s.${searchFilter.toSearch} LIKE ?
                   AND 
-                      s.lexile >= '${lexileFrom}' 
+                      s.lexile >= ? 
                   AND 
-                      s.lexile <= '${lexileTo}'
+                      s.lexile <= ?
                   AND 
-                      CAST(s.date_added AS DATE) >= '${dateFrom}' 
+                      CAST(s.date_added AS DATE) >= ? 
                   AND 
-                      CAST(s.date_added AS DATE) <= '${dateTo}'
+                      CAST(s.date_added AS DATE) <= ?
                   ORDER BY ${sortFilter.toSort} ${sortFilter.sortMode};`;
-      const [data, _] = await db.execute(sql);
+      const testValues = [
+        `%${searchFilter.searchKey}%`,
+        lexileFrom,
+        lexileTo,
+        dateFrom,
+        dateTo,
+      ];
+      const [data, _] = await db.execute(sql, testValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all tests ---");
@@ -53,7 +67,7 @@ class Test {
                    tt.score,
 
                     CASE 
-                      WHEN tt.taken_by = '${userId}' THEN 1 ELSE 0
+                      WHEN tt.taken_by = ? THEN 1 ELSE 0
                     END AS is_taken
 
                    FROM test AS t
@@ -63,16 +77,23 @@ class Test {
 
                    LEFT JOIN taken_test AS tt ON
                     t.test_id = tt.test_id
-                    AND tt.taken_by = '${userId}'
+                    AND tt.taken_by = ?
                    
                    WHERE 
-                      s.${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
+                      s.${searchFilter.toSearch} LIKE ?
                    AND 
-                      s.lexile >= '${lexileFrom}' 
+                      s.lexile >= ? 
                    AND 
-                      s.lexile <= '${lexileTo}'
+                      s.lexile <= ?
                    ORDER BY ${sortFilter.toSort} ${sortFilter.sortMode};`;
-      const [data, _] = await db.execute(sql);
+      const testValues = [
+        userId,
+        userId,
+        `%${searchFilter.searchKey}%`,
+        lexileFrom,
+        lexileTo,
+      ];
+      const [data, _] = await db.execute(sql, testValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all tests ---");
@@ -84,8 +105,9 @@ class Test {
       const sql = `SELECT * FROM test AS t
                     INNER JOIN story AS s
                     ON t.story_id = s.story_id
-                    WHERE t.test_id = '${test_id}';`;
-      const [data, _] = await db.execute(sql);
+                    WHERE t.test_id = ?;`;
+      const testValues = [test_id];
+      const [data, _] = await db.execute(sql, testValues);
       return data[0];
     } catch (error) {
       console.log(error + "--- get test ---");
@@ -95,8 +117,9 @@ class Test {
   static async deleteTest(test_id) {
     try {
       const sql = `DELETE FROM test
-                    WHERE test_id = '${test_id}';`;
-      const [data, _] = await db.execute(sql);
+                    WHERE test_id =?;`;
+      const testValues = [test_id];
+      const [data, _] = await db.execute(sql, testValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete test ---");

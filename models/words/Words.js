@@ -8,12 +8,9 @@ class Words {
 
   async addWord() {
     try {
-      const sql = `INSERT INTO words SET ?`;
-      const wordValues = {
-        word: this.word,
-        pronunciation: this.pronunciation,
-      };
-      const [data, _] = await db.query(sql, wordValues);
+      const sql = `INSERT INTO words (word, pronunciation) VALUES (?, ?)`;
+      const wordValues = [this.word, this.pronunciation];
+      const [data, _] = await db.execute(sql, wordValues);
       return data;
     } catch (error) {
       console.log(error + "--- add word ---");
@@ -49,8 +46,13 @@ class Words {
       const sqlDefinition = `SELECT * FROM word_definition AS wd
                             LEFT JOIN word_part_of_speech AS wps
                             on wd.definition_id = wps.definition_id
-                            WHERE word_id = '${word[0].word_id}'`;
-      const [definition, _2] = await db.execute(sqlDefinition);
+                            WHERE word_id = ?`;
+      const definitionValues = [word[0].word_id];
+
+      const [definition, _2] = await db.execute(
+        sqlDefinition,
+        definitionValues
+      );
 
       return { wordData: word[0], definitionData: definition };
     } catch (error) {
@@ -60,8 +62,9 @@ class Words {
 
   static async getWordById(word_id) {
     try {
-      const sql = `SELECT * FROM words WHERE word_id = '${word_id}';`;
-      const [data, _] = await db.execute(sql);
+      const sql = `SELECT * FROM words WHERE word_id = ?;`;
+      const wordValues = [word_id];
+      const [data, _] = await db.execute(sql, wordValues);
       return data[0];
     } catch (error) {
       console.log(error + "--- get word by id ---");
@@ -70,8 +73,9 @@ class Words {
 
   static async getWord(word) {
     try {
-      const sql = `SELECT * FROM words WHERE word = '${word}' LIMIT 1;`;
-      const [data, _] = await db.execute(sql);
+      const sql = `SELECT * FROM words WHERE word = ? LIMIT 1;`;
+      const wordValues = [word];
+      const [data, _] = await db.execute(sql, wordValues);
       return data[0];
     } catch (error) {
       console.log(error + "--- get word ---");

@@ -9,13 +9,9 @@ class WordDefinition {
 
   async addDefinition() {
     try {
-      const sql = `INSERT INTO word_definition SET ? ;`;
-      const definitionValues = {
-        word_id: this.word_id,
-        definition: this.definition,
-        example: this.example,
-      };
-      const [data, _] = await db.query(sql, definitionValues);
+      const sql = `INSERT INTO word_definition (word_id, definition, example) VALUES (?, ?, ?) ;`;
+      const definitionValues = [this.word_id, this.definition, this.example];
+      const [data, _] = await db.execute(sql, definitionValues);
       return data;
     } catch (error) {
       console.log(error + "--- create definition ---");

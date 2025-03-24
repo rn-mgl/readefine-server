@@ -9,13 +9,10 @@ class TakenTest {
 
   async takeTest() {
     try {
-      const sql = "INSERT INTO taken_test SET ?;";
-      const takeValues = {
-        taken_by: this.taken_by,
-        test_id: this.test_id,
-        score: this.score,
-      };
-      const [data, _] = await db.query(sql, takeValues);
+      const sql =
+        "INSERT INTO taken_test (taken_by, test_id, score) VALUES (?, ?, ?);";
+      const takeValues = [this.taken_by, this.test_id, this.score];
+      const [data, _] = await db.execute(sql, takeValues);
       return data;
     } catch (error) {
       console.log(error + "--- take test ---");
@@ -47,10 +44,11 @@ class TakenTest {
                     INNER JOIN answered_question AS aq
                     ON tq.question_id = aq.question_id
 
-                    WHERE tt.taken_by = '${taken_by}'
-                    AND aq.answered_by = '${taken_by}'
-                    AND tt.test_id = '${testId}'`;
-      const [data, _] = await db.execute(sql);
+                    WHERE tt.taken_by = ?
+                    AND aq.answered_by = ?
+                    AND tt.test_id = ?`;
+      const takeValues = [taken_by, taken_by, testId];
+      const [data, _] = await db.execute(sql, takeValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all taken tests ---");
@@ -62,12 +60,14 @@ class TakenTest {
       const sql = `SELECT * FROM taken_test AS tt
                   INNER JOIN test AS t ON tt.test_id = t.test_id
                   INNER JOIN story AS s ON t.story_id = s.story_id
-                  WHERE tt.taken_by = '${user_id}'
+                  WHERE tt.taken_by = ?
                     AND
-                  MONTH(tt.date_taken) = ${month}
+                  MONTH(tt.date_taken) = ?
                     AND
                   YEAR(tt.date_taken) = YEAR(CURDATE())`;
-      const [data, _] = await db.execute(sql);
+      const takeValues = [user_id, month];
+
+      const [data, _] = await db.execute(sql, takeValues);
       return data;
     } catch (error) {
       console.log(error + "--- get taken tests of user ---");

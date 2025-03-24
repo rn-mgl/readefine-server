@@ -11,16 +11,20 @@ class ReadStory {
     try {
       const sql = `INSERT INTO read_story (read_by, story_id)
                    SELECT * FROM 
-                    (SELECT '${this.read_by}' AS read_by, '${this.story_id}' AS story_id) AS tmp
+                    (SELECT ? AS read_by, ? AS story_id) AS tmp
                    WHERE NOT EXISTS (
                     SELECT read_by FROM read_story 
-                    WHERE read_by = '${this.read_by}'
-                    AND story_id = '${this.story_id}'
+                    WHERE read_by = ?
+                    AND story_id = ?
                    ) LIMIT 1`;
-      const readStoryValues = {
-        read_by: this.read_by,
-        story_id: this.story_id,
-      };
+
+      const readStoryValues = [
+        this.read_by,
+        this.story_id,
+        this.read_by,
+        this.story_id,
+      ];
+
       const [data, _] = await db.execute(sql);
       return data;
     } catch (error) {

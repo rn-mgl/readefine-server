@@ -12,36 +12,45 @@ class TestAnswer {
 
   async createAnswer() {
     try {
-      const sql = "INSERT INTO test_answer SET ?;";
-      const answerValues = {
-        question_id: this.question_id,
-        answer: this.answer,
-        choice_1: this.choice_1,
-        choice_2: this.choice_2,
-        choice_3: this.choice_3,
-        choice_4: this.choice_4,
-      };
+      const sql =
+        "INSERT INTO test_answer (question_id, answer, choice_1, choice_2, choice_3, choice_4) VALUES (?, ?, ?, ?, ?, ?);";
+      const answerValues = [
+        this.question_id,
+        this.answer,
+        this.choice_1,
+        this.choice_2,
+        this.choice_3,
+        this.choice_4,
+      ];
 
-      const [data, _] = await db.query(sql, answerValues);
+      const [data, _] = await db.execute(sql, answerValues);
       return data;
     } catch (error) {
       console.log(error + "--- create answer ---");
     }
   }
 
-  static async updateAnswer(answer_id, answer, choice_1, choice_2, choice_3, choice_4) {
+  static async updateAnswer(
+    answer_id,
+    answer,
+    choice_1,
+    choice_2,
+    choice_3,
+    choice_4
+  ) {
     try {
-      const sql = `UPDATE test_answer SET ?
-                    WHERE answer_id = '${answer_id}';`;
-      const answerValues = {
+      const sql = `UPDATE test_answer SET answer = ? choice_1 = ? choice_2 = ? choice_3 = ? choice_4 = ?
+                    WHERE answer_id = ?;`;
+      const answerValues = [
         answer,
         choice_1,
         choice_2,
         choice_3,
         choice_4,
-      };
+        answer_id,
+      ];
 
-      const [data, _] = await db.query(sql, answerValues);
+      const [data, _] = await db.execute(sql, answerValues);
       return data;
     } catch (error) {
       console.log(error + "--- update answer ---");
@@ -51,8 +60,10 @@ class TestAnswer {
   static async deleteAnswer(answer_id) {
     try {
       const sql = `DELETE FROM test_answer
-                    WHERE answer_id = '${answer_id}';`;
-      const [data, _] = await db.execute(sql);
+                    WHERE answer_id = ?;`;
+      const answerValues = [answer_id];
+
+      const [data, _] = await db.execute(sql, answerValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete answer ---");
@@ -65,8 +76,10 @@ class TestAnswer {
                     FROM test_answer AS ta
                     INNER JOIN test_question AS tq
                     ON ta.question_id = tq.question_id
-                    WHERE tq.test_id = '${test_id}';`;
-      const [data, _] = await db.execute(sql);
+                    WHERE tq.test_id = ?;`;
+      const answerValues = [test_id];
+
+      const [data, _] = await db.execute(sql, answerValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all answers ---");
@@ -77,7 +90,8 @@ class TestAnswer {
     try {
       const sql = `SELECT * FROM test_answer
                     WHERE answer_id = '${answer_id}';`;
-      const [data, _] = await db.execute(sql);
+      const answerValues = [answer_id];
+      const [data, _] = await db.execute(sql, answerValues);
       return data[0];
     } catch (error) {
       console.log(error + "--- get answer ---");

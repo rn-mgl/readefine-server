@@ -12,35 +12,45 @@ class Story {
 
   async createStory() {
     try {
-      const sql = "INSERT INTO story SET ?;";
-      const storyValues = {
-        title: this.title,
-        author: this.author,
-        book_cover: this.book_cover,
-        audio: this.audio,
-        lexile: this.lexile,
-        genre: this.genre,
-      };
-      const [data, _] = await db.query(sql, storyValues);
+      const sql = `INSERT INTO story (title, author, book_cover, audio, lexile, genre) 
+                  VALUES (?, ?, ?, ?, ?, ?);`;
+      const storyValues = [
+        this.title,
+        this.author,
+        this.book_cover,
+        this.audio,
+        this.lexile,
+        this.genre,
+      ];
+      const [data, _] = await db.execute(sql, storyValues);
       return data;
     } catch (error) {
       console.log(error + "--- create story ---");
     }
   }
 
-  static async updateStory(story_id, title, author, book_cover, audio, lexile, genre) {
+  static async updateStory(
+    story_id,
+    title,
+    author,
+    book_cover,
+    audio,
+    lexile,
+    genre
+  ) {
     try {
-      const sql = `UPDATE story SET ?
-                    WHERE story_id = '${story_id}';`;
-      const storyValues = {
+      const sql = `UPDATE story title = ? author = ? book_cover = ? audio = ? lexile = ? genre = ?
+                    WHERE story_id = ?;`;
+      const storyValues = [
         title,
         author,
         book_cover,
         audio,
         lexile,
         genre,
-      };
-      const [data, _] = await db.query(sql, storyValues);
+        story_id,
+      ];
+      const [data, _] = await db.execute(sql, storyValues);
       return data;
     } catch (error) {
       console.log(error + "--- update story ---");
@@ -50,18 +60,26 @@ class Story {
   static async deleteStory(story_id) {
     try {
       const sql = `DELETE FROM story
-                    WHERE story_id = '${story_id}';`;
-      const [data, _] = await db.execute(sql);
+                    WHERE story_id = ?;`;
+      const storyValues = [story_id];
+      const [data, _] = await db.execute(sql, storyValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete story ---");
     }
   }
 
-  static async getAllStories(searchFilter, lexileRangeFilter, sortFilter, dateRangeFilter) {
+  static async getAllStories(
+    searchFilter,
+    lexileRangeFilter,
+    sortFilter,
+    dateRangeFilter
+  ) {
     const lexileFrom = lexileRangeFilter.from ? lexileRangeFilter.from : 0;
     const lexileTo = lexileRangeFilter.to ? lexileRangeFilter.to : 1400;
-    const dateFrom = dateRangeFilter.from ? dateRangeFilter.from : "19990101T123000.000Z";
+    const dateFrom = dateRangeFilter.from
+      ? dateRangeFilter.from
+      : "19990101T123000.000Z";
     const dateTo = dateRangeFilter.to ? dateRangeFilter.to : new Date();
     try {
       const sql = `SELECT s.author, s.book_cover, s.audio,
@@ -76,17 +94,26 @@ class Story {
                   LEFT JOIN test AS t
                   ON s.story_id = t.story_id
                   
-                  WHERE s.${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
+                  WHERE s.${searchFilter.toSearch} LIKE ?
                   AND 
-                      s.lexile >= '${lexileFrom}' 
+                      s.lexile >= ?
                   AND 
-                      s.lexile <= '${lexileTo}'
+                      s.lexile <= ?
                   AND 
-                      CAST(s.date_added AS DATE) >= '${dateFrom}' 
+                      CAST(s.date_added AS DATE) >= ?
                   AND 
-                      CAST(s.date_added AS DATE) <= '${dateTo}'
+                      CAST(s.date_added AS DATE) <= ?
                   ORDER BY s.${sortFilter.toSort} ${sortFilter.sortMode};`;
-      const [data, _] = await db.execute(sql);
+
+      const storyValues = [
+        `%${searchFilter.searchKey}%`,
+        lexileFrom,
+        lexileTo,
+        dateFrom,
+        dateTo,
+      ];
+
+      const [data, _] = await db.execute(sql, storyValues);
 
       return data;
     } catch (error) {
@@ -103,11 +130,11 @@ class Story {
                   s.date_added, s.genre, s.lexile, s.story_id, t.test_id, s.title, rs.read_by,
 
                   CASE
-                    WHEN rs.read_by = '${userId}' THEN 1 ELSE 0
+                    WHEN rs.read_by = ? THEN 1 ELSE 0
                   END AS is_read,
 
                   CASE
-                    WHEN tt.taken_by = '${userId}' THEN 1 ELSE 0
+                    WHEN tt.taken_by = ? THEN 1 ELSE 0
                   END AS is_taken
 
                   FROM story AS s
@@ -117,19 +144,30 @@ class Story {
 
                   LEFT JOIN read_story AS rs
                   ON s.story_id = rs.story_id
-                  AND rs.read_by = '${userId}'
+                  AND rs.read_by = ?
 
                   LEFT JOIN taken_test AS tt
                   ON t.test_id = tt.test_id
-                  AND tt.taken_by = '${userId}'
+                  AND tt.taken_by = ?
 
-                  WHERE s.${searchFilter.toSearch} LIKE '%${searchFilter.searchKey}%'
+                  WHERE s.${searchFilter.toSearch} LIKE ?
                   AND 
-                      s.lexile >= '${lexileFrom}' 
+                      s.lexile >= ?
                   AND 
-                      s.lexile <= '${lexileTo}'
+                      s.lexile <= ?
                   ORDER BY s.${sortFilter.toSort} ${sortFilter.sortMode};`;
-      const [data, _] = await db.execute(sql);
+
+      const storyValues = [
+        userId,
+        userId,
+        userId,
+        userId,
+        `%${searchFilter.searchKey}%`,
+        lexileFrom,
+        lexileTo,
+      ];
+
+      const [data, _] = await db.execute(sql, storyValues);
 
       return data;
     } catch (error) {
@@ -140,8 +178,9 @@ class Story {
   static async getStory(story_id) {
     try {
       const sql = `SELECT * FROM story
-                    WHERE story_id = '${story_id}';`;
-      const [data, _] = await db.execute(sql);
+                    WHERE story_id = ?;`;
+      const storyValues = [story_id];
+      const [data, _] = await db.execute(sql, storyValues);
       return data[0];
     } catch (error) {
       console.log(error + "--- get story ---");

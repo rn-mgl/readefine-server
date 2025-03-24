@@ -11,15 +11,16 @@ class StoryContent {
 
   async createContent() {
     try {
-      const sql = "INSERT INTO story_content SET ?;";
-      const contentValues = {
-        story_id: this.story_id,
-        page: this.page,
-        header: this.header,
-        content: this.content,
-        image: this.image,
-      };
-      const [data, _] = await db.query(sql, contentValues);
+      const sql =
+        "INSERT INTO story_content (story_id, page, header, content, image) VALUES (?, ?, ?, ?, ?);";
+      const contentValues = [
+        this.story_id,
+        this.page,
+        this.header,
+        this.content,
+        this.image,
+      ];
+      const [data, _] = await db.execute(sql, contentValues);
       return data;
     } catch (error) {
       console.log(error + "--- add content ---");
@@ -28,10 +29,10 @@ class StoryContent {
 
   static async updateContent(content_id, page, header, content, image) {
     try {
-      const sql = `UPDATE story_content SET ?
-                    WHERE content_id = '${content_id}';`;
-      const contentValues = { page, header, content, image };
-      const [data, _] = await db.query(sql, contentValues);
+      const sql = `UPDATE story_content page = ? header = ? content = ? image = ?
+                    WHERE content_id = ?;`;
+      const contentValues = [page, header, content, image, content_id];
+      const [data, _] = await db.execute(sql, contentValues);
       return data;
     } catch (error) {
       console.log(error + "--- update content ---");
@@ -41,8 +42,9 @@ class StoryContent {
   static async deleteContent(content_id) {
     try {
       const sql = `DELETE FROM story_content
-                    WHERE content_id = '${content_id}';`;
-      const [data, _] = await db.execute(sql);
+                    WHERE content_id = ?;`;
+      const contentValues = [content_id];
+      const [data, _] = await db.execute(sql, contentValues);
       return data;
     } catch (error) {
       console.log(error + "--- delete content ---");
@@ -52,9 +54,10 @@ class StoryContent {
   static async getAllContent(story_id) {
     try {
       const sql = `SELECT * FROM story_content
-                    WHERE story_id = '${story_id}'
+                    WHERE story_id = ?
                     ORDER BY page;`;
-      const [data, _] = await db.execute(sql);
+      const contentValues = [content_id];
+      const [data, _] = await db.execute(sql, contentValues);
       return data;
     } catch (error) {
       console.log(error + "--- get all content ---");
@@ -64,8 +67,9 @@ class StoryContent {
   static async getContent(content_id) {
     try {
       const sql = `SELECT * FROM story_content
-                    WHERE content_id = '${content_id}';`;
-      const [data, _] = await db.execute(sql);
+                    WHERE content_id = ?;`;
+      const contentValues = [content_id];
+      const [data, _] = await db.execute(sql, contentValues);
       return data[0];
     } catch (error) {
       console.log(error + "--- get story ---");
