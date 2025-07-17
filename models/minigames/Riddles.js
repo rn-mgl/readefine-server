@@ -68,7 +68,7 @@ class Riddles {
                     WHERE riddle_id = ?`;
       const riddleValues = [riddle_id];
 
-      const [data, _] = await db.execute(sql, riddle_id);
+      const [data, _] = await db.execute(sql, riddleValues);
       return data[0];
     } catch (error) {
       console.log(error + "--- get riddle ---");
