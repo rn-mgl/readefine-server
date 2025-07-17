@@ -65,7 +65,7 @@ class Riddles {
   static async getRiddle(riddle_id) {
     try {
       const sql = `SELECT * FROM riddles 
-                    WHERE riddle_id = '${riddle_id}'`;
+                    WHERE riddle_id = ?`;
       const riddleValues = [riddle_id];
 
       const [data, _] = await db.execute(sql, riddle_id);
