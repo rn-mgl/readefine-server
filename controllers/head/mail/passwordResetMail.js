@@ -4,7 +4,7 @@ const axios = require("axios");
 
 const sendPasswordResetEmail = async (sendTo, toName, token) => {
   const envelope = {
-    from: `Readefine <rltnslns@gmail.com>`,
+    from: `Readefine <no-reply@rltn.space>`,
     to: sendTo,
     source: process.env.EMAIL_SOURCE,
     subject: "Password Reset",

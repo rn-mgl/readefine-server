@@ -4,7 +4,7 @@ const axios = require("axios");
 
 const sendVerificationEmail = async (sendTo, toName, token) => {
   const envelope = {
-    from: `Readefine <rltnslns@gmail.com>`,
+    from: `Readefine <no-reply@rltn.space>`,
     to: sendTo,
     subject: "Account Verification",
     source: process.env.EMAIL_SOURCE,
