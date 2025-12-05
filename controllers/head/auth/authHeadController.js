@@ -108,4 +108,42 @@ const logInHead = async (req, res) => {
   }
 };
 
-module.exports = { logInHead, verifyHead };
+const signUpHead = async (req, res) => {
+  const { userData } = req.body;
+
+  const { name, surname, username, email, password, image } = userData;
+
+  const takenUsername = await Head.findWithUsername(email);
+
+  if (takenUsername) {
+    throw new BadRequestError(
+      `The username ${username} has already been taken.`
+    );
+  }
+
+  const takenEmail = await Head.findWithEmail(email);
+
+  if (takenEmail) {
+    throw new BadRequestError(
+      `The email ${email} is already used in Readefine.`
+    );
+  }
+
+  const hashedPassword = await fns.hashPassword(password);
+
+  const head = new Head(name, surname, username, email, hashedPassword, image);
+
+  const data = await head.createHead();
+
+  if (!data) {
+    throw new BadRequestError(`Error in signing up. Try again later.`);
+  }
+
+  const token = fns.createSignUpToken(data.insertId, username, email, "head");
+
+  res.status(StatusCodes.OK).json({ data, token });
+
+  const mail = await sendVerificationEmail(email, `${name} ${surname}`, token);
+};
+
+module.exports = { logInHead, signUpHead, verifyHead };

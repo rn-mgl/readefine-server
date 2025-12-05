@@ -1,14 +1,13 @@
 const sendgrid = require("@sendgrid/mail");
 const { BadRequestError } = require("../../../errors");
-
-const url = "https://readefine.vercel.app";
+const axios = require("axios");
 
 const sendPasswordResetEmail = async (sendTo, toName, token) => {
-  const message = {
-    from: `Readefine <rltnslns@gmail.com>`,
+  const envelope = {
+    from: `Readefine <no-reply@rltn.space>`,
     to: sendTo,
     subject: "Password Reset",
-    text: "Click the link to reset your account's password.",
+    source: process.env.EMAIL_SOURCE,
     html: `Hello ${toName},
 
         <br /><br />
@@ -21,7 +20,7 @@ const sendPasswordResetEmail = async (sendTo, toName, token) => {
 
         <br /><br />
 
-        <a href="${url}/reset/${token}">Reset Readefine Password</a> 
+        <a href="${process.env.URL}/reset/${token}">Reset Readefine Password</a> 
 
         <br /><br />
 
@@ -37,10 +36,12 @@ const sendPasswordResetEmail = async (sendTo, toName, token) => {
         Readefine | Developers.`,
   };
 
-  const data = await sendgrid.send(message);
+  const data = await axios.post(`${process.env.EMAIL_CONNECTOR}`, { envelope });
 
   if (!data) {
-    throw new BadRequestError(`Error in sending password reset link. Try again later.`);
+    throw new BadRequestError(
+      `Error in sending password reset link. Try again later.`
+    );
   }
 
   return data;

@@ -1,14 +1,13 @@
 const sendgrid = require("@sendgrid/mail");
 const { BadRequestError } = require("../../../errors");
-
-const url = "http://192.168.1.30";
+const axios = require("axios");
 
 const sendVerificationEmail = async (sendTo, toName, token) => {
-  const message = {
+  const envelope = {
     from: `Readefine <rltnslns@gmail.com>`,
     to: sendTo,
     subject: "Account Verification",
-    text: "Click the link to verify your account.",
+    source: process.env.EMAIL_SOURCE,
     html: `<h1> Hello <i>${toName}</i></h1>
 
         <br /><br />
@@ -22,7 +21,7 @@ const sendVerificationEmail = async (sendTo, toName, token) => {
 
         <br /><br />
 
-        <a href="${url}/verify/${token}">
+        <a href="${process.env.URL}/verify/${token}">
           <h4>Verify My Readefine Account</h4>
         </a> 
 
@@ -40,7 +39,7 @@ const sendVerificationEmail = async (sendTo, toName, token) => {
         Readefine | <i>Developers.</i>`,
   };
 
-  const data = await sendgrid.send(message);
+  const data = await axios.post(`${process.env.EMAIL_CONNECTOR}`, { envelope });
 
   if (!data) {
     throw new BadRequestError(
