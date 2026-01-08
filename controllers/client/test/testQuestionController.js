@@ -18,6 +18,11 @@ const getAllQuestions = async (req, res) => {
     throw new BadRequestError(`There was a problem in getting the questions.`);
   }
 
+  testQuestion.map((question) => {
+    delete question.answer;
+    delete question.answer_id;
+  });
+
   res.status(StatusCodes.OK).json(testQuestion);
 };
 
@@ -27,7 +32,9 @@ const getQuestion = async (req, res) => {
   const testQuestion = await TestQuestion.getQuestion(question_id);
 
   if (!testQuestion) {
-    throw new NotFoundError(`The test question you are trying to view does not exist.`);
+    throw new NotFoundError(
+      `The test question you are trying to view does not exist.`
+    );
   }
 
   res.status(StatusCodes.OK).json(testQuestion);
