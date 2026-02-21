@@ -11,7 +11,7 @@ const verifyHead = async (req, res) => {
 
   if (!token) {
     throw new BadRequestError(
-      `You do not have the appropriate credentials to verify your account.`
+      `You do not have the appropriate credentials to verify your account.`,
     );
   }
 
@@ -19,7 +19,7 @@ const verifyHead = async (req, res) => {
 
   if (isExpired) {
     throw new BadRequestError(
-      `The link for changing the passord has already expired.`
+      `The link for changing the passord has already expired.`,
     );
   }
 
@@ -27,13 +27,13 @@ const verifyHead = async (req, res) => {
 
   if (!verify) {
     throw new BadRequestError(
-      `You do not have the appropriate credentials to verify your account.`
+      `You do not have the appropriate credentials to verify your account.`,
     );
   }
 
   if (!verify?.id || !verify?.username || !verify?.email || !verify?.role) {
     throw new BadRequestError(
-      `You do not have the appropriate credentials to verify your account.`
+      `You do not have the appropriate credentials to verify your account.`,
     );
   }
 
@@ -41,7 +41,7 @@ const verifyHead = async (req, res) => {
 
   if (!head) {
     throw new BadRequestError(
-      `Error in verifying your account. Try again later.`
+      `Error in verifying your account. Try again later.`,
     );
   }
 
@@ -88,14 +88,12 @@ const logInHead = async (req, res) => {
   if (!is_verified) {
     const token = fns.createSignUpToken(head_id, username, email, "user");
 
-    primary.token = `Head Bearer ${token}`;
-
     res.status(StatusCodes.OK).json({ primary });
 
     const mail = await sendVerificationEmail(
       email,
       `${name} ${surname}`,
-      token
+      token,
     );
     return;
   } else {
@@ -117,7 +115,7 @@ const signUpHead = async (req, res) => {
 
   if (takenUsername) {
     throw new BadRequestError(
-      `The username ${username} has already been taken.`
+      `The username ${username} has already been taken.`,
     );
   }
 
@@ -125,7 +123,7 @@ const signUpHead = async (req, res) => {
 
   if (takenEmail) {
     throw new BadRequestError(
-      `The email ${email} is already used in Readefine.`
+      `The email ${email} is already used in Readefine.`,
     );
   }
 

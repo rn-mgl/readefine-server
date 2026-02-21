@@ -16,7 +16,7 @@ const verifyUser = async (req, res) => {
 
   if (!token) {
     throw new BadRequestError(
-      `You do not have the appropriate credentials to verify your account.`
+      `You do not have the appropriate credentials to verify your account.`,
     );
   }
 
@@ -24,7 +24,7 @@ const verifyUser = async (req, res) => {
 
   if (isExpired) {
     throw new BadRequestError(
-      `The link for changing the passord has already expired.`
+      `The link for changing the passord has already expired.`,
     );
   }
 
@@ -32,13 +32,13 @@ const verifyUser = async (req, res) => {
 
   if (!verify) {
     throw new BadRequestError(
-      `You do not have the appropriate credentials to change a password.`
+      `You do not have the appropriate credentials to change a password.`,
     );
   }
 
   if (!verify?.id || !verify?.username || !verify?.email || !verify?.role) {
     throw new BadRequestError(
-      `You do not have the appropriate credentials to change a password.`
+      `You do not have the appropriate credentials to change a password.`,
     );
   }
 
@@ -46,7 +46,7 @@ const verifyUser = async (req, res) => {
 
   if (!user) {
     throw new BadRequestError(
-      `Error in verifying your account. Try again later.`
+      `Error in verifying your account. Try again later.`,
     );
   }
 
@@ -92,14 +92,12 @@ const logInUser = async (req, res) => {
   if (!is_verified) {
     const token = fns.createSignUpToken(user_id, username, email, "user");
 
-    primary.token = `Bearer ${token}`;
-
     res.status(StatusCodes.OK).json({ primary });
 
     const mail = await sendVerificationEmail(
       email,
       `${name} ${surname}`,
-      token
+      token,
     );
     return;
   } else {
@@ -126,7 +124,7 @@ const signUpUser = async (req, res) => {
 
   if (takenEmail) {
     throw new BadRequestError(
-      `The email ${email} is already used in Readefine.`
+      `The email ${email} is already used in Readefine.`,
     );
   }
 
@@ -134,7 +132,7 @@ const signUpUser = async (req, res) => {
 
   if (takenUserName) {
     throw new BadRequestError(
-      `The username ${username} has already been taken.`
+      `The username ${username} has already been taken.`,
     );
   }
 
@@ -147,7 +145,7 @@ const signUpUser = async (req, res) => {
     gradeLevel,
     email,
     hashedPassword,
-    image
+    image,
   );
   const data = await user.createUser();
 
@@ -164,12 +162,12 @@ const signUpUser = async (req, res) => {
 
   const token = fns.createSignUpToken(data.insertId, username, email, "user");
   const achievementAssign = await UserAchievement.assignUserAchievements(
-    data.insertId
+    data.insertId,
   );
 
   if (!achievementAssign) {
     throw new BadRequestError(
-      `Error in assigning achievements. Try again later.`
+      `Error in assigning achievements. Try again later.`,
     );
   }
 

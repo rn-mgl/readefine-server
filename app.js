@@ -238,7 +238,7 @@ app.use("/admin_achievement", adminAuthMiddleware, adminAchievementRouter);
 app.use(
   "/admin_user_achievement",
   adminAuthMiddleware,
-  adminUserAchievementRouter
+  adminUserAchievementRouter,
 );
 app.use("/admin_reward", adminAuthMiddleware, adminRewardRouter);
 
@@ -255,22 +255,22 @@ app.use("/admin_riddles", adminAuthMiddleware, adminRiddlesRouter);
 app.use(
   "/admin_answered_dangle",
   adminAuthMiddleware,
-  adminAnsweredDangleRouter
+  adminAnsweredDangleRouter,
 );
 app.use(
   "/admin_answered_decipher",
   adminAuthMiddleware,
-  adminAnsweredDecipherRouter
+  adminAnsweredDecipherRouter,
 );
 app.use(
   "/admin_answered_questions",
   adminAuthMiddleware,
-  adminAnsweredQuestionsRouter
+  adminAnsweredQuestionsRouter,
 );
 app.use(
   "/admin_answered_riddles",
   adminAuthMiddleware,
-  adminAnsweredRiddlesRouter
+  adminAnsweredRiddlesRouter,
 );
 
 // words
@@ -304,7 +304,7 @@ app.use("/head_dashboard", headAuthMiddleware, headDashboardRouter);
 app.use(
   "/head_admin_activities",
   headAuthMiddleware,
-  headAdminActivitiesRouter
+  headAdminActivitiesRouter,
 );
 
 //////////////////////////////////////////////////////////////////////////////
